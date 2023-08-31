@@ -1,0 +1,4 @@
+Successfully decoded and encoded string.
+Input  : "Hello\0x20World!"
+Decoded: Hello World!
+Encoded: "Hello World!"
