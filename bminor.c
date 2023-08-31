@@ -20,7 +20,11 @@ int main(int argc, char* argv[]) {
             printf("File \"%s\" not found.\n", argv[2]);
             exit(EXIT_FAILURE);
         }
-        fgets(input, BUFSIZ, f);
+        if(!fgets(input, BUFSIZ, f)) {
+            /* failed to read file */
+            printf("Error: failed to read input files.\n");
+            exit(EXIT_FAILURE);
+        };
         /* remove trailing newline if one presents */
         if (input[strlen(input)-1] == '\n') {
             input[strlen(input)-1] = '\0';
