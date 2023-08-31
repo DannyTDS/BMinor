@@ -1,1 +1,2 @@
-Cannot decode string "Hello World!\0xF".
+Error: input string not beginning with a double quote.
+Cannot decode string .

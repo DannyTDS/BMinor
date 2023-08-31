@@ -1,1 +1,2 @@
+Error: double quote in middle of string not escaped.
 Cannot decode string "Hello "World!".
