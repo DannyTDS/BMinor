@@ -1,4 +1,6 @@
+#include "utils.h"
 #include "encoder.h"
+/* FIXME: fix encoder parsing error with hidden tests */
 
 EscapeMap escapeMap[] = {
     {"\\a", '\a'},

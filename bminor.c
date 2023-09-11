@@ -1,3 +1,4 @@
+#include "utils.h"
 #include "encoder.h"
 
 void usage(char* prog_name, int status) {
