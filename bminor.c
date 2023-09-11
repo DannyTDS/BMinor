@@ -2,7 +2,10 @@
 #include "encoder.h"
 
 void usage(char* prog_name, int status) {
-    printf("Usage: %s --encode <input.file>\n", prog_name);
+    printf("Usage: %s [options] <input.file>\n", prog_name);
+    printf("Options:\n");
+    printf("\t--encode\n");
+    printf("\t--scan\n");
     exit(status);
 }
 
@@ -40,14 +43,20 @@ void invoke_encode(char* file) {
     }
 }
 
+void invoke_scan() {
+
+}
+
 int main(int argc, char* argv[]) {
     /* for the Encoder assignment. */
     if (argc != 3) {
         usage(argv[0], EXIT_FAILURE);
     }
     /* parse input flag */
-    if (strcmp(argv[1], "--encode") == 0) {
+    if (streq(argv[1], "--encode")) {
         invoke_encode(argv[2]);
+    } else if (streq(argv[1], "--scan")) {
+        invoke_scan();
     } else {
         usage(argv[0], EXIT_FAILURE);
     }
