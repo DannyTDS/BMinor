@@ -5,6 +5,20 @@
 #define TOKEN_IDENT
 #define TOKEN_ASSIGN
 
+/* Keywords */
+#define TOKEN_ARRAY
+#define TOKEN_AUTO
+#define TOKEN_VOID
+#define TOKEN_IF
+#define TOKEN_ELSE
+#define TOKEN_FOR
+#define TOKEN_WHILE
+#define TOKEN_TRUE
+#define TOKEN_FALSE
+#define TOKEN_FUNC
+#define TOKEN_PRINT
+#define TOKEN_RETURN
+
 /* Type keywords and literals */
 #define TOKEN_INT       
 #define TOKEN_FLOAT     
