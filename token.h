@@ -26,7 +26,7 @@
 #define TOKEN_EXP
 #define TOKEN_MULT
 #define TOKEN_DIV
-#define TOKEN_REM
+#define TOKEN_MOD
 #define TOKEN_ADD
 #define TOKEN_SUB
 #define TOKEN_INCRE
