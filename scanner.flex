@@ -7,6 +7,13 @@ LETTER [A-Za-z]
 
 %%
 
+/* Types */
+integer             { return TOKEN_INT; }
+float               { return TOKEN_FLOAT; }
+string              { return TOKEN_STR; }
+char                { return TOKEN_CHAR; }
+boolean             { return TOKEN_BOOL; }
+
 /* Literals */
 [1-9]{DIGIT}+       { return TOKEN_INT_LIT; }
 =                   { return TOKEN_ASSIGN; }
