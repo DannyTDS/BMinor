@@ -16,13 +16,6 @@
 #define TOKEN_STR_LIT   
 #define TOKEN_CHAR_LIT  
 
-/* Groups and scopes */
-#define TOKEN_LPAREN
-#define TOKEN_RPAREN
-#define TOKEN_LBRACKET
-#define TOKEN_RBRACKET
-#define TOKEN_FLPAREN
-
 /* Logical operation */
 #define TOKEN_NEG
 #define TOKEN_NOT
@@ -39,5 +32,16 @@
 #define TOKEN_INCRE
 #define TOKEN_DECRE
 #define TOKEN_COMP
+
+/* Syntax */
+#define TOKEN_LPAREN
+#define TOKEN_RPAREN
+#define TOKEN_LBRACKET
+#define TOKEN_RBRACKET
+#define TOKEN_LBRACE
+#define TOKEN_RBRACE
+#define TOKEN_SEMI
+#define TOKEN_COLON
+#define TOKEN_COMMA
 
 #endif
