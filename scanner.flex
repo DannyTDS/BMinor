@@ -65,4 +65,7 @@ boolean             { return TOKEN_BOOL; }
 :                   { return TOKEN_COLON; }
 ,                   { return TOKEN_COMMA; }
 
+/* Capture error */
+.                   { return TOKEN_ERROR; }
+
 %%
