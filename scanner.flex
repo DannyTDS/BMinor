@@ -7,6 +7,20 @@ LETTER [A-Za-z]
 
 %%
 
+/* Keywords */
+array               { return TOKEN_ARRAY; }
+auto                { return TOKEN_AUTO; }
+void                { return TOKEN_VOID; }
+if                  { return TOKEN_IF; }
+else                { return TOKEN_ELSE; }
+for                 { return TOKEN_FOR; }
+while               { return TOKEN_WHILE; }
+true                { return TOKEN_TRUE; }
+false               { return TOKEN_FALSE; }
+function            { return TOKEN_FUNC; }
+print               { return TOKEN_PRINT; }
+return              { return TOKEN_RETURN; }
+
 /* Types */
 integer             { return TOKEN_INT; }
 float               { return TOKEN_FLOAT; }
