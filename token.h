@@ -2,8 +2,8 @@
 #define TOKEN_H
 
 /* Identifier and assignment */
-#define TOKEN_IDENTIFIER
-#define TOKEN_ASGMT
+#define TOKEN_IDENT
+#define TOKEN_ASSIGN
 
 /* Type keywords and literals */
 #define TOKEN_INT       
