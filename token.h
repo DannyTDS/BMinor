@@ -31,7 +31,12 @@
 #define TOKEN_SUB
 #define TOKEN_INCRE
 #define TOKEN_DECRE
-#define TOKEN_COMP
+#define TOKEN_LT
+#define TOKEN_LE
+#define TOKEN_GT
+#define TOKEN_GE
+#define TOKEN_EQ
+#define TOKEN_NE
 
 /* Syntax */
 #define TOKEN_LPAREN
