@@ -30,7 +30,6 @@ boolean             { return TOKEN_BOOL; }
 
 /* Literals */
 [1-9]{DIGIT}+       { return TOKEN_INT_LIT; }
-=                   { return TOKEN_ASSIGN; }
 
 /* Logical operations */
 !                   { return TOKEN_NOT; }
@@ -55,6 +54,7 @@ boolean             { return TOKEN_BOOL; }
 !=                  { return TOKEN_NE; }
 
 /* Syntax */
+=                   { return TOKEN_ASSIGN; }
 \(                  { return TOKEN_LPAREN; }
 \)                  { return TOKEN_RPAREN; }
 \[                  { return TOKEN_LBRACKET; }
