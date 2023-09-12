@@ -49,4 +49,7 @@
 #define TOKEN_COLON
 #define TOKEN_COMMA
 
+/* Error */
+#define TOKEN_ERROR
+
 #endif
