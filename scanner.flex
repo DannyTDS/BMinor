@@ -48,11 +48,10 @@ boolean             { return TOKEN_BOOL; }
 &&                  { return TOKEN_AND; }
 \|\|                { return TOKEN_OR; }
 
-
 /* Math operations */
 \^                  { return TOKEN_EXP; }
 \*                  { return TOKEN_MULT; }
-/                   { return TOKEN_DIV; }
+\/                  { return TOKEN_DIV; }
 %                   { return TOKEN_MOD; }
 \+                  { return TOKEN_ADD; }
 -                   { return TOKEN_SUB; }
