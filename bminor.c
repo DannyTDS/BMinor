@@ -9,19 +9,19 @@ void usage(char* prog_name, int status) {
     exit(status);
 }
 
-void invoke_encode(char* file) {
+int invoke_encode(char* file) {
     /* decode and encode string */
     /* read input string */
     char input[BUFSIZ];
     FILE* f = fopen(file, "r");
     if (!f) {
         printf("File \"%s\" not found.\n", file);
-        exit(EXIT_FAILURE);
+        return(FAILURE);
     }
     if(!fgets(input, BUFSIZ, f)) {
         /* failed to read file */
         printf("Error: failed to read input files.\n");
-        exit(EXIT_FAILURE);
+        return(FAILURE);
     };
     /* remove trailing newline if one presents */
     if (input[strlen(input)-1] == '\n') {
@@ -32,7 +32,7 @@ void invoke_encode(char* file) {
     char decoded[strlen(input)+1];
     if (string_decode(input, decoded) != SUCCESS) {
         printf("Cannot decode string %s.\n", input);
-        exit(EXIT_FAILURE);
+        return(FAILURE);
     } else {
         char encoded[strlen(input)+1];
         string_encode(decoded, encoded);
@@ -41,6 +41,8 @@ void invoke_encode(char* file) {
         printf("Decoded: %s\n", decoded);
         printf("Encoded: %s\n", encoded);
     }
+    /* return success upon completion */
+    return SUCCESS;
 }
 
 void invoke_scan() {
@@ -54,9 +56,9 @@ int main(int argc, char* argv[]) {
     }
     /* parse input flag */
     if (streq(argv[1], "--encode")) {
-        invoke_encode(argv[2]);
+        return invoke_encode(argv[2]);
     } else if (streq(argv[1], "--scan")) {
-        invoke_scan();
+        return invoke_scan();
     } else {
         usage(argv[0], EXIT_FAILURE);
     }
