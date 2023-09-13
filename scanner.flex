@@ -7,6 +7,15 @@ LETTER [A-Za-z]
 
 %%
 
+[ |\n|\t|\r]        { ; /* eat up white space */ }
+
+/* Comments */
+\/\/[^\n]*\n                        { ; /* skip C++ Comment */ }
+\/\*([^\*]|\*+[^\/])*\*+\/          { ; /* skip C Comment */   }
+
+/* Identifier */
+[LETTER|_][LETTER|DIGIT|_]{0,254}     { return TOKEN_IDENT; }
+
 /* Keywords */
 array               { return TOKEN_ARRAY; }
 auto                { return TOKEN_AUTO; }
@@ -29,7 +38,10 @@ char                { return TOKEN_CHAR; }
 boolean             { return TOKEN_BOOL; }
 
 /* Literals */
-[1-9]{DIGIT}+       { return TOKEN_INT_LIT; }
+[-\+]?0|([1-9]{DIGIT}*)                         { return TOKEN_INT_LIT; }
+[-\+]?{DIGIT}*\.{DIGIT}+([eE][-\+]?{DIGIT}+)?   { return TOKEN_FLOAT_LIT; }
+'([^\\]|\\.|\\0x..)'                            { return TOKEN_CHAR_LIT; }
+"([^\\\"]|\\.){0,255}"                          { return TOKEN_STR_LIT; }
 
 /* Logical operations */
 !                   { return TOKEN_NOT; }
@@ -40,7 +52,7 @@ boolean             { return TOKEN_BOOL; }
 /* Math operations */
 \^                  { return TOKEN_EXP; }
 \*                  { return TOKEN_MULT; }
-\/                  { return TOKEN_DIV; }
+/                   { return TOKEN_DIV; }
 %                   { return TOKEN_MOD; }
 \+                  { return TOKEN_ADD; }
 -                   { return TOKEN_SUB; }
