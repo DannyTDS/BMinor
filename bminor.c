@@ -52,9 +52,9 @@ int invoke_scan(char* file) {
         printf("File \"%s\" not found.\n", file);
         return(FAILURE);
     }
-    scan(f);
+    int status = scan(f);
     fclose(f);
-    return SUCCESS;
+    return status;
 }
 
 int main(int argc, char* argv[]) {
