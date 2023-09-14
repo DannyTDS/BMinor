@@ -1,3 +1,4 @@
 bminor
 *.o
+scanner_rule.c
 .vscode
