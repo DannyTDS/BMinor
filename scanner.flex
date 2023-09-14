@@ -2,7 +2,9 @@
 %option noinput
 
 %{
+#include "utils.h"
 #include "token.h"
+extern int string_decode(char* es, char* s);
 %}
 
 DIGIT [0-9]
@@ -13,8 +15,14 @@ LETTER [A-Za-z]
     /* Literals */
 [-\+]?{DIGIT}+                                              { return TOKEN_INT_LIT; }
 [-\+]?{DIGIT}*(.{DIGIT}+|(.{DIGIT}+)?[eE][-\+]?{DIGIT}+)    { return TOKEN_FLOAT_LIT; }
-\'([^\\\'\n]|\\.|\\0x..)\'                                  { return TOKEN_CHAR_LIT; }
-\"([^\\\"\n]|\\.){0,255}\"                                  { return TOKEN_STR_LIT; }
+\'([^\\\'\n]|\\.|\\0x..)\'                                  {
+                                                                if (clean_string(TOKEN_CHAR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
+                                                                return TOKEN_CHAR_LIT; 
+                                                            }
+\"([^\\\"\n]|\\.)*\"                                        {
+                                                                if (clean_string(TOKEN_STR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
+                                                                return TOKEN_STR_LIT;
+                                                            }
 
     /* Keywords */
 array               { return TOKEN_ARRAY; }
@@ -71,11 +79,14 @@ boolean             { return TOKEN_BOOL; }
 ,                   { return TOKEN_COMMA; }
 
     /* Identifier */
-[A-Za-z_][A-Za-z0-9_]{0,254}     { return TOKEN_IDENT; }
+[A-Za-z_][A-Za-z0-9_]+  {
+                            if (check_yyleng(TOKEN_IDENT, yyleng) != SUCCESS) return TOKEN_ERROR;
+                            return TOKEN_IDENT; 
+                        }
 
     /* Comments */
-\/\/[^\n]*\n                        { ; /* eat up C++ Comment */ }
-\/\*([^\*]|\*+[^\/])*\*+\/          { ; /* eat up C Comment */   }
+\/\/[^\n]*\n                          { ; /* eat up C++ Comment */ }
+\/\*([^\*]|\*+[^\/\*])*\*+\/          { ; /* eat up C Comment */   }
 
 [ \n\t]+            { ; /* eat up white space */ }
 
@@ -87,4 +98,59 @@ boolean             { return TOKEN_BOOL; }
 int yywrap() {
     /* Reached end of input */
     return 1;
+}
+
+int check_yyleng(token_t token, int yyleng) {
+    if (yyleng > 255) {
+        switch (token) {
+            case TOKEN_IDENT:
+                printf("Scan error: TOKEN_IDENT over 255 characters long.\n");
+                break;
+            case TOKEN_STR_LIT:
+                printf("Scan error: TOKEN_STR_LIT over 255 characters long.\n");
+                break;
+            default:
+                break;
+        }
+        return FAILURE;
+    }
+    return SUCCESS;
+}
+
+int clean_string(token_t token, char* yytext) {
+    /* Calls the string_decode function and set yytext to the decoded string */
+    /* From the scanner, we are promised that the literal is closed by '' or "" */
+    if (token == TOKEN_CHAR_LIT) {
+        /* Tricks the decode function by replacing ' with " */
+        char* head = yytext;
+        *yytext = '\"';
+        while (*yytext) {
+            if (*yytext == '\'' && *(yytext+1) == '\0') {
+                *yytext = '\"';
+            }
+            yytext++;
+        }
+        yytext = head;
+    }
+    char decoded[BUFSIZ];
+    /* Call the decode function */
+    int status = string_decode(yytext, decoded);
+    if (status != SUCCESS) {
+        switch (token) {
+            case TOKEN_CHAR_LIT:
+                printf("Scan error: TOKEN_CHAR_LIT token decode error.\n");
+                break;
+            case TOKEN_STR_LIT:
+                printf("Scan error: TOKEN_STR_LIT token decode error.\n");
+                break;
+            default:
+                break;
+        }
+    }
+    strcpy(yytext, decoded);
+    if (status == SUCCESS && check_yyleng(token, strlen(decoded)) == SUCCESS) {
+        return SUCCESS;
+    } else {
+        return FAILURE;
+    }
 }

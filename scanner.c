@@ -5,19 +5,19 @@ int scan(FILE* input) {
 
     /* Loops over the input and scans the text */
     token_t token;
-    do {
+    while (1) {
         token = yylex();
+        if (token == TOKEN_EOF) {
+            break;
+        }
         if (print_token(token, yytext) != SUCCESS) {
             return FAILURE;
-        };
-    } while (token != TOKEN_EOF);
+        }
+    }
     return SUCCESS;
 }
 
 int print_token(token_t token, char* yytext) {
-    /* Reached end of input */
-    if (token == TOKEN_EOF) return SUCCESS;
-
     switch (token) {
         case TOKEN_IDENT:
             printf("%s\t%s\n", "IDENTIFIER", yytext);
@@ -84,20 +84,10 @@ int print_token(token_t token, char* yytext) {
             break;
         /* For string and char literals, utilize string_decode to format printable string */
         case TOKEN_STR_LIT:
-            if (decode_yytext(token, yytext) == SUCCESS) {
-                printf("%s\t%s\n", "STRING_LITERAL", yytext);
-            } else {
-                printf("%s\t%s\n", "STRING_LITERAL", "Error in decoding the string.");
-                return FAILURE;
-            }
+            printf("%s\t%s\n", "STRING_LITERAL", yytext);
             break;
         case TOKEN_CHAR_LIT:
-            if (decode_yytext(token, yytext) == SUCCESS) {
-                printf("%s\t%s\n", "CHAR_LITERAL", yytext);
-            } else {
-                printf("%s\t%s\n", "CHAR_LITERAL", "Error in decoding the character.");
-                return FAILURE;
-            }
+            printf("%s\t%s\n", "CHAR_LITERAL", yytext);
             break;
         case TOKEN_NOT:
             printf("%s\n", "NOT");
@@ -177,9 +167,9 @@ int print_token(token_t token, char* yytext) {
         case TOKEN_COMMA:
             printf("%s\n", "COMMA");
             break;
-        /* Halt on scan error */
         case TOKEN_ERROR:
-            printf("Scan error: %s is not a valid character.\n", yytext);
+            /* Halt on scan error */
+            printf("Scan error: %s is not a valid token.\n", yytext);
             return FAILURE;
         default:
             printf("Scan error: unknown token %d scanned from text %s.\n", token, yytext);
@@ -187,27 +177,4 @@ int print_token(token_t token, char* yytext) {
     }
 
     return SUCCESS;
-}
-
-int decode_yytext(token_t token, char* yytext) {
-    /* Calls the string_decode function and set yytext to the decoded string */
-    /* From the scanner, we are promised that the literal is closed by '' or "" */
-    if (token == TOKEN_CHAR_LIT) {
-        /* Tricks the decode function by replacing ' with " */
-        char* head = yytext;
-        *yytext = '\"';
-        while (*yytext) {
-            if (*yytext == '\'' && *(yytext+1) == '\0') {
-                *yytext = '\"';
-            }
-            yytext++;
-        }
-        yytext = head;
-    }
-    char decoded[MAXSTRLEN + 1];
-    int status = string_decode(yytext, decoded);
-    if (status == SUCCESS) {
-        strcpy(yytext, decoded);
-    }
-    return status;
 }

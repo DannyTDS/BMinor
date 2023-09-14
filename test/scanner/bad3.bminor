@@ -1,0 +1,2 @@
+// Test for invalid char
+'\0xfg'

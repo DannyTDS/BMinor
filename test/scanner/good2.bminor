@@ -1,0 +1,3 @@
+//A C++ style comment
+/****** Yo this is /***/some bad comment but it will still get scanned ******/
+'\n'

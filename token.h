@@ -40,7 +40,6 @@ typedef enum {
     TOKEN_MOD       ,
     TOKEN_ADD       ,
     /* Scanner cannot decide if this token is subtraction or unary negation */
-    /* FIXME: separate sub and neg tokens */
     TOKEN_SUB_OR_NEG,
     TOKEN_INCRE     ,
     TOKEN_DECRE     ,
@@ -68,5 +67,7 @@ typedef enum {
 
 /* Scanner functions */
 int yywrap();
+int check_yyleng(token_t token, int yyleng);
+int clean_string(token_t token, char* yytext);
 
 #endif

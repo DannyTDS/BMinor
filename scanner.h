@@ -12,6 +12,5 @@ extern char *yytext;
 
 int scan(FILE* input);
 int print_token(token_t token, char* yytext);
-int decode_yytext(token_t token, char* yytext);
 
 #endif
