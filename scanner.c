@@ -4,17 +4,19 @@ int scan(FILE* input) {
     yyin = input;
 
     /* Loops over the input and scans the text */
-    int token;
+    token_t token;
     do {
         token = yylex();
-        print_token(token, yytext);
-    } while (token != 0);
+        if (print_token(token, yytext) != SUCCESS) {
+            return FAILURE;
+        };
+    } while (token != TOKEN_EOF);
     return SUCCESS;
 }
 
-int print_token(int token, char* yytext) {
+int print_token(token_t token, char* yytext) {
     /* Reached end of input */
-    if (!token) return SUCCESS;
+    if (token == TOKEN_EOF) return SUCCESS;
 
     switch (token) {
         case TOKEN_IDENT:
@@ -82,14 +84,19 @@ int print_token(int token, char* yytext) {
             break;
         /* For string and char literals, utilize string_decode to format printable string */
         case TOKEN_STR_LIT:
-        /* FIXME: what happens if decode failed? */
             if (decode_yytext(token, yytext) == SUCCESS) {
                 printf("%s\t%s\n", "STRING_LITERAL", yytext);
+            } else {
+                printf("%s\t%s\n", "STRING_LITERAL", "Error in decoding the string.");
+                return FAILURE;
             }
             break;
         case TOKEN_CHAR_LIT:
             if (decode_yytext(token, yytext) == SUCCESS) {
                 printf("%s\t%s\n", "CHAR_LITERAL", yytext);
+            } else {
+                printf("%s\t%s\n", "CHAR_LITERAL", "Error in decoding the character.");
+                return FAILURE;
             }
             break;
         case TOKEN_NOT:
@@ -170,6 +177,7 @@ int print_token(int token, char* yytext) {
         case TOKEN_COMMA:
             printf("%s\n", "COMMA");
             break;
+        /* Halt on scan error */
         case TOKEN_ERROR:
             printf("Scan error: %s is not a valid character.\n", yytext);
             return FAILURE;
@@ -181,7 +189,7 @@ int print_token(int token, char* yytext) {
     return SUCCESS;
 }
 
-int decode_yytext(int token, char* yytext) {
+int decode_yytext(token_t token, char* yytext) {
     /* Calls the string_decode function and set yytext to the decoded string */
     /* From the scanner, we are promised that the literal is closed by '' or "" */
     if (token == TOKEN_CHAR_LIT) {

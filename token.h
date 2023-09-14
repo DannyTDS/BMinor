@@ -1,70 +1,70 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-/* Identifier and assignment */
-#define TOKEN_IDENT     255
-#define TOKEN_ASSIGN    256
+typedef enum {
+    TOKEN_EOF       ,
+    /* Identifier and assignment */
+    TOKEN_IDENT     ,
+    TOKEN_ASSIGN    ,
+    /* Keywords */
+    TOKEN_ARRAY     ,
+    TOKEN_AUTO      ,
+    TOKEN_VOID      ,
+    TOKEN_IF        ,
+    TOKEN_ELSE      ,
+    TOKEN_FOR       ,
+    TOKEN_WHILE     ,
+    TOKEN_TRUE      ,
+    TOKEN_FALSE     ,
+    TOKEN_FUNC      ,
+    TOKEN_PRINT     ,
+    TOKEN_RETURN    ,
+    /* Type keywords and literals */
+    TOKEN_INT       ,
+    TOKEN_FLOAT     ,
+    TOKEN_STR       ,
+    TOKEN_CHAR      ,
+    TOKEN_BOOL      ,
+    TOKEN_INT_LIT   ,
+    TOKEN_FLOAT_LIT ,
+    TOKEN_STR_LIT   ,
+    TOKEN_CHAR_LIT  ,
+    /* Logical operation */
+    TOKEN_NOT       ,
+    TOKEN_AND       ,
+    TOKEN_OR        ,
+    /* Math operation */
+    TOKEN_EXP       ,
+    TOKEN_MULT      ,
+    TOKEN_DIV       ,
+    TOKEN_MOD       ,
+    TOKEN_ADD       ,
+    /* Scanner cannot decide if this token is subtraction or unary negation */
+    /* FIXME: separate sub and neg tokens */
+    TOKEN_SUB_OR_NEG,
+    TOKEN_INCRE     ,
+    TOKEN_DECRE     ,
+    TOKEN_LT        ,
+    TOKEN_LE        ,
+    TOKEN_GT        ,
+    TOKEN_GE        ,
+    TOKEN_EQ        ,
+    TOKEN_NE        ,
+    /* Syntax */
+    TOKEN_LPAREN    ,
+    TOKEN_RPAREN    ,
+    TOKEN_LBRACKET  ,
+    TOKEN_RBRACKET  ,
+    TOKEN_LBRACE    ,
+    TOKEN_RBRACE    ,
+    TOKEN_SEMI      ,
+    TOKEN_COLON     ,
+    TOKEN_COMMA     ,
+    /* Error */
+    TOKEN_ERROR
+} token_t;
 
-/* Keywords */
-#define TOKEN_ARRAY     257
-#define TOKEN_AUTO      258
-#define TOKEN_VOID      259
-#define TOKEN_IF        260
-#define TOKEN_ELSE      261
-#define TOKEN_FOR       262
-#define TOKEN_WHILE     263
-#define TOKEN_TRUE      264
-#define TOKEN_FALSE     265
-#define TOKEN_FUNC      266
-#define TOKEN_PRINT     267
-#define TOKEN_RETURN    268
 
-/* Type keywords and literals */
-#define TOKEN_INT       269
-#define TOKEN_FLOAT     270
-#define TOKEN_STR       271
-#define TOKEN_CHAR      272
-#define TOKEN_BOOL      273
-#define TOKEN_INT_LIT   274
-#define TOKEN_FLOAT_LIT 275
-#define TOKEN_STR_LIT   276
-#define TOKEN_CHAR_LIT  277
-
-/* Logical operation */
-#define TOKEN_NOT       278
-#define TOKEN_AND       279
-#define TOKEN_OR        280
-
-/* Math operation */
-#define TOKEN_EXP       281
-#define TOKEN_MULT      282
-#define TOKEN_DIV       283
-#define TOKEN_MOD       284
-#define TOKEN_ADD       285
-/* Scanner cannot decide if this token is subtraction or unary negation */
-#define TOKEN_SUB_OR_NEG       286
-#define TOKEN_INCRE     287
-#define TOKEN_DECRE     288
-#define TOKEN_LT        289
-#define TOKEN_LE        290
-#define TOKEN_GT        291
-#define TOKEN_GE        292
-#define TOKEN_EQ        293
-#define TOKEN_NE        294
-
-/* Syntax */
-#define TOKEN_LPAREN    295
-#define TOKEN_RPAREN    296
-#define TOKEN_LBRACKET  297
-#define TOKEN_RBRACKET  298
-#define TOKEN_LBRACE    299
-#define TOKEN_RBRACE    300
-#define TOKEN_SEMI      301
-#define TOKEN_COLON     302
-#define TOKEN_COMMA     303
-
-/* Error */
-#define TOKEN_ERROR     304
 
 /* Scanner functions */
 int yywrap();

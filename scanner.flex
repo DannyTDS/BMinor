@@ -11,10 +11,10 @@ LETTER [A-Za-z]
 %%
 
     /* Literals */
-[-\+]?{DIGIT}+                                  { return TOKEN_INT_LIT; }
-[-\+]?{DIGIT}*(.{DIGIT}+|[eE][-\+]?{DIGIT}+)    { return TOKEN_FLOAT_LIT; }
-\'([^\\\'\n]|\\.|\\0x..)\'                      { return TOKEN_CHAR_LIT; }
-\"([^\\\"\n]|\\.){0,255}\"                      { return TOKEN_STR_LIT; }
+[-\+]?{DIGIT}+                                              { return TOKEN_INT_LIT; }
+[-\+]?{DIGIT}*(.{DIGIT}+|(.{DIGIT}+)?[eE][-\+]?{DIGIT}+)    { return TOKEN_FLOAT_LIT; }
+\'([^\\\'\n]|\\.|\\0x..)\'                                  { return TOKEN_CHAR_LIT; }
+\"([^\\\"\n]|\\.){0,255}\"                                  { return TOKEN_STR_LIT; }
 
     /* Keywords */
 array               { return TOKEN_ARRAY; }
