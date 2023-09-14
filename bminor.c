@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "encoder.h"
+#include "scanner.h"
 
 void usage(char* prog_name, int status) {
     printf("Usage: %s [options] <input.file>\n", prog_name);
@@ -45,8 +46,15 @@ int invoke_encode(char* file) {
     return SUCCESS;
 }
 
-void invoke_scan() {
-
+int invoke_scan(char* file) {
+    FILE* f = fopen(file, "r");
+    if (!f) {
+        printf("File \"%s\" not found.\n", file);
+        return(FAILURE);
+    }
+    scan(f);
+    fclose(f);
+    return SUCCESS;
 }
 
 int main(int argc, char* argv[]) {
@@ -58,7 +66,7 @@ int main(int argc, char* argv[]) {
     if (streq(argv[1], "--encode")) {
         return invoke_encode(argv[2]);
     } else if (streq(argv[1], "--scan")) {
-        return invoke_scan();
+        return invoke_scan(argv[2]);
     } else {
         usage(argv[0], EXIT_FAILURE);
     }

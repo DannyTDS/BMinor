@@ -31,39 +31,42 @@
 #define TOKEN_CHAR_LIT  277
 
 /* Logical operation */
-#define TOKEN_NEG       278
-#define TOKEN_NOT       279
-#define TOKEN_AND       280
-#define TOKEN_OR        281
+#define TOKEN_NOT       278
+#define TOKEN_AND       279
+#define TOKEN_OR        280
 
 /* Math operation */
-#define TOKEN_EXP       282
-#define TOKEN_MULT      283
-#define TOKEN_DIV       284
-#define TOKEN_MOD       285
-#define TOKEN_ADD       286
-#define TOKEN_SUB       287
-#define TOKEN_INCRE     288
-#define TOKEN_DECRE     289
-#define TOKEN_LT        290
-#define TOKEN_LE        291
-#define TOKEN_GT        292
-#define TOKEN_GE        293
-#define TOKEN_EQ        294
-#define TOKEN_NE        295
+#define TOKEN_EXP       281
+#define TOKEN_MULT      282
+#define TOKEN_DIV       283
+#define TOKEN_MOD       284
+#define TOKEN_ADD       285
+/* Scanner cannot decide if this token is subtraction or unary negation */
+#define TOKEN_SUB_OR_NEG       286
+#define TOKEN_INCRE     287
+#define TOKEN_DECRE     288
+#define TOKEN_LT        289
+#define TOKEN_LE        290
+#define TOKEN_GT        291
+#define TOKEN_GE        292
+#define TOKEN_EQ        293
+#define TOKEN_NE        294
 
 /* Syntax */
-#define TOKEN_LPAREN    296
-#define TOKEN_RPAREN    297
-#define TOKEN_LBRACKET  298
-#define TOKEN_RBRACKET  299
-#define TOKEN_LBRACE    300
-#define TOKEN_RBRACE    301
-#define TOKEN_SEMI      302
-#define TOKEN_COLON     303
-#define TOKEN_COMMA     304
+#define TOKEN_LPAREN    295
+#define TOKEN_RPAREN    296
+#define TOKEN_LBRACKET  297
+#define TOKEN_RBRACKET  298
+#define TOKEN_LBRACE    299
+#define TOKEN_RBRACE    300
+#define TOKEN_SEMI      301
+#define TOKEN_COLON     302
+#define TOKEN_COMMA     303
 
 /* Error */
-#define TOKEN_ERROR     305
+#define TOKEN_ERROR     304
+
+/* Scanner functions */
+int yywrap();
 
 #endif
