@@ -42,13 +42,14 @@ int string_decode(const char *es, char *s) {
 					es += strlen(escapeMap[i].sequence);
 					if (strcmp(escapeMap[i].sequence, "\\0x") == 0) {
 						/* try to read in a 2 digit hex value */
-						unsigned int byteValue;
-						if (sscanf(es, "%2x", &byteValue) != 1) {
+						char* endptr;
+						unsigned int byteValue = strtoul(es, &endptr, 16);
+						if (endptr != es+2) {
 							/* failed to read 2 digit hex value following \0x */
                             printf("Error: failed to read \\0xHH hex value.\n");
 							return FAILURE;
 						};
-						es += 2*sizeof(char);
+						es = endptr;
 						*s++ = (char)byteValue;
 					} else {
 						*s++ = escapeMap[i].character;

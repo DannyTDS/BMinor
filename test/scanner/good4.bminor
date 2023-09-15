@@ -1,2 +1,3 @@
 "This is a string literal."
 "This is a string literal \t\n\0xff with escaped character."
+"\0xFa"

@@ -14,7 +14,7 @@ LETTER [A-Za-z]
 
     /* Literals */
 [-\+]?{DIGIT}+                                              { return TOKEN_INT_LIT; }
-[-\+]?{DIGIT}*(.{DIGIT}+|(.{DIGIT}+)?[eE][-\+]?{DIGIT}+)    { return TOKEN_FLOAT_LIT; }
+[-\+]?{DIGIT}*\.?{DIGIT}+([eE][-\+]?{DIGIT}+)?              { return TOKEN_FLOAT_LIT; }
 \'([^\\\'\n]|\\.|\\0x..)\'                                  {
                                                                 if (clean_string(TOKEN_CHAR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
                                                                 return TOKEN_CHAR_LIT; 
@@ -79,7 +79,7 @@ boolean             { return TOKEN_BOOL; }
 ,                   { return TOKEN_COMMA; }
 
     /* Identifier */
-[A-Za-z_][A-Za-z0-9_]+  {
+[A-Za-z_][A-Za-z0-9_]*  {
                             if (check_yyleng(TOKEN_IDENT, yyleng) != SUCCESS) return TOKEN_ERROR;
                             return TOKEN_IDENT; 
                         }
