@@ -1,0 +1,2529 @@
+=====STUDENT TESTS=====
+====Good Tests====
+===[STUDENT TESTS/good0.bminor Input]===
+string
+1534
+3.4
+10e9
+'a'
+Notre Dame
+"\'Notre Dame\'";
+>=
+===[STUDENT TESTS/good0.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good0.bminor Output]===
+STRING
+INTEGER_LITERAL	1534
+FLOAT_LITERAL	3.4
+FLOAT_LITERAL	10e9
+CHAR_LITERAL	a
+IDENTIFIER	Notre
+IDENTIFIER	Dame
+STRING_LITERAL	'Notre Dame'
+SEMICOLON
+GE
+
+
+
+
+===[STUDENT TESTS/good1.bminor Input]===
+/******* Empty string *******/
+""
+===[STUDENT TESTS/good1.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good1.bminor Output]===
+STRING_LITERAL	
+
+
+
+
+===[STUDENT TESTS/good10.bminor Input]===
+/* Test for comments ********/
+/***********/
+//
+//**********
+/****** H/el******lo *****/
+===[STUDENT TESTS/good10.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good10.bminor Output]===
+
+
+
+
+===[STUDENT TESTS/good11.bminor Input]===
+// some more complicated corner cases
+z = -(5 * 4);
+z = 15 + 5 - 4*3/7;
+z = x + (y * 5 - (4 + 20/v) - 15) % 6 + z; //long integer expr
+z+++; // these will cause parsing errors
+w---;
+===[STUDENT TESTS/good11.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good11.bminor Output]===
+IDENTIFIER	z
+ASSIGNMENT
+SUBTRACT_OR_NEGATE
+PARENTHESIS_L
+INTEGER_LITERAL	5
+MULTIPLY
+INTEGER_LITERAL	4
+PARENTHESIS_R
+SEMICOLON
+IDENTIFIER	z
+ASSIGNMENT
+INTEGER_LITERAL	15
+ADD
+INTEGER_LITERAL	5
+SUBTRACT_OR_NEGATE
+INTEGER_LITERAL	4
+MULTIPLY
+INTEGER_LITERAL	3
+DIVIDE
+INTEGER_LITERAL	7
+SEMICOLON
+IDENTIFIER	z
+ASSIGNMENT
+IDENTIFIER	x
+ADD
+PARENTHESIS_L
+IDENTIFIER	y
+MULTIPLY
+INTEGER_LITERAL	5
+SUBTRACT_OR_NEGATE
+PARENTHESIS_L
+INTEGER_LITERAL	4
+ADD
+INTEGER_LITERAL	20
+DIVIDE
+IDENTIFIER	v
+PARENTHESIS_R
+SUBTRACT_OR_NEGATE
+INTEGER_LITERAL	15
+PARENTHESIS_R
+MODULO
+INTEGER_LITERAL	6
+ADD
+IDENTIFIER	z
+SEMICOLON
+IDENTIFIER	z
+INCREMENT
+ADD
+SEMICOLON
+IDENTIFIER	w
+DECREMENT
+SUBTRACT_OR_NEGATE
+SEMICOLON
+
+
+
+
+===[STUDENT TESTS/good12.bminor Input]===
+//test some boolean types
+bool:boolean = true;
+bool:boolean = false;
+bool = 5 > 4;
+===[STUDENT TESTS/good12.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good12.bminor Output]===
+IDENTIFIER	bool
+COLON
+BOOLEAN
+ASSIGNMENT
+TRUE
+SEMICOLON
+IDENTIFIER	bool
+COLON
+BOOLEAN
+ASSIGNMENT
+FALSE
+SEMICOLON
+IDENTIFIER	bool
+ASSIGNMENT
+INTEGER_LITERAL	5
+GT
+INTEGER_LITERAL	4
+SEMICOLON
+
+
+
+
+===[STUDENT TESTS/good13.bminor Input]===
+intFunction: function integer(intVar:integer, boolVar: boolean)
+{
+	if(boolVar)
+	{
+		intVar = intVar * 2;
+	}
+	return intVar;
+}
+// finds the largest value in the array
+getLargest: function integer(intArrVar:array [] integer, int len) =
+{
+	largest:integer = 0;
+	x:integer;
+	for(x = 0; x < len; x++)
+	{
+		if(intArrVar[x] > largest)
+		{
+			largest = intArrVar[x];
+		}
+	}
+	return largest;
+		
+}
+
+main: function integer ( argc: integer, argv: array [] string ) =
+{
+	b:array [10] integer = {0,1,2,3,4,5};
+	b[4] = 6;
+	i:integer;
+	z:integer = intFunction(i, true);
+	print intArrFunction(v, z);
+}
+===[STUDENT TESTS/good13.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good13.bminor Output]===
+IDENTIFIER	intFunction
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	intVar
+COLON
+INTEGER
+COMMA
+IDENTIFIER	boolVar
+COLON
+BOOLEAN
+PARENTHESIS_R
+BRACE_L
+IF
+PARENTHESIS_L
+IDENTIFIER	boolVar
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	intVar
+ASSIGNMENT
+IDENTIFIER	intVar
+MULTIPLY
+INTEGER_LITERAL	2
+SEMICOLON
+BRACE_R
+RETURN
+IDENTIFIER	intVar
+SEMICOLON
+BRACE_R
+IDENTIFIER	getLargest
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	intArrVar
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+INTEGER
+COMMA
+IDENTIFIER	int
+IDENTIFIER	len
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	largest
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+COLON
+INTEGER
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	x
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+LT
+IDENTIFIER	len
+SEMICOLON
+IDENTIFIER	x
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+IF
+PARENTHESIS_L
+IDENTIFIER	intArrVar
+BRACKET_L
+IDENTIFIER	x
+BRACKET_R
+GT
+IDENTIFIER	largest
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	largest
+ASSIGNMENT
+IDENTIFIER	intArrVar
+BRACKET_L
+IDENTIFIER	x
+BRACKET_R
+SEMICOLON
+BRACE_R
+BRACE_R
+RETURN
+IDENTIFIER	largest
+SEMICOLON
+BRACE_R
+IDENTIFIER	main
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	argc
+COLON
+INTEGER
+COMMA
+IDENTIFIER	argv
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	b
+COLON
+ARRAY
+BRACKET_L
+INTEGER_LITERAL	10
+BRACKET_R
+INTEGER
+ASSIGNMENT
+BRACE_L
+INTEGER_LITERAL	0
+COMMA
+INTEGER_LITERAL	1
+COMMA
+INTEGER_LITERAL	2
+COMMA
+INTEGER_LITERAL	3
+COMMA
+INTEGER_LITERAL	4
+COMMA
+INTEGER_LITERAL	5
+BRACE_R
+SEMICOLON
+IDENTIFIER	b
+BRACKET_L
+INTEGER_LITERAL	4
+BRACKET_R
+ASSIGNMENT
+INTEGER_LITERAL	6
+SEMICOLON
+IDENTIFIER	i
+COLON
+INTEGER
+SEMICOLON
+IDENTIFIER	z
+COLON
+INTEGER
+ASSIGNMENT
+IDENTIFIER	intFunction
+PARENTHESIS_L
+IDENTIFIER	i
+COMMA
+TRUE
+PARENTHESIS_R
+SEMICOLON
+PRINT
+IDENTIFIER	intArrFunction
+PARENTHESIS_L
+IDENTIFIER	v
+COMMA
+IDENTIFIER	z
+PARENTHESIS_R
+SEMICOLON
+BRACE_R
+
+
+
+
+===[STUDENT TESTS/good14.bminor Input]===
+main: function integer ( argc: integer, argv: array [] string ) =
+{
+}
+boolFunction: function boolean(intVar:integer) =
+{
+	return intVar > 5;
+}
+intFunction: function integer(integer n) =
+{
+	total:integer = 0;
+	int count;
+	for(count = 0; count < n+1; count++)
+	{
+		total = total + count;
+	
+}
+===[STUDENT TESTS/good14.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good14.bminor Output]===
+IDENTIFIER	main
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	argc
+COLON
+INTEGER
+COMMA
+IDENTIFIER	argv
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+BRACE_R
+IDENTIFIER	boolFunction
+COLON
+FUNCTION
+BOOLEAN
+PARENTHESIS_L
+IDENTIFIER	intVar
+COLON
+INTEGER
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+RETURN
+IDENTIFIER	intVar
+GT
+INTEGER_LITERAL	5
+SEMICOLON
+BRACE_R
+IDENTIFIER	intFunction
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+INTEGER
+IDENTIFIER	n
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	total
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	int
+IDENTIFIER	count
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	count
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	count
+LT
+IDENTIFIER	n
+INTEGER_LITERAL	+1
+SEMICOLON
+IDENTIFIER	count
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	total
+ASSIGNMENT
+IDENTIFIER	total
+ADD
+IDENTIFIER	count
+SEMICOLON
+BRACE_R
+
+
+
+
+===[STUDENT TESTS/good15.bminor Input]===
+//tests the for/print keyword and while keyword
+x:integer;
+for(x = 0; x < 5; x++)
+{
+	print "counting: ", x;
+}
+a:integer = 0;
+while(a > 0)
+{
+	a--;
+}
+===[STUDENT TESTS/good15.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good15.bminor Output]===
+IDENTIFIER	x
+COLON
+INTEGER
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	x
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+LT
+INTEGER_LITERAL	5
+SEMICOLON
+IDENTIFIER	x
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	counting: 
+COMMA
+IDENTIFIER	x
+SEMICOLON
+BRACE_R
+IDENTIFIER	a
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+WHILE
+PARENTHESIS_L
+IDENTIFIER	a
+GT
+INTEGER_LITERAL	0
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	a
+DECREMENT
+SEMICOLON
+BRACE_R
+
+
+
+
+===[STUDENT TESTS/good16.bminor Input]===
+//test arrays
+f:array [5]integer = { 1, 2, 3, 4, 5};
+f:array[5]char = {'a', 'b', 'c', 'd', 'e'};
+f:array[5] boolean = {false, false, true, true, true};
+f:array [] 	string = {"this", "i", "s", "a,", "test", "."};
+===[STUDENT TESTS/good16.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good16.bminor Output]===
+IDENTIFIER	f
+COLON
+ARRAY
+BRACKET_L
+INTEGER_LITERAL	5
+BRACKET_R
+INTEGER
+ASSIGNMENT
+BRACE_L
+INTEGER_LITERAL	1
+COMMA
+INTEGER_LITERAL	2
+COMMA
+INTEGER_LITERAL	3
+COMMA
+INTEGER_LITERAL	4
+COMMA
+INTEGER_LITERAL	5
+BRACE_R
+SEMICOLON
+IDENTIFIER	f
+COLON
+ARRAY
+BRACKET_L
+INTEGER_LITERAL	5
+BRACKET_R
+CHAR
+ASSIGNMENT
+BRACE_L
+CHAR_LITERAL	a
+COMMA
+CHAR_LITERAL	b
+COMMA
+CHAR_LITERAL	c
+COMMA
+CHAR_LITERAL	d
+COMMA
+CHAR_LITERAL	e
+BRACE_R
+SEMICOLON
+IDENTIFIER	f
+COLON
+ARRAY
+BRACKET_L
+INTEGER_LITERAL	5
+BRACKET_R
+BOOLEAN
+ASSIGNMENT
+BRACE_L
+FALSE
+COMMA
+FALSE
+COMMA
+TRUE
+COMMA
+TRUE
+COMMA
+TRUE
+BRACE_R
+SEMICOLON
+IDENTIFIER	f
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+ASSIGNMENT
+BRACE_L
+STRING_LITERAL	this
+COMMA
+STRING_LITERAL	i
+COMMA
+STRING_LITERAL	s
+COMMA
+STRING_LITERAL	a,
+COMMA
+STRING_LITERAL	test
+COMMA
+STRING_LITERAL	.
+BRACE_R
+SEMICOLON
+
+
+
+
+===[STUDENT TESTS/good17.bminor Input]===
+// test comparotors and boolean logic
+if ( a >= 5 )
+{
+	print "a >= 5";
+}
+if( a > 5 )
+{
+	print "a > 5";
+}
+if( a <= 5 )
+{
+	print "a <= 5";
+}
+if( a < 5 )
+{
+	print "a < 5";
+}
+if( a == 5 )
+{
+	print "a == 5";
+}
+if( a != 5 )
+{
+	print "a != 5";
+}
+a = 5; // test assigment
+if (a || b)
+{
+	print " a || b is true";
+}
+if (a && b)
+{
+	print " a && b is true";
+}
+===[STUDENT TESTS/good17.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good17.bminor Output]===
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+GE
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a >= 5
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+GT
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a > 5
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+LE
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a <= 5
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+LT
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a < 5
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+EQ
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a == 5
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+NE
+INTEGER_LITERAL	5
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	a != 5
+SEMICOLON
+BRACE_R
+IDENTIFIER	a
+ASSIGNMENT
+INTEGER_LITERAL	5
+SEMICOLON
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+OR
+IDENTIFIER	b
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	 a || b is true
+SEMICOLON
+BRACE_R
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+AND
+IDENTIFIER	b
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	 a && b is true
+SEMICOLON
+BRACE_R
+
+
+
+
+===[STUDENT TESTS/good18.bminor Input]===
+'\0x00'
+===[STUDENT TESTS/good18.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good18.bminor Output]===
+CHAR_LITERAL	
+
+
+
+
+===[STUDENT TESTS/good2.bminor Input]===
+//A C++ style comment
+/****** Yo this is /***/some bad comment but it will still get scanned ******/
+'\n'
+===[STUDENT TESTS/good2.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good2.bminor Output]===
+IDENTIFIER	some
+IDENTIFIER	bad
+IDENTIFIER	comment
+IDENTIFIER	but
+IDENTIFIER	it
+IDENTIFIER	will
+IDENTIFIER	still
+IDENTIFIER	get
+IDENTIFIER	scanned
+MULTIPLY
+MULTIPLY
+MULTIPLY
+MULTIPLY
+MULTIPLY
+MULTIPLY
+DIVIDE
+CHAR_LITERAL	
+
+
+
+
+
+===[STUDENT TESTS/good3.bminor Input]===
+'\a'
+'\t'
+'\0xff'
+===[STUDENT TESTS/good3.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good3.bminor Output]===
+
+
+
+
+===[STUDENT TESTS/good4.bminor Input]===
+"This is a string literal."
+"This is a string literal \t\n\0xff with escaped character."
+"\0xFa"
+===[STUDENT TESTS/good4.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good4.bminor Output]===
+
+
+
+
+===[STUDENT TESTS/good5.bminor Input]===
+1.5E12
+-1.5E12
+1.5e-12
+-1.5e12
+1.5E1.2
+===[STUDENT TESTS/good5.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good5.bminor Output]===
+FLOAT_LITERAL	1.5E12
+FLOAT_LITERAL	-1.5E12
+FLOAT_LITERAL	1.5e-12
+FLOAT_LITERAL	-1.5e12
+FLOAT_LITERAL	1.5E1
+FLOAT_LITERAL	.2
+
+
+
+
+===[STUDENT TESTS/good6.bminor Input]===
+01234
+43210
++111
+-111
+===[STUDENT TESTS/good6.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good6.bminor Output]===
+INTEGER_LITERAL	01234
+INTEGER_LITERAL	43210
+INTEGER_LITERAL	+111
+INTEGER_LITERAL	-111
+
+
+
+
+===[STUDENT TESTS/good7.bminor Input]===
+23.33
+.2333
+-.2333
++.2333
+0.000
+===[STUDENT TESTS/good7.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good7.bminor Output]===
+FLOAT_LITERAL	23.33
+FLOAT_LITERAL	.2333
+FLOAT_LITERAL	-.2333
+FLOAT_LITERAL	+.2333
+FLOAT_LITERAL	0.000
+
+
+
+
+===[STUDENT TESTS/good8.bminor Input]===
+<
+<=
+=
+==
+>
+>=
+:
+;
+,
+[
+]
+{}
+
+===[STUDENT TESTS/good8.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good8.bminor Output]===
+LT
+LE
+ASSIGNMENT
+EQ
+GT
+GE
+COLON
+SEMICOLON
+COMMA
+BRACKET_L
+BRACKET_R
+BRACE_L
+BRACE_R
+
+
+
+
+===[STUDENT TESTS/good9.bminor Input]===
+for while true false
+if else auto
+void array function
+print return
+integer,float, boolean, char,string
+===[STUDENT TESTS/good9.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[STUDENT TESTS/good9.bminor Output]===
+FOR
+WHILE
+TRUE
+FALSE
+IF
+ELSE
+AUTO
+VOID
+ARRAY
+FUNCTION
+PRINT
+RETURN
+INTEGER
+COMMA
+FLOAT
+COMMA
+BOOLEAN
+COMMA
+CHAR
+COMMA
+STRING
+
+
+
+
+====Bad Tests====
+===[STUDENT TESTS/bad0.bminor Input]===
+// Test for bad identifier
+_.Ident
+===[STUDENT TESTS/bad0.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad0.bminor Output]===
+IDENTIFIER	_
+Scan error: . is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad1.bminor Input]===
+// Test for invalid tokens
+|
+===[STUDENT TESTS/bad1.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad1.bminor Output]===
+Scan error: | is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad10.bminor Input]===
+minus#44
+===[STUDENT TESTS/bad10.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad10.bminor Output]===
+IDENTIFIER	minus
+Scan error: # is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad11.bminor Input]===
+@
+#
+&
+|
+\
+===[STUDENT TESTS/bad11.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad11.bminor Output]===
+Scan error: @ is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad12.bminor Input]===
+// invalid character
+'\'
+===[STUDENT TESTS/bad12.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad12.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad13.bminor Input]===
+/*
+A string should not contain a literal newline,
+but use backslash-n instead.
+*/
+
+"invalid
+
+string"
+===[STUDENT TESTS/bad13.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad13.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad14.bminor Input]===
+'ca'
+===[STUDENT TESTS/bad14.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad14.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad15.bminor Input]===
+''
+===[STUDENT TESTS/bad15.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad15.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad16.bminor Input]===
+'\ac'
+===[STUDENT TESTS/bad16.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad16.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad17.bminor Input]===
+'
+===[STUDENT TESTS/bad17.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad17.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad18.bminor Input]===
+// unmatched comment throws error 
+/* This is a comment.
+===[STUDENT TESTS/bad18.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad18.bminor Output]===
+DIVIDE
+MULTIPLY
+IDENTIFIER	This
+IDENTIFIER	is
+IDENTIFIER	a
+IDENTIFIER	comment
+Scan error: . is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad19.bminor Input]===
+// basic data types
+" the quote is unmatched
+===[STUDENT TESTS/bad19.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad19.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad2.bminor Input]===
+// Test for invalid char
+'\m'
+===[STUDENT TESTS/bad2.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad2.bminor Output]===
+Error: backslash followed by invalid character.
+Scan error: TOKEN_CHAR_LIT token decode error.
+Scan error:  is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad20.bminor Input]===
+// test comparotors and boolean logic
+if (a | b)
+{
+	print " a || b is true";
+}
+if (a & b)// must had 2 &&
+{
+	print " a || b is true";
+}
+===[STUDENT TESTS/bad20.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad20.bminor Output]===
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+Scan error: | is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad3.bminor Input]===
+// Test for invalid char
+'\0xfg'
+===[STUDENT TESTS/bad3.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad3.bminor Output]===
+Error: failed to read \0xHH hex value.
+Scan error: TOKEN_CHAR_LIT token decode error.
+Scan error:  is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad4.bminor Input]===
+// Test for invalid string
+"This is a "bad string"
+===[STUDENT TESTS/bad4.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad4.bminor Output]===
+STRING_LITERAL	This is a 
+IDENTIFIER	bad
+STRING
+Scan error: " is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad5.bminor Input]===
+// Test for string exceeding max length
+/* This string exceeds 255 chars */
+"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A pellentesque sit amet porttitor eget. Sed elementum tempus egestas sed sed. Sed arcu non odio euismod lacinia at quis risus. Egestas congue quisque egestas diam in arcu cursus. Arcu dictum varius duis at. Eget mauris pharetra et ultrices. Vel pharetra vel turpis nunc eget lorem. Cursus mattis molestie a iaculis at erat pellentesque adipiscing. In pellentesque massa placerat duis. Sit amet mauris commodo quis imperdiet. Penatibus et magnis dis parturient montes nascetur ridiculus mus. Id aliquet risus feugiat in ante metus dictum. Nulla aliquet enim tortor at auctor. Diam in arcu cursus euismod quis viverra nibh cras.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A pellentesque sit amet porttitor eget. Sed elementum tempus egestas sed sed. Sed arcu non odio euismod lacinia at quis risus. Egestas congue quisque egestas diam in arcu cursus. Arcu dictum varius duis at. Eget mauris pharetra et ultrices. Vel pharetra vel turpis nunc eget lorem. Cursus mattis molestie a iaculis at erat pellentesque adipiscing. In pellentesque massa placerat duis. Sit amet mauris commodo quis imperdiet. Penatibus et magnis dis parturient montes nascetur ridiculus mus. Id aliquet risus feugiat in ante metus dictum. Nulla aliquet enim tortor at auctor. Diam in arcu cursus euismod quis viverra nibh cras.Tempor nec feugiat nisl pretium fusce id velit ut tortor. Quisque sagittis purus sit amet volutpat consequat. Amet aliquam id diam maecenas ultricies mi. Est placerat in egestas erat imperdiet sed. Convallis a cras semper auctor. Sit amet volutpat consequat mauris. Nunc aliquet bibendum enim facilisis gravida neque. Nisl pretium fusce id velit ut tortor pretium viverra suspendisse. At in tellus integer feugiat. Tempor id eu nisl nunc mi ipsum faucibus vitae aliquet. Pharetra pharetra massa massa ultricies mi quis."
+===[STUDENT TESTS/bad5.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad5.bminor Output]===
+Error: decoded string has exceeded max allowed length.
+Scan error: TOKEN_STR_LIT token decode error.
+Scan error: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. A pellentesque sit amet porttitor eget. Sed elementum tempus egestas sed sed. Sed arcu non odio euismod lacinia at quis risus. Egest is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad6.bminor Input]===
+// Test for identifier exceeding max length
+LoremipsumdolorsitametconsecteturadipisicingelitQuisperspiciatisautabperferendisvoluptatibusnihililloDoloresrationeveniamexercitationemvoluptatecommodivoluptatemagninequeNoncupiditatequiasuntaspernaturdictaoditliberomaximeQuamaliquidautemquiodoloremcommodiquiaestEumrepudiandaequoautblanditiisametnonDoloreseiusducimusabaperiamrepellendusaspernaturCupiditateeaquevoluptatesofficiisnecessitatibuserroreducimusVoluptatemvoluptasvoluptatesadvoluptatumestodioNihilmolestiaerecusandaeinprovidentcumveritatisfugiatPossimusarchitectoimpeditlaborumteneturevenietnam
+===[STUDENT TESTS/bad6.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad6.bminor Output]===
+Scan error: TOKEN_IDENT over 255 characters long.
+Scan error: LoremipsumdolorsitametconsecteturadipisicingelitQuisperspiciatisautabperferendisvoluptatibusnihililloDoloresrationeveniamexercitationemvoluptatecommodivoluptatemagninequeNoncupiditatequiasuntaspernaturdictaoditliberomaximeQuamaliquidautemquiodoloremcommodiquiaestEumrepudiandaequoautblanditiisametnonDoloreseiusducimusabaperiamrepellendusaspernaturCupiditateeaquevoluptatesofficiisnecessitatibuserroreducimusVoluptatemvoluptasvoluptatesadvoluptatumestodioNihilmolestiaerecusandaeinprovidentcumveritatisfugiatPossimusarchitectoimpeditlaborumteneturevenietnam is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad7.bminor Input]===
+// Bad char literal
+'Hello'
+===[STUDENT TESTS/bad7.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad7.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad8.bminor Input]===
+// Bad char literal
+''
+===[STUDENT TESTS/bad8.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad8.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[STUDENT TESTS/bad9.bminor Input]===
+// Invalid token
+&
+===[STUDENT TESTS/bad9.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[STUDENT TESTS/bad9.bminor Output]===
+Scan error: & is not a valid token.
+
+
+
+
+=====HIDDEN TESTS=====
+====Good Tests====
+===[HIDDEN TESTS/good11.bminor Input]===
+// some more complicated corner cases
+z = -(5 * 4);
+z = 15 + 5 - 4*3/7;
+z = x + (y * 5 - (4 + 20/v) - 15) % 6 + z; //long integer expr
+z+++; // these will cause parsing errors
+w---;
+
+
+===[HIDDEN TESTS/good11.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good11.bminor Output]===
+IDENTIFIER	z
+ASSIGNMENT
+SUBTRACT_OR_NEGATE
+PARENTHESIS_L
+INTEGER_LITERAL	5
+MULTIPLY
+INTEGER_LITERAL	4
+PARENTHESIS_R
+SEMICOLON
+IDENTIFIER	z
+ASSIGNMENT
+INTEGER_LITERAL	15
+ADD
+INTEGER_LITERAL	5
+SUBTRACT_OR_NEGATE
+INTEGER_LITERAL	4
+MULTIPLY
+INTEGER_LITERAL	3
+DIVIDE
+INTEGER_LITERAL	7
+SEMICOLON
+IDENTIFIER	z
+ASSIGNMENT
+IDENTIFIER	x
+ADD
+PARENTHESIS_L
+IDENTIFIER	y
+MULTIPLY
+INTEGER_LITERAL	5
+SUBTRACT_OR_NEGATE
+PARENTHESIS_L
+INTEGER_LITERAL	4
+ADD
+INTEGER_LITERAL	20
+DIVIDE
+IDENTIFIER	v
+PARENTHESIS_R
+SUBTRACT_OR_NEGATE
+INTEGER_LITERAL	15
+PARENTHESIS_R
+MODULO
+INTEGER_LITERAL	6
+ADD
+IDENTIFIER	z
+SEMICOLON
+IDENTIFIER	z
+INCREMENT
+ADD
+SEMICOLON
+IDENTIFIER	w
+DECREMENT
+SUBTRACT_OR_NEGATE
+SEMICOLON
+
+
+
+
+===[HIDDEN TESTS/good12.bminor Input]===
+//tests the for/print keyword and while keyword
+x:integer;
+for(x = 0; x < 5; x++)
+{
+	print "counting: ", x;
+}
+a:integer = 0;
+while(a > 0)
+{
+	a--;
+}
+
+
+
+===[HIDDEN TESTS/good12.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good12.bminor Output]===
+IDENTIFIER	x
+COLON
+INTEGER
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	x
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+LT
+INTEGER_LITERAL	5
+SEMICOLON
+IDENTIFIER	x
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	counting: 
+COMMA
+IDENTIFIER	x
+SEMICOLON
+BRACE_R
+IDENTIFIER	a
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+WHILE
+PARENTHESIS_L
+IDENTIFIER	a
+GT
+INTEGER_LITERAL	0
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	a
+DECREMENT
+SEMICOLON
+BRACE_R
+
+
+
+
+===[HIDDEN TESTS/good13.bminor Input]===
+//test some odd identifier names
+ident55
+ident55_
+ident__55__
+thisIsAReallyReallyLongIdentifierNameThatHasTonsOfLettersInIt = 7
+variable_names_may_contain_underscores_
+_variables_can_start_with_an_underscore_67
+7minus5 
+
+===[HIDDEN TESTS/good13.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good13.bminor Output]===
+IDENTIFIER	ident55
+IDENTIFIER	ident55_
+IDENTIFIER	ident__55__
+IDENTIFIER	thisIsAReallyReallyLongIdentifierNameThatHasTonsOfLettersInIt
+ASSIGNMENT
+INTEGER_LITERAL	7
+IDENTIFIER	variable_names_may_contain_underscores_
+IDENTIFIER	_variables_can_start_with_an_underscore_67
+INTEGER_LITERAL	7
+IDENTIFIER	minus5
+
+
+
+
+===[HIDDEN TESTS/good14.bminor Input]===
+main: function integer ( argc: integer, argv: array [] string ) =
+{
+}
+boolFunction: function boolean(intVar:integer) =
+{
+	return intVar > 5;
+}
+intFunction: function integer(integer n) =
+{
+	total:integer = 0;
+	int count;
+	for(count = 0; count < n+1; count++)
+	{
+		total = total + count;
+	
+}
+
+
+===[HIDDEN TESTS/good14.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good14.bminor Output]===
+IDENTIFIER	main
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	argc
+COLON
+INTEGER
+COMMA
+IDENTIFIER	argv
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+BRACE_R
+IDENTIFIER	boolFunction
+COLON
+FUNCTION
+BOOLEAN
+PARENTHESIS_L
+IDENTIFIER	intVar
+COLON
+INTEGER
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+RETURN
+IDENTIFIER	intVar
+GT
+INTEGER_LITERAL	5
+SEMICOLON
+BRACE_R
+IDENTIFIER	intFunction
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+INTEGER
+IDENTIFIER	n
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	total
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	int
+IDENTIFIER	count
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	count
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	count
+LT
+IDENTIFIER	n
+INTEGER_LITERAL	+1
+SEMICOLON
+IDENTIFIER	count
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	total
+ASSIGNMENT
+IDENTIFIER	total
+ADD
+IDENTIFIER	count
+SEMICOLON
+BRACE_R
+
+
+
+
+===[HIDDEN TESTS/good15.bminor Input]===
+intFunction: function integer(intVar:integer, boolVar: boolean)
+{
+	if(boolVar)
+	{
+		intVar = intVar * 2;
+	}
+	return intVar;
+}
+// finds the largest value in the array
+getLargest: function integer(intArrVar:array [] integer, int len) =
+{
+	largest:integer = 0;
+	x:integer;
+	for(x = 0; x < len; x++)
+	{
+		if(intArrVar[x] > largest)
+		{
+			largest = intArrVar[x];
+		}
+	}
+	return largest;
+		
+}
+
+main: function integer ( argc: integer, argv: array [] string ) =
+{
+	b:array [10] integer = {0,1,2,3,4,5};
+	b[4] = 6;
+	i:integer;
+	z:integer = intFunction(i, true);
+	print intArrFunction(v, z);
+}
+
+===[HIDDEN TESTS/good15.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good15.bminor Output]===
+IDENTIFIER	intFunction
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	intVar
+COLON
+INTEGER
+COMMA
+IDENTIFIER	boolVar
+COLON
+BOOLEAN
+PARENTHESIS_R
+BRACE_L
+IF
+PARENTHESIS_L
+IDENTIFIER	boolVar
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	intVar
+ASSIGNMENT
+IDENTIFIER	intVar
+MULTIPLY
+INTEGER_LITERAL	2
+SEMICOLON
+BRACE_R
+RETURN
+IDENTIFIER	intVar
+SEMICOLON
+BRACE_R
+IDENTIFIER	getLargest
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	intArrVar
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+INTEGER
+COMMA
+IDENTIFIER	int
+IDENTIFIER	len
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	largest
+COLON
+INTEGER
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+COLON
+INTEGER
+SEMICOLON
+FOR
+PARENTHESIS_L
+IDENTIFIER	x
+ASSIGNMENT
+INTEGER_LITERAL	0
+SEMICOLON
+IDENTIFIER	x
+LT
+IDENTIFIER	len
+SEMICOLON
+IDENTIFIER	x
+INCREMENT
+PARENTHESIS_R
+BRACE_L
+IF
+PARENTHESIS_L
+IDENTIFIER	intArrVar
+BRACKET_L
+IDENTIFIER	x
+BRACKET_R
+GT
+IDENTIFIER	largest
+PARENTHESIS_R
+BRACE_L
+IDENTIFIER	largest
+ASSIGNMENT
+IDENTIFIER	intArrVar
+BRACKET_L
+IDENTIFIER	x
+BRACKET_R
+SEMICOLON
+BRACE_R
+BRACE_R
+RETURN
+IDENTIFIER	largest
+SEMICOLON
+BRACE_R
+IDENTIFIER	main
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	argc
+COLON
+INTEGER
+COMMA
+IDENTIFIER	argv
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+PARENTHESIS_R
+ASSIGNMENT
+BRACE_L
+IDENTIFIER	b
+COLON
+ARRAY
+BRACKET_L
+INTEGER_LITERAL	10
+BRACKET_R
+INTEGER
+ASSIGNMENT
+BRACE_L
+INTEGER_LITERAL	0
+COMMA
+INTEGER_LITERAL	1
+COMMA
+INTEGER_LITERAL	2
+COMMA
+INTEGER_LITERAL	3
+COMMA
+INTEGER_LITERAL	4
+COMMA
+INTEGER_LITERAL	5
+BRACE_R
+SEMICOLON
+IDENTIFIER	b
+BRACKET_L
+INTEGER_LITERAL	4
+BRACKET_R
+ASSIGNMENT
+INTEGER_LITERAL	6
+SEMICOLON
+IDENTIFIER	i
+COLON
+INTEGER
+SEMICOLON
+IDENTIFIER	z
+COLON
+INTEGER
+ASSIGNMENT
+IDENTIFIER	intFunction
+PARENTHESIS_L
+IDENTIFIER	i
+COMMA
+TRUE
+PARENTHESIS_R
+SEMICOLON
+PRINT
+IDENTIFIER	intArrFunction
+PARENTHESIS_L
+IDENTIFIER	v
+COMMA
+IDENTIFIER	z
+PARENTHESIS_R
+SEMICOLON
+BRACE_R
+
+
+
+
+===[HIDDEN TESTS/good1.bminor Input]===
+// Easy comment
+/* Easy comment */
+
+===[HIDDEN TESTS/good1.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good1.bminor Output]===
+
+
+
+
+===[HIDDEN TESTS/good10.bminor Input]===
+// Modulus operator
+15%3
+
+// Exponentiation operator
+2^6
+
+// Negation
+-value
+
+// Postincrement and postdecrement
+number++;
+
+number--;
+
+===[HIDDEN TESTS/good10.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good10.bminor Output]===
+INTEGER_LITERAL	15
+MODULO
+INTEGER_LITERAL	3
+INTEGER_LITERAL	2
+EXPONENT
+INTEGER_LITERAL	6
+SUBTRACT_OR_NEGATE
+IDENTIFIER	value
+IDENTIFIER	number
+INCREMENT
+SEMICOLON
+IDENTIFIER	number
+DECREMENT
+SEMICOLON
+
+
+
+
+===[HIDDEN TESTS/good2.bminor Input]===
+////* Harder comment ***/
+/******************/
+/*
+This one works too.
+*/
+/***************
+Also a good comment.
+****************/
+// comment // comment // comment
+
+
+===[HIDDEN TESTS/good2.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good2.bminor Output]===
+
+
+
+
+===[HIDDEN TESTS/good3.bminor Input]===
+// Identifiers
+CamelCase
+lower_case
+skiddo23
+B4UFLY
+i
+x15
+
+
+===[HIDDEN TESTS/good3.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good3.bminor Output]===
+IDENTIFIER	CamelCase
+IDENTIFIER	lower_case
+IDENTIFIER	skiddo23
+IDENTIFIER	B4UFLY
+IDENTIFIER	i
+IDENTIFIER	x15
+
+
+
+
+===[HIDDEN TESTS/good4.bminor Input]===
+// Equality Operators
+== != <= < > >=
+
+===[HIDDEN TESTS/good4.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good4.bminor Output]===
+EQ
+NE
+LE
+LT
+GT
+GE
+
+
+
+
+===[HIDDEN TESTS/good5.bminor Input]===
+// Various bits of punctuation
+, : ; ( ) [ ] { }
+
+
+===[HIDDEN TESTS/good5.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good5.bminor Output]===
+COMMA
+COLON
+SEMICOLON
+PARENTHESIS_L
+PARENTHESIS_R
+BRACKET_L
+BRACKET_R
+BRACE_L
+BRACE_R
+
+
+
+
+===[HIDDEN TESTS/good6.bminor Input]===
+// Complete function prototype
+main: function integer ( argc: integer, argv: array [] string );
+
+
+===[HIDDEN TESTS/good6.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good6.bminor Output]===
+IDENTIFIER	main
+COLON
+FUNCTION
+INTEGER
+PARENTHESIS_L
+IDENTIFIER	argc
+COLON
+INTEGER
+COMMA
+IDENTIFIER	argv
+COLON
+ARRAY
+BRACKET_L
+BRACKET_R
+STRING
+PARENTHESIS_R
+SEMICOLON
+
+
+
+
+===[HIDDEN TESTS/good7.bminor Input]===
+// Nested statements
+if( x<15 ) {
+    print "small";
+} else {
+    print "large!";
+}
+
+
+===[HIDDEN TESTS/good7.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good7.bminor Output]===
+IF
+PARENTHESIS_L
+IDENTIFIER	x
+LT
+INTEGER_LITERAL	15
+PARENTHESIS_R
+BRACE_L
+PRINT
+STRING_LITERAL	small
+SEMICOLON
+BRACE_R
+ELSE
+BRACE_L
+PRINT
+STRING_LITERAL	large!
+SEMICOLON
+BRACE_R
+
+
+
+
+===[HIDDEN TESTS/good8.bminor Input]===
+// Valid integers
+0
+1024
+-512
++256
+// valid floats
+1.2
+0.45
+.67
+12e10
++1.2
+-1.2
+1.2e+1
+1.2e-1
++1.2e+1
++1.2e-1
+-1.2e+1
+-1.2e-1
+
+===[HIDDEN TESTS/good8.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good8.bminor Output]===
+INTEGER_LITERAL	0
+INTEGER_LITERAL	1024
+INTEGER_LITERAL	-512
+INTEGER_LITERAL	+256
+FLOAT_LITERAL	1.2
+FLOAT_LITERAL	0.45
+FLOAT_LITERAL	.67
+FLOAT_LITERAL	12e10
+FLOAT_LITERAL	+1.2
+FLOAT_LITERAL	-1.2
+FLOAT_LITERAL	1.2e+1
+FLOAT_LITERAL	1.2e-1
+FLOAT_LITERAL	+1.2e+1
+FLOAT_LITERAL	+1.2e-1
+FLOAT_LITERAL	-1.2e+1
+FLOAT_LITERAL	-1.2e-1
+
+
+
+
+===[HIDDEN TESTS/good9.bminor Input]===
+// Type Keywords
+array
+boolean
+char
+string
+void
+integer
+float
+
+===[HIDDEN TESTS/good9.bminor Status]===
+return code: 0
+Test passed successfully!
+
+===[HIDDEN TESTS/good9.bminor Output]===
+ARRAY
+BOOLEAN
+CHAR
+STRING
+VOID
+INTEGER
+FLOAT
+
+
+
+
+====Bad Tests====
+===[HIDDEN TESTS/bad11.bminor Input]===
+/*
+A string should not contain a literal newline,
+but use backslash-n instead.
+*/
+
+"invalid
+
+string"
+
+===[HIDDEN TESTS/bad11.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad11.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad12.bminor Input]===
+'ca'
+
+===[HIDDEN TESTS/bad12.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad12.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad13.bminor Input]===
+''
+
+===[HIDDEN TESTS/bad13.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad13.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad14.bminor Input]===
+'\ac'
+
+===[HIDDEN TESTS/bad14.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad14.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad15.bminor Input]===
+'
+
+===[HIDDEN TESTS/bad15.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad15.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad1.bminor Input]===
+"unmatched string""
+
+===[HIDDEN TESTS/bad1.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad1.bminor Output]===
+STRING_LITERAL	unmatched string
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad10.bminor Input]===
+#compilers // No hashtags in B-minor
+
+===[HIDDEN TESTS/bad10.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad10.bminor Output]===
+Scan error: # is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad2.bminor Input]===
+"unterminated \"
+
+
+===[HIDDEN TESTS/bad2.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad2.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad3.bminor Input]===
+never started"
+
+
+
+
+
+
+===[HIDDEN TESTS/bad3.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad3.bminor Output]===
+IDENTIFIER	never
+IDENTIFIER	started
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad4.bminor Input]===
+'character?' // Character too long.
+
+===[HIDDEN TESTS/bad4.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad4.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad5.bminor Input]===
+'' // Empty character not allowed.
+
+===[HIDDEN TESTS/bad5.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad5.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad6.bminor Input]===
+~tilde // Invalid symbol
+
+===[HIDDEN TESTS/bad6.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad6.bminor Output]===
+Scan error: ~ is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad7.bminor Input]===
+/* Is this a valid comment */ @ */
+
+
+===[HIDDEN TESTS/bad7.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad7.bminor Output]===
+Scan error: @ is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad8.bminor Input]===
+"\0xGG" // invalid escape sequence
+
+===[HIDDEN TESTS/bad8.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad8.bminor Output]===
+
+
+
+
+===[HIDDEN TESTS/bad9.bminor Input]===
+minus#44
+
+===[HIDDEN TESTS/bad9.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad9.bminor Output]===
+IDENTIFIER	minus
+Scan error: # is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad16.bminor Input]===
+@
+#
+&
+|
+\
+
+===[HIDDEN TESTS/bad16.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad16.bminor Output]===
+Scan error: @ is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad17.bminor Input]===
+// unmatched comment throws error 
+/* This is a comment.
+
+
+
+
+
+
+
+
+===[HIDDEN TESTS/bad17.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad17.bminor Output]===
+DIVIDE
+MULTIPLY
+IDENTIFIER	This
+IDENTIFIER	is
+IDENTIFIER	a
+IDENTIFIER	comment
+Scan error: . is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad18.bminor Input]===
+// basic data types
+" the quote is unmatched
+
+
+
+
+
+
+
+===[HIDDEN TESTS/bad18.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad18.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad19.bminor Input]===
+// floating point mistake
+5..6..0..5..0;
+
+===[HIDDEN TESTS/bad19.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad19.bminor Output]===
+INTEGER_LITERAL	5
+Scan error: . is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad20.bminor Input]===
+// test comparotors and boolean logic
+if (a | b)
+{
+	print " a || b is true";
+}
+if (a & b)// must had 2 &&
+{
+	print " a || b is true";
+}
+
+===[HIDDEN TESTS/bad20.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad20.bminor Output]===
+IF
+PARENTHESIS_L
+IDENTIFIER	a
+Scan error: | is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad21.bminor Input]===
+
+"""
+
+
+===[HIDDEN TESTS/bad21.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad21.bminor Output]===
+STRING_LITERAL	
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad22.bminor Input]===
+"012345678901234567890101234567890123456789010123456789012345678901012345678901234567890101234567890123456789010123456789012345678901012345678901234567890101234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+
+===[HIDDEN TESTS/bad22.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad22.bminor Output]===
+Error: decoded string has exceeded max allowed length.
+Scan error: TOKEN_STR_LIT token decode error.
+Scan error: 0123456789012345678901012345678901234567890101234567890123456789010123456789012345678901012345678901234567890101234567890123456789010123456789012345678901012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901 is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad23.bminor Input]===
+$minus
+
+===[HIDDEN TESTS/bad23.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad23.bminor Output]===
+Scan error: $ is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad25.bminor Input]===
+// invalid character
+'😋'
+
+===[HIDDEN TESTS/bad25.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad25.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad26.bminor Input]===
+/*
+A string should not contain a literal newline,
+but use backslash-n instead.
+*/
+
+"invalid
+
+string"
+
+===[HIDDEN TESTS/bad26.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad26.bminor Output]===
+Scan error: " is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad27.bminor Input]===
+'''
+
+===[HIDDEN TESTS/bad27.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad27.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad28.bminor Input]===
+"'"'"
+
+===[HIDDEN TESTS/bad28.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad28.bminor Output]===
+STRING_LITERAL	'
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad29.bminor Input]===
+'\t\e\s\t\ \s\t\r\i\n\g'
+
+===[HIDDEN TESTS/bad29.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad29.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad30.bminor Input]===
+'\0x12\0x34'
+
+===[HIDDEN TESTS/bad30.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad30.bminor Output]===
+Scan error: ' is not a valid token.
+
+
+
+
+===[HIDDEN TESTS/bad0.bminor Input]===
+!@#$*(!&%!@)#(@!+)!@*!@)*$!@_)(%!@_%(*!
+
+===[HIDDEN TESTS/bad0.bminor Status]===
+return code: 1
+Test passed successfully!
+
+===[HIDDEN TESTS/bad0.bminor Output]===
+NOT
+Scan error: @ is not a valid token.
+
+
+
+
+===== SUMMARIZED SCANNER RESULTS =====
+{
+  "student_tests": {
+    "Good": {
+      "correct": 19,
+      "incorrect": 0
+    },
+    "Bad": {
+      "correct": 21,
+      "incorrect": 0
+    }
+  },
+  "hidden_tests": {
+    "Good": {
+      "correct": 15,
+      "incorrect": 0
+    },
+    "Bad": {
+      "correct": 30,
+      "incorrect": 0
+    }
+  }
+}
+Scanner Project Grade
+    ---------------------------------
+
+    General Structure (35/35 points)
+    ----------------------------------------------
+    Looks great!
+
+    Student Tests (20/20 points)
+    ------------------------------------------
+    Nice work providing 20 extra tests!! Wow
+
+    Hidden Tests (45/45 points)
+    ------------------------------------------
+    Super work passing all of the hidden tests
+
+    Coding Style (10/10 points)
+    ------------------------------------------
+    Abstracting out with the clean_string function was a really cool and powerful idea!
