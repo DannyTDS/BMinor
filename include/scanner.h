@@ -1,5 +1,5 @@
-#ifndef SCANNER_H
-#define SCANNER_H
+#ifndef HELPER_H
+#define HELPER_H
 
 #include "utils.h"
 #include "token.h"

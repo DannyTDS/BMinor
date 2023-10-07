@@ -1,56 +1,48 @@
 CC=			gcc
-CFLAGS=		-g -Wall -std=gnu99
+CFLAGS=		-g -std=gnu99 -Wall -Iinclude -fPIC
 AR=			ar
 ARFLAGS=	rcs
 LD=			gcc
-LDFLAGS=	-L.
+LDFLAGS=	-Llib
+
 TARGET=		bminor
+HEADERS=	$(wildcard include/*.h)
+SOURCES=	$(wildcard src/*.c)
+OBJECTS=	$(SOURCES:.c=.o) src/scanner.o
+
+TOKENLIB=	token.h
 
 all: $(TARGET)
 
-# Executable
-bminor: bminor.o encoder.o scanner.o
+$(TARGET):		$(OBJECTS)
 	@echo Linking $@...
 	@$(LD) $(LDFLAGS) -o $@ $^
 
-# Main function
-bminor.o:	bminor.c
-	@echo Compiling $@...
-	@$(CC) $(CFLAGS) -c -o $@ $^
+%.o:			%.c $(HEADERS)
+	@echo "Compiling $@"
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
-# Scanner
-scanner.o:	scanner_main.o scanner_rule.o
-	@echo Linking $@...
-	@$(AR) $(ARFLAGS) $@ $^
-
-scanner_main.o: scanner.c
+src/scanner.c:	src/scanner.flex
 	@echo Compiling $@...
-	@$(CC) $(CFLAGS) -c -o $@ $^
+	@flex -o $@ $^
 
-scanner_rule.o:	scanner_rule.c
-	@echo Compiling $@...
-	@$(CC) $(CFLAGS) -c -o $@ $^
-
-scanner_rule.c:	scanner.flex
-	@echo Compiling $@...
-	@flex -o scanner_rule.c scanner.flex
-
-# Encoder
-encoder.o:	encoder.c
-	@echo Compiling $@...
-	@$(CC) $(CFLAGS) -c -o $@ $^
+# src/parser.c:	src/parser.bison
+# 	@echo Compiling $@...
+# 	@bison --defines=$(TOKENLIB) -o parser.c -v $^
 
 clean:
 # Executable
 	rm -f $(TARGET)
 # Object files
-	rm -f *.o
+	rm -f $(OBJECTS)
 # Scanner - flex output
-	rm -f scanner_rule.c
+	rm -f src/scanner.c
+# Parser - bison output
+	rm -f src/parser.c
 # Remove test output files
 	rm -rf test/*/*.out
 
-test:
+test: $(TARGET)
 	./runtest.sh
 
 .PHONY: test
