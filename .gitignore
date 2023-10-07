@@ -1,5 +1,6 @@
 bminor
 *.o
-scanner_rule.c
+scanner.c
+parser.c
 .vscode
 *.out

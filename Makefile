@@ -1,5 +1,5 @@
 CC=			gcc
-CFLAGS=		-g -std=gnu99 -Wall -Iinclude -fPIC
+CFLAGS=		-g -std=gnu99 -Wall -Iinclude
 AR=			ar
 ARFLAGS=	rcs
 LD=			gcc
@@ -43,6 +43,7 @@ clean:
 	rm -rf test/*/*.out
 
 test: $(TARGET)
-	./runtest.sh
+	@echo Testing...
+	@./runtest.sh
 
 .PHONY: test
