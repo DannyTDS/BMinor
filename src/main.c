@@ -1,6 +1,6 @@
 #include "utils.h"
 #include "encoder.h"
-#include "scanner.h"
+#include "helper.h"
 
 void usage(char* prog_name, int status) {
     printf("Usage: %s [options] <input.file>\n", prog_name);

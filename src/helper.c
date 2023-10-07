@@ -1,4 +1,4 @@
-#include "scanner.h"
+#include "helper.h"
 
 int scan(FILE* input) {
     yyin = input;

@@ -18,7 +18,7 @@ $(TARGET):		$(OBJECTS)
 	@echo Linking $@...
 	@$(LD) $(LDFLAGS) -o $@ $^
 
-%.o:			%.c $(HEADERS)
+%.o:			%.c
 	@echo "Compiling $@"
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
