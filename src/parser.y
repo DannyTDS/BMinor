@@ -88,16 +88,30 @@ extern int yyerror(char* str);
 struct expr* result = 0;
 %}
 
+%start program
+
+%union {
+	struct decl* decl;
+	struct expr* expr;
+	struct stmt* stmt;
+	struct type* type;
+	struct param_list* param_list;
+};
+
+%type <expr> expr expr1 expr2 expr3
+
 %%
 program		:	expr TOKEN_SEMI			{ result = $1; return 0; }
 			;
 
 /* Expressions */
 
-expr1		:	expr1 TOKEN_ASSIGN expr2	{ $$ = expr_create() }
+expr		: 	expr1 TOKEN_ASSIGN expr
+			|	expr1
+			;
 
-expr		:	expr TOKEN_ADD expr2	{ $$ = expr_create(EXPR_ADD, $1, $3); }
-			|	expr TOKEN_SUB expr2	{ $$ = expr_create(EXPR_SUB, $1, $3); }
+expr1		:	expr1 TOKEN_ADD expr2	{ $$ = expr_create(EXPR_ADD, $1, $3); }
+			|	expr1 TOKEN_SUB expr2	{ $$ = expr_create(EXPR_SUB, $1, $3); }
 			|	expr2					{ $$ = $1; }
 			;
 
@@ -106,7 +120,7 @@ expr2		:	expr2 TOKEN_MULT expr3	{ $$ = expr_create(EXPR_MUL, $1, $3); }
 			|	expr3					{ $$ = $1; }
 			;
 
-expr3		:
+expr3		:	factor
 			;
 
 factor		:	TOKEN_LPAREN factor TOKEN_RPAREN	{ $$ = $2; }

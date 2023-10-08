@@ -73,3 +73,40 @@ do
 	fi
 done
 echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+#####################
+#	Parser tests	#
+#####################
+total_tests=0
+failures=0
+successes=0
+echo "Test parser good..."
+for testfile in test/parser/good*.bminor
+do
+	((total_tests++))
+	if ./bminor --parse $testfile > $testfile.out 2>&1
+	then
+		((successes++))
+	else
+		((failures++))
+		echo "$testfile failure (INCORRECT)"
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+total_tests=0
+failures=0
+successes=0
+echo "Test parser bad..."
+for testfile in test/parser/bad*.bminor
+do
+	((total_tests++))
+	if ./bminor --parse $testfile > $testfile.out 2>&1
+	then
+		echo "$testfile success (INCORRECT)"
+		((failures++))
+	else
+		((successes++))
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"

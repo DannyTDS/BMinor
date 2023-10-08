@@ -2,5 +2,6 @@ bminor
 *.o
 scanner.c
 parser.c
+include/token.h
 .vscode
 *.out
