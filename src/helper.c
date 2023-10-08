@@ -1,18 +1,29 @@
 #include "helper.h"
 
+int parse() {
+    if (yyparse() != SUCCESS) {
+        info("Parse failed.");
+        return FAILURE;
+    } else {
+        info("Parse successful!");
+        return SUCCESS;
+    }
+}
+
 int scan() {
     /* Loops over the input and scans the text */
     token_t token;
     while (1) {
         token = yylex();
-        printf("%d\n", token);
         if (token == TOKEN_EOF) {
             break;
         }
         if (print_token(token, yytext) != SUCCESS) {
+            info("Scan failed.");
             return FAILURE;
         }
     }
+    info("Scan successful!");
     return SUCCESS;
 }
 
@@ -175,5 +186,31 @@ int print_token(token_t token, char* yytext) {
             return FAILURE;
     }
 
+    return SUCCESS;
+}
+
+int encode(FILE* f) {
+    /* decode and encode string */
+    /* read input string */
+    char input[BUFSIZ];
+    fgets(input, BUFSIZ, f);
+    /* remove trailing newline if one presents */
+    if (input[strlen(input)-1] == '\n') {
+        input[strlen(input)-1] = '\0';
+    }
+    /* excise the functions */
+    char decoded[strlen(input)+1];
+    if (string_decode(input, decoded) != SUCCESS) {
+        error("Decode string error: cannot decode string %s.\n", input);
+        return(FAILURE);
+    } else {
+        char encoded[strlen(input)+1];
+        string_encode(decoded, encoded);
+        info("Successfully decoded and encoded string.\n");
+        info("Input  : %s\n", input);
+        info("Decoded: %s\n", decoded);
+        info("Encoded: %s\n", encoded);
+    }
+    /* return success upon completion */
     return SUCCESS;
 }
