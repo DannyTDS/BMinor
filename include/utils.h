@@ -9,6 +9,8 @@
 #define FAILURE 1
 
 #define streq(a, b)         (strcmp(a, b) == 0)
+#define error(M, ...) \
+    fprintf(stderr, "[ERROR] " M "\n", ##__VA_ARGS__)
 
 /* Compatible with Bison output header */
 typedef enum yytokentype token_t;

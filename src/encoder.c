@@ -20,7 +20,7 @@ int string_decode(const char *es, char *s) {
 	/* iterate over the encoded string */
 	if (*es++ != '\"') {
 		/* input string not beginning with a double quote */
-        printf("Error: input string not beginning with a double quote.\n");
+        error("Encode string error: input string not beginning with a double quote.");
 		return FAILURE;
 	}
 	/* "closed" tracks whether there is a trailing double quote at the end of string */
@@ -29,7 +29,7 @@ int string_decode(const char *es, char *s) {
 	while (*es) {
 		if (length > MAXSTRLEN) {
 			/* decoded string has exceeded max allowed length*/
-            printf("Error: decoded string has exceeded max allowed length.\n");
+            error("Encode string error: decoded string has exceeded max allowed length.");
 			return FAILURE;
 		}
 		if (*es == '\\') {
@@ -45,7 +45,7 @@ int string_decode(const char *es, char *s) {
 						unsigned int byteValue = strtoul(es, &endptr, 16);
 						if (endptr != es+2) {
 							/* failed to read 2 digit hex value following \0x */
-                            printf("Error: failed to read \\0xHH hex value.\n");
+                            error("Encode string error: failed to read \\0xHH hex value.");
 							return FAILURE;
 						};
 						es = endptr;
@@ -58,13 +58,13 @@ int string_decode(const char *es, char *s) {
 			}
 			/* found will be 0 if escape char invalid or backslash not followed by char */
 			if (!found) {
-                printf("Error: backslash followed by invalid character.\n");
+                error("Encode string error: backslash followed by invalid character.");
 				return FAILURE;
 			}
 		} else if (*es == '\"') {
 			if (*(es+sizeof(char)) != '\0') {
 				/* middle-of-string double quote not escaped, invalid*/
-                printf("Error: double quote in middle of string not escaped.\n");
+                error("Encode string error: double quote in middle of string not escaped.");
 				return FAILURE;
 			}
 			/* reached the end of string */
@@ -73,7 +73,7 @@ int string_decode(const char *es, char *s) {
 		} else {
 			if ((int)*es < MINASCII || (int)*es > MAXASCII) {
 				/* non-escaped character not in permitted ASCII range */
-                printf("Error: non-escaped character not in permitted ASCII range.\n");
+                error("Encode string error: non-escaped character not in permitted ASCII range.");
 				return FAILURE;
 			}
 			/* append ordinary character to decoded string */
@@ -83,7 +83,7 @@ int string_decode(const char *es, char *s) {
 	}
 end_of_string:
 	if (!closed) {
-        printf("Error: input string not closed by double quote.\n");
+        error("Encode string error: input string not closed by double quote.");
 		return FAILURE;
 	} else {
 		*s = '\0';

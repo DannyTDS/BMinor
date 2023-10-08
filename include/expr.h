@@ -9,8 +9,28 @@ typedef enum {
 	EXPR_MUL,
 	EXPR_DIV,
 	/* many more kinds of exprs to add here */
+	/* literals */
+	EXPR_INT_LIT,
+	EXPR_FLOAT_LIT,
+	EXPR_CHAR_LIT,
+	EXPR_STR_LIT,
+	/* logicals */
+	EXPR_NOT,
+	EXPR_AND,
+	EXPR_OR,
+	/* Unary */
+	EXPR_NEG,
+	EXPR_INCRE,
+	EXPR_DECRE,
+	EXPR_LT,
+	EXPR_LE,
+	EXPR_GT,
+	EXPR_GE,
+	EXPR_EQ,
+	EXPR_NE,
+	/* Misc */
+	EXPR_ASSIGN,
 	EXPR_VALUE,
-	EXPR_INT_LIT
 } expr_t;
 
 struct expr {

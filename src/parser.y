@@ -77,6 +77,7 @@
 #include "stmt.h"
 #include "type.h"
 #include "symbol.h"
+#include "utils.h"
 
 #define YYSTYPE struct expr*
 
@@ -91,14 +92,21 @@ struct expr* result = 0;
 program		:	expr TOKEN_SEMI			{ result = $1; return 0; }
 			;
 
-expr		:	expr TOKEN_ADD term		{ $$ = expr_create(EXPR_ADD, $1, $3); }
-			|	expr TOKEN_SUB term		{ $$ = expr_create(EXPR_SUB, $1, $3); }
-			|	term					{ $$ = $1; }
+/* Expressions */
+
+expr1		:	expr1 TOKEN_ASSIGN expr2	{ $$ = expr_create() }
+
+expr		:	expr TOKEN_ADD expr2	{ $$ = expr_create(EXPR_ADD, $1, $3); }
+			|	expr TOKEN_SUB expr2	{ $$ = expr_create(EXPR_SUB, $1, $3); }
+			|	expr2					{ $$ = $1; }
 			;
 
-term		:	term TOKEN_MULT factor	{ $$ = expr_create(EXPR_MUL, $1, $3); }
-			|	term TOKEN_DIV factor	{ $$ = expr_create(EXPR_DIV, $1, $3); }
-			|	factor					{ $$ = $1; }
+expr2		:	expr2 TOKEN_MULT expr3	{ $$ = expr_create(EXPR_MUL, $1, $3); }
+			|	expr2 TOKEN_DIV expr3	{ $$ = expr_create(EXPR_DIV, $1, $3); }
+			|	expr3					{ $$ = $1; }
+			;
+
+expr3		:
 			;
 
 factor		:	TOKEN_LPAREN factor TOKEN_RPAREN	{ $$ = $2; }
@@ -110,6 +118,6 @@ factor		:	TOKEN_LPAREN factor TOKEN_RPAREN	{ $$ = $2; }
 /* Called when parse error */
 int yyerror( char *str )
 {
-	printf("Parse error: %s\n",str);
+	error("Parse error: %s",str);
 	return 0;
 }

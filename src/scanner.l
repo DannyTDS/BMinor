@@ -109,10 +109,10 @@ int check_yyleng(token_t token, int yyleng) {
     if (yyleng > 255) {
         switch (token) {
             case TOKEN_IDENT:
-                printf("Scan error: TOKEN_IDENT over 255 characters long.\n");
+                error("Scan error: TOKEN_IDENT over 255 characters long.");
                 break;
             case TOKEN_STR_LIT:
-                printf("Scan error: TOKEN_STR_LIT over 255 characters long.\n");
+                error("Scan error: TOKEN_STR_LIT over 255 characters long.");
                 break;
             default:
                 break;
@@ -143,10 +143,10 @@ int clean_string(token_t token, char* yytext) {
     if (status != SUCCESS) {
         switch (token) {
             case TOKEN_CHAR_LIT:
-                printf("Scan error: TOKEN_CHAR_LIT token decode error.\n");
+                error("Scan error: TOKEN_CHAR_LIT token decode error.");
                 break;
             case TOKEN_STR_LIT:
-                printf("Scan error: TOKEN_STR_LIT token decode error.\n");
+                error("Scan error: TOKEN_STR_LIT token decode error.");
                 break;
             default:
                 break;

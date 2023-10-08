@@ -170,10 +170,10 @@ int print_token(token_t token, char* yytext) {
             break;
         case TOKEN_ERROR:
             /* Halt on scan error */
-            printf("Scan error: %s is not a valid token.\n", yytext);
+            error("Scan error: %s is not a valid token.", yytext);
             return FAILURE;
         default:
-            printf("Scan error: unknown token %d scanned from text %s.\n", token, yytext);
+            error("Scan error: unknown token %d scanned from text %s.", token, yytext);
             return FAILURE;
     }
 

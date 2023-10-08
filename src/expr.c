@@ -75,10 +75,42 @@ void expr_print( struct expr *e )
 		case EXPR_DIV:
 			printf("/");
 			break;
-		case EXPR_VALUE:
+        case EXPR_INT_LIT:
 			printf("%d",e->value);
 			break;
-        case EXPR_INT_LIT:
+		case EXPR_FLOAT_LIT:
+			break;
+		case EXPR_CHAR_LIT:
+			break;
+		case EXPR_STR_LIT:
+			break;
+		case EXPR_NOT:
+			break;
+		case EXPR_AND:
+			break;
+		case EXPR_OR:
+			break;
+		case EXPR_NEG:
+			break;
+		case EXPR_INCRE:
+			break;
+		case EXPR_DECRE:
+			break;
+		case EXPR_LT:
+			break;
+		case EXPR_LE:
+			break;
+		case EXPR_GT:
+			break;
+		case EXPR_GE:
+			break;
+		case EXPR_EQ:
+			break;
+		case EXPR_NE:
+			break;
+		case EXPR_ASSIGN:
+			break;
+		case EXPR_VALUE:
 			printf("%d",e->value);
 			break;
 	}
@@ -113,10 +145,42 @@ int expr_evaluate( struct expr *e )
 				exit(1);
 			}
 			return l/r;	
-		case EXPR_VALUE:
-			return e->value;
+				case EXPR_FLOAT_LIT:
+			break;
+		case EXPR_CHAR_LIT:
+			break;
+		case EXPR_STR_LIT:
+			break;
+		case EXPR_NOT:
+			break;
+		case EXPR_AND:
+			break;
+		case EXPR_OR:
+			break;
+		case EXPR_NEG:
+			break;
+		case EXPR_INCRE:
+			break;
+		case EXPR_DECRE:
+			break;
+		case EXPR_LT:
+			break;
+		case EXPR_LE:
+			break;
+		case EXPR_GT:
+			break;
+		case EXPR_GE:
+			break;
+		case EXPR_EQ:
+			break;
+		case EXPR_NE:
+			break;
+		case EXPR_ASSIGN:
+			break;
         case EXPR_INT_LIT:
             return e->value;
+		case EXPR_VALUE:
+			return e->value;
 	}
 
 	return 0;

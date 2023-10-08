@@ -49,11 +49,16 @@ int invoke_encode(char* file) {
 int invoke_scan(char* file) {
     FILE* f = fopen(file, "r");
     if (!f) {
-        printf("File \"%s\" not found.\n", file);
+        error("File \"%s\" not found.", file);
         return(FAILURE);
     }
     int status = scan(f);
     fclose(f);
+    return status;
+}
+
+int invoke_parse() {
+    int status = SUCCESS;
     return status;
 }
 
