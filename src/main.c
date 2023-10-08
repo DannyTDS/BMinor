@@ -2,12 +2,12 @@
 #include "encoder.h"
 #include "helper.h"
 
-void usage(char* prog_name, int status) {
-    printf("Usage: %s [options] <input.file>\n", prog_name);
-    printf("Options:\n");
-    printf("\t--encode\n");
-    printf("\t--scan\n");
-    exit(status);
+void usage(char* prog_name) {
+    fprintf(stderr, "Usage: %s [options] <input.file>\n", prog_name);
+    fprintf(stderr, "Options:\n");
+    fprintf(stderr, "\t--encode\n");
+    fprintf(stderr, "\t--scan\n");
+    exit(FAILURE);
 }
 
 int invoke_encode(char* file) {
@@ -58,22 +58,23 @@ int invoke_scan(char* file) {
 }
 
 int invoke_parse() {
-    int status = SUCCESS;
-    return status;
+
 }
 
 int main(int argc, char* argv[]) {
     /* for the Encoder assignment. */
     if (argc != 3) {
-        usage(argv[0], EXIT_FAILURE);
+        usage(argv[0]);
     }
     /* parse input flag */
     if (streq(argv[1], "--encode")) {
         return invoke_encode(argv[2]);
     } else if (streq(argv[1], "--scan")) {
         return invoke_scan(argv[2]);
+    } else if (streq(argv[1], "--parse")) {
+
     } else {
-        usage(argv[0], EXIT_FAILURE);
+        usage(argv[0]);
     }
-    exit(EXIT_SUCCESS);
+    exit(SUCCESS);
 }
