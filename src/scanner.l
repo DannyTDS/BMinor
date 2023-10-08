@@ -4,6 +4,11 @@
 %{
 #include "utils.h"
 #include "token.h"
+
+int yywrap();
+int check_yyleng(token_t token, int yyleng);
+int clean_string(token_t token, char* yytext);
+
 extern int string_decode(char* es, char* s);
 %}
 
@@ -56,7 +61,7 @@ boolean             { return TOKEN_BOOL; }
 \/                  { return TOKEN_DIV; }
 %                   { return TOKEN_MOD; }
 \+                  { return TOKEN_ADD; }
--                   { return TOKEN_SUB_OR_NEG; }
+-                   { return TOKEN_SUB; }       // Scanner cannot decide between subtract and unary negation
 \+\+                { return TOKEN_INCRE; }
 --                  { return TOKEN_DECRE; }
 \<                  { return TOKEN_LT; }

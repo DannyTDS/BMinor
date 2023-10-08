@@ -113,8 +113,8 @@ int print_token(token_t token, char* yytext) {
         case TOKEN_ADD:
             printf("%s\n", "ADD");
             break;
-        case TOKEN_SUB_OR_NEG:
-            printf("%s\n", "SUBTRACT_OR_NEGATE");
+        case TOKEN_SUB:
+            printf("%s\n", "SUBTRACT");
             break;
         case TOKEN_INCRE:
             printf("%s\n", "INCREMENT");

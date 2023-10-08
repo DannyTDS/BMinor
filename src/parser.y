@@ -1,4 +1,4 @@
-/* Declaration of tokens to be included in parser.h, consumed by scanner.flex */
+/* Declaration of tokens to be included in parser.h, consumed by scanner.l */
 
 %token TOKEN_EOF
 
@@ -42,9 +42,10 @@
 %token TOKEN_DIV
 %token TOKEN_MOD
 %token TOKEN_ADD
+%token TOKEN_SUB
 
-/* Scanner cannot decide if this token is subtraction or unary negation */
-%token TOKEN_SUB_OR_NEG
+/* Unary */
+%token TOKEN_NEG
 %token TOKEN_INCRE
 %token TOKEN_DECRE
 %token TOKEN_LT
@@ -69,14 +70,48 @@
 %token TOKEN_ERROR
 
 %{
+#include <stdio.h>
+#include <stdlib.h>
 
+#include "decl.h"
+#include "expr.h"
+#include "param_list.h"
+#include "stmt.h"
+#include "type.h"
+#include "symbol.h"
+
+#define YYSTYPE struct expr*
+
+extern char* yytext;
+extern int yylex();
+extern int yyerror(char* str);
+
+struct expr* result = 0;
 %}
 
 %%
+program		:	expr TOKEN_SEMI			{ result = $1; return 0; }
+			;
+
+expr		:	expr TOKEN_ADD term		{ $$ = expr_create(EXPR_ADD, $1, $3); }
+			|	expr TOKEN_SUB term		{ $$ = expr_create(EXPR_SUB, $1, $3); }
+			|	term					{ $$ = $1; }
+			;
+
+term		:	term TOKEN_MULT factor	{ $$ = expr_create(EXPR_MUL, $1, $3); }
+			|	term TOKEN_DIV factor	{ $$ = expr_create(EXPR_DIV, $1, $3); }
+			|	factor					{ $$ = $1; }
+			;
+
+factor		:	TOKEN_LPAREN factor TOKEN_RPAREN	{ $$ = $2; }
+			|	TOKEN_NEG factor		{ $$ = expr_create(EXPR_SUB, expr_create_value(0) ,$2); }
+			|	TOKEN_INT				{ $$ = expr_create_integer_literal(atoi(yytext)); }
+			;
 %%
 
+/* Called when parse error */
 int yyerror( char *str )
 {
-	printf("parse error: %s\n",str);
+	printf("Parse error: %s\n",str);
 	return 0;
 }

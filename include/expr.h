@@ -7,13 +7,16 @@ typedef enum {
 	EXPR_ADD,
 	EXPR_SUB,
 	EXPR_MUL,
-	EXPR_DIV
+	EXPR_DIV,
 	/* many more kinds of exprs to add here */
+	EXPR_VALUE,
+	EXPR_INT_LIT
 } expr_t;
 
 struct expr {
 	/* used by all kinds of exprs */
 	expr_t kind;
+	int value;
 	struct expr *left;
 	struct expr *right;
 
@@ -27,6 +30,7 @@ struct expr {
 struct expr * expr_create( expr_t kind, struct expr *left, struct expr *right );
 
 struct expr * expr_create_name( const char *n );
+struct expr * expr_create_value( int value );
 struct expr * expr_create_integer_literal( int c );
 struct expr * expr_create_boolean_literal( int c );
 struct expr * expr_create_char_literal( char c );

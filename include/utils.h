@@ -10,4 +10,7 @@
 
 #define streq(a, b)         (strcmp(a, b) == 0)
 
+/* Compatible with Bison output header */
+typedef enum yytokentype token_t;
+
 #endif

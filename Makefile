@@ -6,11 +6,11 @@ LD=			gcc
 LDFLAGS=	-Llib
 
 TARGET=		bminor
-HEADERS=	$(wildcard include/*.h)
-SOURCES=	$(wildcard src/*.c)
-OBJECTS=	$(SOURCES:.c=.o) src/scanner.o
+TOKENLIB=	include/token.h
 
-TOKENLIB=	token.h
+HEADERS=	$(wildcard include/*.h) $(TOKENLIB)
+SOURCES=	$(wildcard src/*.c)
+OBJECTS=	$(SOURCES:.c=.o) src/scanner.o src/parser.o
 
 all: $(TARGET)
 
@@ -18,17 +18,17 @@ $(TARGET):		$(OBJECTS)
 	@echo Linking $@...
 	@$(LD) $(LDFLAGS) -o $@ $^
 
-%.o:			%.c
+%.o:			%.c $(HEADERS)
 	@echo "Compiling $@"
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
-src/scanner.c:	src/scanner.flex
+src/scanner.c:	src/scanner.l
 	@echo Compiling $@...
 	@flex -o $@ $^
 
-# src/parser.c:	src/parser.bison
-# 	@echo Compiling $@...
-# 	@bison --defines=$(TOKENLIB) -o parser.c -v $^
+src/parser.c $(TOKENLIB):	src/parser.y
+	@echo Compiling $@...
+	@bison --defines=$(TOKENLIB) -o $@ $^ --debug
 
 clean:
 # Executable
@@ -38,7 +38,7 @@ clean:
 # Scanner - flex output
 	rm -f src/scanner.c
 # Parser - bison output
-	rm -f src/parser.c
+	rm -f src/parser.c $(TOKENLIB)
 # Remove test output files
 	rm -rf test/*/*.out
 
