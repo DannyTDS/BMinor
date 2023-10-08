@@ -10,7 +10,7 @@ extern FILE *yyin;
 extern int yylex();
 extern char *yytext;
 
-int scan(FILE* input);
+int scan();
 int print_token(token_t token, char* yytext);
 
 #endif

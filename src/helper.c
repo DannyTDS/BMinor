@@ -1,8 +1,6 @@
 #include "helper.h"
 
-int scan(FILE* input) {
-    yyin = input;
-
+int scan() {
     /* Loops over the input and scans the text */
     token_t token;
     while (1) {

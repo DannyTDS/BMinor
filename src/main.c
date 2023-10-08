@@ -7,18 +7,14 @@ void usage(char* prog_name) {
     fprintf(stderr, "Options:\n");
     fprintf(stderr, "\t--encode\n");
     fprintf(stderr, "\t--scan\n");
+    fprintf(stderr, "\t--parse\n");
     exit(FAILURE);
 }
 
-int invoke_encode(char* file) {
+int invoke_encode(FILE *f) {
     /* decode and encode string */
     /* read input string */
     char input[BUFSIZ];
-    FILE* f = fopen(file, "r");
-    if (!f) {
-        printf("File \"%s\" not found.\n", file);
-        return(FAILURE);
-    }
     if(!fgets(input, BUFSIZ, f)) {
         /* failed to read file */
         printf("Error: failed to read input files.\n");
@@ -28,7 +24,6 @@ int invoke_encode(char* file) {
     if (input[strlen(input)-1] == '\n') {
         input[strlen(input)-1] = '\0';
     }
-    fclose(f);
     /* excise the functions */
     char decoded[strlen(input)+1];
     if (string_decode(input, decoded) != SUCCESS) {
@@ -46,35 +41,42 @@ int invoke_encode(char* file) {
     return SUCCESS;
 }
 
-int invoke_scan(char* file) {
-    FILE* f = fopen(file, "r");
-    if (!f) {
-        error("File \"%s\" not found.", file);
-        return(FAILURE);
-    }
-    int status = scan(f);
-    fclose(f);
-    return status;
+int invoke_scan() {
+    return scan();
 }
 
 int invoke_parse() {
-
+    if (yyparse() != SUCCESS) {
+        error("Parse failed.");
+        return FAILURE;
+    } else {
+        info("Parse successful!");
+        return SUCCESS;
+    }
 }
 
 int main(int argc, char* argv[]) {
-    /* for the Encoder assignment. */
     if (argc != 3) {
         usage(argv[0]);
     }
+    /* prepare yyin */
+    FILE* f = fopen(argv[2], "r");
+    if (!f) {
+        error("File \"%s\" not found.", argv[2]);
+        return FAILURE;
+    }
+    yyin = f;
     /* parse input flag */
     if (streq(argv[1], "--encode")) {
-        return invoke_encode(argv[2]);
+        return invoke_encode(f);
     } else if (streq(argv[1], "--scan")) {
-        return invoke_scan(argv[2]);
+        return invoke_scan();
     } else if (streq(argv[1], "--parse")) {
-
+        return invoke_parse();
     } else {
         usage(argv[0]);
     }
-    exit(SUCCESS);
+    /* Clean up */
+    fclose(f);
+    return SUCCESS;
 }

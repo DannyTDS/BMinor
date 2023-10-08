@@ -10,7 +10,7 @@ echo "Test encoder good..."
 for testfile in test/encode/good*.bminor
 do
 	((total_tests++))
-	if ./bminor --encode $testfile > $testfile.out
+	if ./bminor --encode $testfile > $testfile.out 2>&1
 	then
 		((successes++))
 	else
@@ -27,7 +27,7 @@ echo "Test encoder bad..."
 for testfile in test/encode/bad*.bminor
 do
 	((total_tests++))
-	if ./bminor --encode $testfile > $testfile.out
+	if ./bminor --encode $testfile > $testfile.out 2>&1
 	then
 		echo "$testfile success (INCORRECT)"
 		((failures++))
@@ -47,7 +47,7 @@ echo "Test scanner good..."
 for testfile in test/scanner/good*.bminor
 do
 	((total_tests++))
-	if ./bminor --scan $testfile > $testfile.out
+	if ./bminor --scan $testfile > $testfile.out 2>&1
 	then
 		((successes++))
 	else
@@ -64,7 +64,7 @@ echo "Test scanner bad..."
 for testfile in test/scanner/bad*.bminor
 do
 	((total_tests++))
-	if ./bminor --scan $testfile > $testfile.out
+	if ./bminor --scan $testfile > $testfile.out 2>&1
 	then
 		echo "$testfile success (INCORRECT)"
 		((failures++))
