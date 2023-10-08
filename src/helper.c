@@ -7,6 +7,7 @@ int scan(FILE* input) {
     token_t token;
     while (1) {
         token = yylex();
+        printf("%d\n", token);
         if (token == TOKEN_EOF) {
             break;
         }

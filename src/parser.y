@@ -1,7 +1,5 @@
 /* Declaration of tokens to be included in parser.h, consumed by scanner.l */
 
-%token TOKEN_EOF
-
 /* Identifier and assignment */
 %token TOKEN_IDENT
 %token TOKEN_ASSIGN

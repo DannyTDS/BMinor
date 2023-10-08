@@ -18,17 +18,31 @@ $(TARGET):		$(OBJECTS)
 	@echo Linking $@...
 	@$(LD) $(LDFLAGS) -o $@ $^
 
+# src/main.o:			src/main.c $(TOKENLIB)
+# 	@echo "Compiling $@"
+# 	@$(CC) $(CFLAGS) -c -o $@ $<
+
+# src/helper.o:		src/helper.c $(TOKENLIB)
+# 	@echo "Compiling $@"
+# 	@$(CC) $(CFLAGS) -c -o $@ $<
+
+# src/scanner.o:		src/scanner.c $(TOKENLIB)
+# 	@echo "Compiling $@"
+# 	@$(CC) $(CFLAGS) -c -o $@ $<
+
 %.o:			%.c $(HEADERS)
-	@echo "Compiling $@"
+	@echo Compiling $@...
 	@$(CC) $(CFLAGS) -c -o $@ $<
 
 src/scanner.c:	src/scanner.l
 	@echo Compiling $@...
 	@flex -o $@ $^
 
-src/parser.c $(TOKENLIB):	src/parser.y
+src/parser.c:	src/parser.y
 	@echo Compiling $@...
 	@bison --defines=$(TOKENLIB) -o $@ $^ --debug
+
+$(TOKENLIB):	src/parser.c
 
 clean:
 # Executable
