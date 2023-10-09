@@ -17,18 +17,6 @@ LETTER [A-Za-z]
 
 %%
 
-    /* Literals */
-[-\+]?{DIGIT}+                                              { return TOKEN_INT_LIT; }
-[-\+]?{DIGIT}*\.?{DIGIT}+([eE][-\+]?{DIGIT}+)?              { return TOKEN_FLOAT_LIT; }
-\'([^\\\'\n]|\\.|\\0x..)\'                                  {
-                                                                if (clean_string(TOKEN_CHAR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
-                                                                return TOKEN_CHAR_LIT; 
-                                                            }
-\"([^\\\"\n]|\\.)*\"                                        {
-                                                                if (clean_string(TOKEN_STR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
-                                                                return TOKEN_STR_LIT;
-                                                            }
-
     /* Keywords */
 array               { return TOKEN_ARRAY; }
 auto                { return TOKEN_AUTO; }
@@ -82,6 +70,18 @@ boolean             { return TOKEN_BOOL; }
 ;                   { return TOKEN_SEMI; }
 :                   { return TOKEN_COLON; }
 ,                   { return TOKEN_COMMA; }
+
+    /* Literals */
+{DIGIT}+                                                    { return TOKEN_INT_LIT; }
+{DIGIT}*\.?{DIGIT}+([eE][-\+]?{DIGIT}+)?                    { return TOKEN_FLOAT_LIT; }
+\'([^\\\'\n]|\\.|\\0x..)\'                                  {
+                                                                if (clean_string(TOKEN_CHAR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
+                                                                return TOKEN_CHAR_LIT; 
+                                                            }
+\"([^\\\"\n]|\\.)*\"                                        {
+                                                                if (clean_string(TOKEN_STR_LIT, yytext) != SUCCESS) return TOKEN_ERROR;
+                                                                return TOKEN_STR_LIT;
+                                                            }
 
     /* Identifier */
 [A-Za-z_][A-Za-z0-9_]*  {
