@@ -60,6 +60,7 @@ struct expr * expr_create_boolean_literal( int b );
 struct expr * expr_create_char_literal( char c );
 struct expr * expr_create_string_literal( const char *str );
 
+void expr_delete( struct expr *e );
 void expr_print( struct expr *e );
 
 #endif
