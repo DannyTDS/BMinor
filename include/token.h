@@ -77,31 +77,44 @@ extern int yydebug;
     TOKEN_MOD = 287,
     TOKEN_ADD = 288,
     TOKEN_SUB = 289,
-    TOKEN_NEG = 290,
-    TOKEN_INCRE = 291,
-    TOKEN_DECRE = 292,
-    TOKEN_LT = 293,
-    TOKEN_LE = 294,
-    TOKEN_GT = 295,
-    TOKEN_GE = 296,
-    TOKEN_EQ = 297,
-    TOKEN_NE = 298,
-    TOKEN_LPAREN = 299,
-    TOKEN_RPAREN = 300,
-    TOKEN_LBRACKET = 301,
-    TOKEN_RBRACKET = 302,
-    TOKEN_LBRACE = 303,
-    TOKEN_RBRACE = 304,
-    TOKEN_SEMI = 305,
-    TOKEN_COLON = 306,
-    TOKEN_COMMA = 307,
-    TOKEN_ERROR = 308
+    TOKEN_INCRE = 290,
+    TOKEN_DECRE = 291,
+    TOKEN_LT = 292,
+    TOKEN_LE = 293,
+    TOKEN_GT = 294,
+    TOKEN_GE = 295,
+    TOKEN_EQ = 296,
+    TOKEN_NE = 297,
+    TOKEN_LPAREN = 298,
+    TOKEN_RPAREN = 299,
+    TOKEN_LBRACKET = 300,
+    TOKEN_RBRACKET = 301,
+    TOKEN_LBRACE = 302,
+    TOKEN_RBRACE = 303,
+    TOKEN_SEMI = 304,
+    TOKEN_COLON = 305,
+    TOKEN_COMMA = 306,
+    TOKEN_ERROR = 307
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 71 "src/parser.y" /* yacc.c:1909  */
+
+	struct decl* decl;
+	struct expr* expr;
+	struct stmt* stmt;
+	struct type* type;
+	struct param_list* param_list;
+
+#line 115 "include/token.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
