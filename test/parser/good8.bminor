@@ -12,6 +12,13 @@ f: function void (temp: integer) = {
     if (true)
         print "There is no else statement";
 
+    // Classic dangling else
+    if (true)
+        if (true)
+            print true;
+        else
+            print false;
+
     // More complex statements
     ddl: integer = 3;
     i: integer;
