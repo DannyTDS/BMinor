@@ -138,9 +138,6 @@ void expr_print( struct expr *e )
 		case EXPR_OR:
 			printf("||");
 			break;
-		case EXPR_NEG:
-			printf("-");
-			break;
 		case EXPR_INCRE:
 			printf("++");
 			break;

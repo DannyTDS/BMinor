@@ -24,7 +24,6 @@ typedef enum {
 	EXPR_AND,
 	EXPR_OR,
 	/* Unary */
-	EXPR_NEG,
 	EXPR_INCRE,
 	EXPR_DECRE,
 	EXPR_LT,

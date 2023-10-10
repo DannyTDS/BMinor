@@ -52,7 +52,7 @@ clean:
 # Scanner - flex output
 	rm -f src/scanner.c
 # Parser - bison output
-	rm -f src/parser.c $(TOKENLIB)
+	rm -f src/parser.c $(TOKENLIB) src/parser.output $(TOKENLIB:.h=.output)
 # Remove test output files
 	rm -rf test/*/*.out
 

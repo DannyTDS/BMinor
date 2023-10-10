@@ -13,7 +13,6 @@ extern int string_decode(char* es, char* s);
 %}
 
 DIGIT [0-9]
-LETTER [A-Za-z]
 
 %%
 
@@ -90,7 +89,7 @@ boolean             { return TOKEN_BOOL; }
                         }
 
     /* Comments */
-\/\/[^\n]*\n                          { ; /* eat up C++ Comment */ }
+\/\/[^\n]*                            { ; /* eat up C++ Comment */ }
 \/\*([^\*]|\*+[^\/\*])*\*+\/          { ; /* eat up C Comment */   }
 
 [ \n\t]+            { ; /* eat up white space */ }

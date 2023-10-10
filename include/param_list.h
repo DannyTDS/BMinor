@@ -1,11 +1,8 @@
-
 #ifndef PARAM_LIST_H
 #define PARAM_LIST_H
 
 #include "type.h"
-#include <stdio.h>
-
-struct expr;
+#include "symbol.h"
 
 struct param_list {
 	char *name;
@@ -15,6 +12,7 @@ struct param_list {
 };
 
 struct param_list * param_list_create( char *name, struct type *type, struct param_list *next );
+void param_list_delete( struct param_list *a );
 void param_list_print( struct param_list *a );
 
 #endif
