@@ -1,0 +1,2 @@
+// bad param list
+main: function void (argc, argv);

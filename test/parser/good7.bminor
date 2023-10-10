@@ -1,0 +1,7 @@
+// More arrays
+f: function void () = {
+    a: array [3] integer = {1, 2, 3};
+    b: array [array_length(a) * 2] integer;     // array length decided at run time
+    c: array [3] array [2] integer = {{1, 1}, {2, 2}, {3, 3}};    // nested arrays
+    return a[0];
+}

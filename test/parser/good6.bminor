@@ -1,0 +1,10 @@
+// Math operators
+f: function void () = {
+    x: integer = 1;
+    y: integer = 2;
+    z: integer = 3;
+    if (((x^y)+z)%(x-y-z*10)) {
+        print "Hello from if";
+    } else print "One line else statement";
+    return;
+}

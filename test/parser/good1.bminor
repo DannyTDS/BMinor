@@ -1,5 +1,9 @@
-245.6*(-20);
--200/0;
-20++;
-50%2;
-500^(-5);
+// global variables and function headers
+x: integer = 10;
+y: float = -2.8;
+z: float = -5.3E-2;
+a: boolean = true;
+b: array[5] integer;
+c: array[3] integer = {1, 2, 3};
+s: string = "Hello BMinor";
+f: function void (arg1: integer, arg2: integer);

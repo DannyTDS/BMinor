@@ -1,0 +1,10 @@
+// For loops
+f: function void () = {
+    x: integer;
+    for (x=0; x<10; x++) {
+        print x;
+        sleep(1);
+    }
+    
+    for (;;) print "This is a one line for loop";
+}

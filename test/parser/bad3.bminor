@@ -1,0 +1,6 @@
+// Opening else without matching if
+main: function void () = {
+    if (true) print true;
+    else print false;
+    else print "this should not happen";
+}

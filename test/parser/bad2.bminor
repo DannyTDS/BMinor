@@ -1,0 +1,4 @@
+// Missing assignment symbols
+main: function void () {
+    print "do something";
+}

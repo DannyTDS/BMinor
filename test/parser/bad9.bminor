@@ -1,0 +1,4 @@
+// single semicolon
+main: function void () = {
+    ;
+}

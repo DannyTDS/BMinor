@@ -1,0 +1,9 @@
+// If and logical operators
+f: function void () = {
+    x: integer = 0;
+    y: integer = 1;
+    if (x && y || true) {
+        print "Hello from if";
+    } else print "One line else statement";
+    return;
+}
