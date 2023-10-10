@@ -76,7 +76,7 @@
 	struct param_list* param_list;
 };
 
-%type <expr> expr expr1 expr2 expr3 expr4 expr5 expr6 expr7 expr8 atomic opt_expr opt_expr_list opt_expr_block expr_list
+%type <expr> expr expr1 expr2 expr3 expr4 expr5 expr6 expr7 expr8 atomic opt_expr opt_expr_list opt_expr_block_list expr_block expr_block_list expr_list
 %type <decl> decl decl_list init
 %type <type> type
 %type <stmt> stmt stmt_list stmt_block stmt_outer stmt_nested stmt_atomic
@@ -115,8 +115,8 @@ decl		:	TOKEN_IDENT TOKEN_COLON type init TOKEN_SEMI			{ }		// Global variables,
 			|	TOKEN_IDENT TOKEN_COLON type TOKEN_ASSIGN stmt_block	{ }		// Function definition
 			;
 
-init		:	TOKEN_ASSIGN opt_expr_block		{ }
-			|	/* Epsilon */					{ } // { $$ = 0; }
+init		:	TOKEN_ASSIGN opt_expr_block_list	{ }
+			|	/* Epsilon */						{ } // { $$ = 0; }
 			;
 
 /* Statements */
@@ -220,9 +220,16 @@ opt_expr_list	:	expr_list			{ }
 				|	/* Epsilon */		{ } // { $$ = 0; }
 				;
 
-opt_expr_block	:	TOKEN_LBRACE expr_list TOKEN_RBRACE	{ }		// Array initializer
-				|	expr								{ }
-				;
+expr_block	:	TOKEN_LBRACE expr_list TOKEN_RBRACE	{ }		// Array initializer
+			;
+
+expr_block_list	:	expr_block TOKEN_COMMA expr_block_list	{ }
+				|	expr_block			{ }
+
+opt_expr_block_list	:	TOKEN_LBRACE expr_block_list TOKEN_RBRACE		{ }
+					|	expr_block				{ }
+					|	expr					{ }
+					;
 
 /* Types */
 type		:	TOKEN_INT				{ } //  $$ = type_create(TYPE_INT); }
