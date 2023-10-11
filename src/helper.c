@@ -1,6 +1,9 @@
 #include "helper.h"
 
 int parse() {
+    /* Halt on scan error */
+    if (scan("simple") != SUCCESS) return FAILURE;
+    rewind(yyin);
     if (yyparse() != SUCCESS) {
         info("Parse failed.");
         return FAILURE;
@@ -10,7 +13,7 @@ int parse() {
     }
 }
 
-int scan() {
+int scan(char* mode) {
     /* Loops over the input and scans the text */
     token_t token;
     while (1) {
@@ -18,12 +21,13 @@ int scan() {
         if (token == TOKEN_EOF) {
             break;
         }
-        if (print_token(token, yytext) != SUCCESS) {
+        if (token == TOKEN_ERROR) {
             info("Scan failed.");
             return FAILURE;
         }
+        if (streq(mode, "verbose")) print_token(token, yytext);
     }
-    info("Scan successful!");
+    if (streq(mode, "verbose")) info("Scan successful!");
     return SUCCESS;
 }
 

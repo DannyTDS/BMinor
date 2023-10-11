@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     if (streq(argv[1], "--encode")) {
         status =  encode(f);
     } else if (streq(argv[1], "--scan")) {
-        status = scan();
+        status = scan("verbose");
     } else if (streq(argv[1], "--parse")) {
         status = parse();
     } else {
