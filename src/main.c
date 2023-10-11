@@ -8,7 +8,6 @@ void usage(char* prog_name) {
     fprintf(stderr, "\t--encode\n");
     fprintf(stderr, "\t--scan\n");
     fprintf(stderr, "\t--parse\n");
-    exit(FAILURE);
 }
 
 int main(int argc, char* argv[]) {
@@ -22,17 +21,19 @@ int main(int argc, char* argv[]) {
         return FAILURE;
     }
     yyin = f;
+    int status;
     /* parse input flag */
     if (streq(argv[1], "--encode")) {
-        return encode(f);
+        status =  encode(f);
     } else if (streq(argv[1], "--scan")) {
-        return scan();
+        status = scan();
     } else if (streq(argv[1], "--parse")) {
-        return parse();
+        status = parse();
     } else {
         usage(argv[0]);
+        status = FAILURE;
     }
     /* Clean up */
     fclose(f);
-    return SUCCESS;
+    return status;
 }

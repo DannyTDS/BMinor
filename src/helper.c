@@ -177,12 +177,8 @@ int print_token(token_t token, char* yytext) {
         case TOKEN_COMMA:
             printf("%s\n", "COMMA");
             break;
-        case TOKEN_ERROR:
-            /* Halt on scan error */
-            error("Scan error: %s is not a valid token.", yytext);
-            return FAILURE;
         default:
-            error("Scan error: unknown token %d scanned from text %s.", token, yytext);
+            /* Halt on scan error */
             return FAILURE;
     }
 

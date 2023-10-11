@@ -95,7 +95,7 @@ boolean             { return TOKEN_BOOL; }
 [ \n\t]+            { ; /* eat up white space */ }
 
     /* Capture error */
-.                   { return TOKEN_ERROR; }
+.                   { error("Scan error: unexpected token %s", yytext); return TOKEN_ERROR; }
 
 %%
 

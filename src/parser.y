@@ -82,6 +82,8 @@
 %type <stmt> stmt stmt_list stmt_block stmt_outer stmt_nested stmt_atomic
 %type <param_list> param_list opt_param_list
 
+%define parse.error verbose
+
 %{
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,7 +98,7 @@
 
 extern char* yytext;
 extern int yylex();
-extern int yyerror(char* str);
+extern int yyerror(const char* str);
 
 struct decl* result = 0;
 %}
@@ -255,8 +257,8 @@ opt_param_list	:	param_list			{ }
 %%
 
 /* Called when parse error */
-int yyerror( char *str )
+int yyerror( const char *str )
 {
 	error("Parse error: %s",str);
-	return 0;
+	return 1;
 }
