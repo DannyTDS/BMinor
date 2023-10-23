@@ -131,7 +131,8 @@ stmt		:	stmt_outer			{ }
 			;
 
 stmt_outer	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_outer	{ }
-			|	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested							{ }
+			|	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt								{ }
+			| 	TOKEN_FOR TOKEN_LPAREN opt_expr TOKEN_SEMI opt_expr TOKEN_SEMI opt_expr TOKEN_RPAREN stmt_outer		{ }
 			;
 
 stmt_nested	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_nested	{ }			// Solving dangling else problem

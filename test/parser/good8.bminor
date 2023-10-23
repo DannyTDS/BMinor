@@ -29,9 +29,12 @@ f: function void (temp: integer) = {
         else
             for (i=0;i<10;i++)
                 shout("AHHHHHHHH");
-    else
-        if (tired) print "I\"ll take a nap instead";
-        print;
+        else
+            if (tired) print "I\"ll take a nap instead";
+            print;
+    
+    for(;;)
+        if (true) print true;
 
     return 0;
 }
