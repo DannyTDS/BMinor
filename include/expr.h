@@ -34,6 +34,12 @@ typedef enum {
 	EXPR_NE,
 	/* Misc */
 	EXPR_ASSIGN,
+	EXPR_IDENT,		// Identifier
+	EXPR_FCALL,		// Function call
+	EXPR_INDEX,		// Array indexing
+	EXPR_TERM,		// Single expr in an expr_list, separated by comma
+	EXPR_BLOCK,		// A block of expressions grouped by braces {}
+	EXPR_GROUP,		// A group of expressions surrounded by parens ()
 } expr_t;
 
 struct expr {
@@ -55,11 +61,11 @@ struct expr * expr_create( expr_t kind, struct expr *left, struct expr *right );
 struct expr * expr_create_name( const char *n );
 struct expr * expr_create_integer_literal( int64_t d );
 struct expr * expr_create_float_literal( double f );
-struct expr * expr_create_boolean_literal( int b );
 struct expr * expr_create_char_literal( char c );
 struct expr * expr_create_string_literal( const char *str );
 
 void expr_delete( struct expr *e );
 void expr_print( struct expr *e );
+void expr_print_binary( struct expr *e, const char *op );
 
 #endif

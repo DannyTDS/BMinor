@@ -1,4 +1,5 @@
 #include "expr.h"
+#include "encoder.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +23,7 @@ struct expr * expr_create( expr_t kind, struct expr *left, struct expr *right )
 
 struct expr * expr_create_name( const char *n )
 {
-	struct expr *e = expr_create(EXPR_INT_LIT, NULL, NULL);
+	struct expr *e = expr_create(EXPR_IDENT, NULL, NULL);
     e->name = strdup(n);
     return e;
 }
@@ -39,13 +40,6 @@ struct expr * expr_create_float_literal( double f )
 	struct expr *e = expr_create(EXPR_FLOAT_LIT, NULL, NULL);
 	e->float_literal = f;
 	return e;
-}
-
-struct expr * expr_create_boolean_literal( int b )
-{
-	expr_t kind = (b == 0) ? EXPR_FALSE : EXPR_TRUE;
-    struct expr *e = expr_create(kind, NULL, NULL);
-    return e;
 }
 
 struct expr * expr_create_char_literal( char c )
@@ -88,40 +82,51 @@ void expr_print( struct expr *e )
 	/* Careful: Stop on null pointer. */
 	if(!e) return;
 
-	printf("(");
+	/* Special handling for char and string literals */
+	/* Since we decoded the string to verify its correctness in scanner, we need to encode it back before printing */
+	if (e->kind == EXPR_CHAR_LIT) {
+		char es[BUFSIZ];
+		char s[2];
+		sprintf(s, "%c", (char)e->int_literal);
+		string_encode(e->string_literal, es);
+		/* Take the encoded char part in between ""s */
+		char ec[BUFSIZ];
+		sscanf(es, "\"%s\"", ec);
+		printf("%s", ec);
+		return;
+	} else if (e->kind == EXPR_STR_LIT) {
+		char es[BUFSIZ];
+		string_encode(e->string_literal, es);
+		printf("%s", es);
+		return;
+	}
 
-	expr_print(e->left);
-
+	/* All other kinds */
 	switch(e->kind) {
 		case EXPR_ADD:
-			printf("+");
+			expr_print_binary(e, "+");
 			break;
 		case EXPR_SUB:
-			printf("-");
+			expr_print_binary(e, "-");
 			break;
 		case EXPR_MUL:
-			printf("*");
+			expr_print_binary(e, "*");
 			break;
 		case EXPR_DIV:
-			printf("/");
+			expr_print_binary(e, "/");
 			break;
 		case EXPR_EXP:
-			printf("^");
+			expr_print_binary(e, "^");
 			break;
 		case EXPR_MOD:
-			printf("%%");
+			expr_print_binary(e, "%%");
 			break;
         case EXPR_INT_LIT:
 			printf("%ld", e->int_literal);
 			break;
 		case EXPR_FLOAT_LIT:
-			printf("%lf", e->float_literal);
-			break;
-		case EXPR_CHAR_LIT:
-			printf("%c", (char)e->int_literal);
-			break;
-		case EXPR_STR_LIT:
-			printf("%s", e->string_literal);
+			/* %g decides between floating pt and scientific notation */
+			printf("%g", e->float_literal);
 			break;
 		case EXPR_TRUE:
 			printf("true");
@@ -131,42 +136,86 @@ void expr_print( struct expr *e )
 			break;
 		case EXPR_NOT:
 			printf("!");
+			expr_print(e->right);
 			break;
 		case EXPR_AND:
-			printf("&&");
+			expr_print_binary(e, "&&");
 			break;
 		case EXPR_OR:
-			printf("||");
+			expr_print_binary(e, "||");
 			break;
 		case EXPR_INCRE:
+			expr_print(e->left);
 			printf("++");
 			break;
 		case EXPR_DECRE:
+			expr_print(e->left);
 			printf("--");
 			break;
 		case EXPR_LT:
-			printf("<");
+			expr_print_binary(e, "<");
 			break;
 		case EXPR_LE:
-			printf("<=");
+			expr_print_binary(e, "<=");
 			break;
 		case EXPR_GT:
-			printf(">");
+			expr_print_binary(e, ">");
 			break;
 		case EXPR_GE:
-			printf(">=");
+			expr_print_binary(e, ">=");
 			break;
 		case EXPR_EQ:
-			printf("==");
+			expr_print_binary(e, "==");
 			break;
 		case EXPR_NE:
-			printf("!=");
+			expr_print_binary(e, "!=");
 			break;
 		case EXPR_ASSIGN:
 			printf("=");
 			break;
+		case EXPR_IDENT:
+			printf("%s", e->name);
+			break;
+		case EXPR_FCALL:
+			expr_print(e->left);
+			printf("(");
+			expr_print(e->right);
+			printf(")");
+			break;
+		case EXPR_INDEX:
+			expr_print(e->left);
+			printf("[");
+			expr_print(e->right);
+			printf("]");
+			break;
+		case EXPR_TERM:
+			expr_print(e->left);
+			if (e->right) printf(",");
+			expr_print(e->right);
+			break;
+		case EXPR_BLOCK:
+			printf("{");
+			expr_print(e->left);
+			printf("}");
+			if (e->right) printf(",");
+			expr_print(e->right);
+			break;
+		case EXPR_GROUP:
+			/* Check for nested parens */
+			if (e->left->kind == EXPR_GROUP) expr_print(e->left);
+			else {
+				printf("(");
+				expr_print(e->left);
+				printf(")");
+			}
+		default:
+			break;
 	}
+}
 
+
+void expr_print_binary(struct expr* e, const char* op) {
+	expr_print(e->left);
+	printf("%s", op);
 	expr_print(e->right);
-	printf(")");
 }
