@@ -24,8 +24,9 @@ void param_list_delete( struct param_list *a )
 
 void param_list_print( struct param_list *a )
 {
+    if (!a) return;
+    printf("%s: ", a->name);
     type_print(a->type);
-    printf(" %s", a->name);
     if (a->next) {
         printf(", ");
         param_list_print(a->next);

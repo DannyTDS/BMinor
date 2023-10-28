@@ -241,7 +241,7 @@ type		:	TOKEN_INT				{ $$ = type_create(TYPE_INT); }
 			|	TOKEN_AUTO				{ $$ = type_create(TYPE_AUTO); }
 			|	TOKEN_VOID				{ $$ = type_create(TYPE_VOID); }
 			|	TOKEN_ARRAY TOKEN_LBRACKET opt_expr TOKEN_RBRACKET type		{ $$ = type_create_array($5, $3); }	// Do we permit array with empty length?
-			|	TOKEN_FUNC type TOKEN_LPAREN opt_param_list TOKEN_RPAREN	{ }
+			|	TOKEN_FUNC type TOKEN_LPAREN opt_param_list TOKEN_RPAREN	{ $$ = type_create_function($2, $4); }
 			;
 
 /* Params */
