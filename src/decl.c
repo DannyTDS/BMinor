@@ -39,12 +39,14 @@ void decl_print( struct decl *d, int indent )
     printf("%s: ", d->name);
     type_print(d->type);
     
-    if (d->value) {
+    if (d->value) {                 // Expr
         printf(" = ");
         expr_print(d->value);
         printf(";");
-    } else if (d->code) {
+    } else if (d->code) {           // Stmt
         printf(" = ");
+        d->code->use_indent = false;
+        d->code->use_endl = false;
         stmt_print(d->code, indent);
     } else {
         printf(";");

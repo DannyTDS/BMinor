@@ -42,6 +42,12 @@ typedef enum {
 	EXPR_GROUP,		// A group of expressions surrounded by parens ()
 } expr_t;
 
+typedef enum {
+	ASSOC_LEFT,
+	ASSOC_RIGHT,
+	ASSOC_NONE,
+} assocRule_t;
+
 struct expr {
 	/* used by all kinds of exprs */
 	expr_t kind;
@@ -54,18 +60,23 @@ struct expr {
 	double float_literal;
 	const char * string_literal;
 	struct symbol *symbol;
+
+	/* used to determine grouping */
+	int precedence;
 };
 
-struct expr * expr_create( expr_t kind, struct expr *left, struct expr *right );
+// TODO: add precedence
+struct expr * expr_create( expr_t kind, struct expr *left, struct expr *right, int precedence);
 
-struct expr * expr_create_name( const char *n );
-struct expr * expr_create_integer_literal( int64_t d );
-struct expr * expr_create_float_literal( double f );
-struct expr * expr_create_char_literal( char c );
-struct expr * expr_create_string_literal( const char *str );
+struct expr * expr_create_name( const char *n, int precedence );
+struct expr * expr_create_integer_literal( int64_t d, int precedence );
+struct expr * expr_create_float_literal( double f, int precedence );
+struct expr * expr_create_char_literal( char c, int precedence );
+struct expr * expr_create_string_literal( const char *str, int precedence );
 
 void expr_delete( struct expr *e );
 void expr_print( struct expr *e );
 void expr_print_binary( struct expr *e, const char *op );
-
+struct expr * expr_wrap(struct expr *e);
+struct expr * expr_wrap_auto(struct expr *e, assocRule_t rule);			// Automatically group lower precedence expr
 #endif

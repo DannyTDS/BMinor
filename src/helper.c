@@ -1,16 +1,23 @@
 #include "helper.h"
 
-int parse() {
+int pprint() {
+    /* Trivia: print operation will always return SUCCESS since it implies a valid BMinor program */
+    /* Halt on parse / scan error */
+    if (parse("simple") != SUCCESS) return FAILURE;
+    decl_print(root, 0);
+    return SUCCESS;
+}
+
+int parse(char* mode) {
     /* Halt on scan error */
     if (scan("simple") != SUCCESS) return FAILURE;
     rewind(yyin);
     if (yyparse() != SUCCESS) {
         info("Parse failed.");
         return FAILURE;
-    } else {
-        info("Parse successful!");
-        return SUCCESS;
     }
+    if (streq(mode, "verbose")) info("Parse successful!");
+    return SUCCESS;
 }
 
 int scan(char* mode) {
@@ -28,6 +35,32 @@ int scan(char* mode) {
         if (streq(mode, "verbose")) print_token(token, yytext);
     }
     if (streq(mode, "verbose")) info("Scan successful!");
+    return SUCCESS;
+}
+
+int encode(FILE* f) {
+    /* decode and encode string */
+    /* read input string */
+    char input[BUFSIZ];
+    fgets(input, BUFSIZ, f);
+    /* remove trailing newline if one presents */
+    if (input[strlen(input)-1] == '\n') {
+        input[strlen(input)-1] = '\0';
+    }
+    /* excise the functions */
+    char decoded[strlen(input)+1];
+    if (string_decode(input, decoded) != SUCCESS) {
+        error("Decode string error: cannot decode string %s.\n", input);
+        return(FAILURE);
+    } else {
+        char encoded[strlen(input)+1];
+        string_encode(decoded, encoded);
+        info("Successfully decoded and encoded string.\n");
+        info("Input  : %s\n", input);
+        info("Decoded: %s\n", decoded);
+        info("Encoded: %s\n", encoded);
+    }
+    /* return success upon completion */
     return SUCCESS;
 }
 
@@ -186,31 +219,5 @@ int print_token(token_t token, char* yytext) {
             return FAILURE;
     }
 
-    return SUCCESS;
-}
-
-int encode(FILE* f) {
-    /* decode and encode string */
-    /* read input string */
-    char input[BUFSIZ];
-    fgets(input, BUFSIZ, f);
-    /* remove trailing newline if one presents */
-    if (input[strlen(input)-1] == '\n') {
-        input[strlen(input)-1] = '\0';
-    }
-    /* excise the functions */
-    char decoded[strlen(input)+1];
-    if (string_decode(input, decoded) != SUCCESS) {
-        error("Decode string error: cannot decode string %s.\n", input);
-        return(FAILURE);
-    } else {
-        char encoded[strlen(input)+1];
-        string_encode(decoded, encoded);
-        info("Successfully decoded and encoded string.\n");
-        info("Input  : %s\n", input);
-        info("Decoded: %s\n", decoded);
-        info("Encoded: %s\n", encoded);
-    }
-    /* return success upon completion */
     return SUCCESS;
 }

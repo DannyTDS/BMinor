@@ -65,6 +65,7 @@
 
 /* Error */
 %token TOKEN_ERROR				// For scanner emitting error only
+%token TOKEN_EOF 0
 
 %start program
 
@@ -104,7 +105,7 @@ struct decl* root = 0;
 %}
 
 %%
-program		:	decl_list		{ root = $1; return 0; }
+program		:	decl_list TOKEN_EOF		{ root = $1; return 0; }
 			;
 
 /* Declarations */
@@ -147,62 +148,62 @@ stmt_block	:	TOKEN_LBRACE stmt_list TOKEN_RBRACE	{ $$ = stmt_create(STMT_BLOCK, 
 			;
 
 /* Expressions */
-expr		: 	expr1 TOKEN_ASSIGN expr	{ $$ = expr_create(EXPR_ASSIGN, $1, $3); }	// Right associative
+expr		: 	expr1 TOKEN_ASSIGN expr	{ $$ = expr_create(EXPR_ASSIGN, $1, $3, 0); }	// Right associative
 			|	expr1					{ $$ = $1; }
 			;
 
-expr1		:	expr1 TOKEN_OR expr2	{ $$ = expr_create(EXPR_OR, $1, $3); }
+expr1		:	expr1 TOKEN_OR expr2	{ $$ = expr_create(EXPR_OR, $1, $3, 1); }
 			|	expr2					{ $$ = $1; }
 			;
 
-expr2		:	expr2 TOKEN_AND	expr3	{ $$ = expr_create(EXPR_AND, $1, $3); }
+expr2		:	expr2 TOKEN_AND	expr3	{ $$ = expr_create(EXPR_AND, $1, $3, 2); }
 			|	expr3					{ $$ = $1; }
 			;
 
-expr3		:	expr3 TOKEN_LT expr4	{ $$ = expr_create(EXPR_LT, $1, $3) ; }
-			|	expr3 TOKEN_LE expr4	{ $$ = expr_create(EXPR_LE, $1, $3) ; }
-			|	expr3 TOKEN_GT expr4	{ $$ = expr_create(EXPR_GT, $1, $3) ; }
-			|	expr3 TOKEN_GE expr4	{ $$ = expr_create(EXPR_GE, $1, $3) ; }
-			|	expr3 TOKEN_EQ expr4	{ $$ = expr_create(EXPR_EQ, $1, $3) ; }
-			|	expr3 TOKEN_NE expr4	{ $$ = expr_create(EXPR_NE, $1, $3) ; }
+expr3		:	expr3 TOKEN_LT expr4	{ $$ = expr_create(EXPR_LT, $1, $3, 3) ; }
+			|	expr3 TOKEN_LE expr4	{ $$ = expr_create(EXPR_LE, $1, $3, 3) ; }
+			|	expr3 TOKEN_GT expr4	{ $$ = expr_create(EXPR_GT, $1, $3, 3) ; }
+			|	expr3 TOKEN_GE expr4	{ $$ = expr_create(EXPR_GE, $1, $3, 3) ; }
+			|	expr3 TOKEN_EQ expr4	{ $$ = expr_create(EXPR_EQ, $1, $3, 3) ; }
+			|	expr3 TOKEN_NE expr4	{ $$ = expr_create(EXPR_NE, $1, $3, 3) ; }
 			| 	expr4					{ $$ = $1; }
 			;
 
-expr4		:	expr4 TOKEN_ADD expr5	{ $$ = expr_create(EXPR_ADD, $1, $3); }
-			|	expr4 TOKEN_SUB expr5	{ $$ = expr_create(EXPR_SUB, $1, $3); }
+expr4		:	expr4 TOKEN_ADD expr5	{ $$ = expr_create(EXPR_ADD, $1, $3, 4); }
+			|	expr4 TOKEN_SUB expr5	{ $$ = expr_create(EXPR_SUB, $1, $3, 4); }
 			|	expr5					{ $$ = $1; }
 			;
 
-expr5		:	expr5 TOKEN_MULT expr6	{ $$ = expr_create(EXPR_MUL, $1, $3); }
-			|	expr5 TOKEN_DIV expr6	{ $$ = expr_create(EXPR_DIV, $1, $3); }
-			|	expr5 TOKEN_MOD expr6	{ $$ = expr_create(EXPR_MOD, $1, $3); }
+expr5		:	expr5 TOKEN_MULT expr6	{ $$ = expr_create(EXPR_MUL, $1, $3, 5); }
+			|	expr5 TOKEN_DIV expr6	{ $$ = expr_create(EXPR_DIV, $1, $3, 5); }
+			|	expr5 TOKEN_MOD expr6	{ $$ = expr_create(EXPR_MOD, $1, $3, 5); }
 			|	expr6					{ $$ = $1; }
 			;
 
-expr6		:	expr6 TOKEN_EXP expr7	{ $$ = expr_create(EXPR_EXP, $1, $3); }
+expr6		:	expr6 TOKEN_EXP expr7	{ $$ = expr_create(EXPR_EXP, $1, $3, 6); }
 			|	expr7					{ $$ = $1; }
 			;
 
-expr7		:	TOKEN_ADD expr8			{ $$ = expr_create(EXPR_ADD, 0, $2); }		// Unary add (positive) sign
-			|	TOKEN_SUB expr8			{ $$ = expr_create(EXPR_SUB, 0, $2); }		// Unary sub (negative) sign
-			|	TOKEN_NOT expr8			{ $$ = expr_create(EXPR_NOT, 0, $2); }
+expr7		:	TOKEN_ADD expr8			{ $$ = expr_create(EXPR_ADD, 0, $2, 7); }		// Unary add (positive) sign
+			|	TOKEN_SUB expr8			{ $$ = expr_create(EXPR_SUB, 0, $2, 7); }		// Unary sub (negative) sign
+			|	TOKEN_NOT expr8			{ $$ = expr_create(EXPR_NOT, 0, $2, 7); }
 			|	expr8					{ $$ = $1; }
 			;
 
-expr8		:	TOKEN_LPAREN expr TOKEN_RPAREN						{ $$ = expr_create(EXPR_GROUP, $2, 0); }	// Grouping
-			|	expr8 TOKEN_LBRACKET expr TOKEN_RBRACKET			{ $$ = expr_create(EXPR_INDEX, $1, $3); }				// Indexing
-			|	id TOKEN_LPAREN opt_expr_list TOKEN_RPAREN			{ $$ = expr_create(EXPR_FCALL, $1, $3); }				// Function call
-			|	expr8 TOKEN_INCRE		{ $$ = expr_create(EXPR_INCRE, $1, 0); }
-			|	expr8 TOKEN_DECRE		{ $$ = expr_create(EXPR_DECRE, $1, 0); }
+expr8		:	TOKEN_LPAREN expr TOKEN_RPAREN						{ $$ = $2; }	// Grouping
+			|	expr8 TOKEN_LBRACKET expr TOKEN_RBRACKET			{ $$ = expr_create(EXPR_INDEX, $1, $3, 8); }				// Indexing
+			|	id TOKEN_LPAREN opt_expr_list TOKEN_RPAREN			{ $$ = expr_create(EXPR_FCALL, $1, $3, 8); }				// Function call
+			|	expr8 TOKEN_INCRE		{ $$ = expr_create(EXPR_INCRE, $1, 0, 8); }
+			|	expr8 TOKEN_DECRE		{ $$ = expr_create(EXPR_DECRE, $1, 0, 8); }
 			|	atomic					{ $$ = $1; }
 			;
 
-atomic		:	TOKEN_INT_LIT			{ $$ = expr_create_integer_literal(strtol(yytext, NULL, 10)); }
-			|	TOKEN_FLOAT_LIT			{ $$ = expr_create_float_literal(strtod(yytext, NULL)); }
-			|	TOKEN_CHAR_LIT			{ $$ = expr_create_char_literal(*yytext); }
-			|	TOKEN_STR_LIT			{ $$ = expr_create_string_literal(yytext); }
-			|	TOKEN_TRUE				{ $$ = expr_create(EXPR_TRUE, 0, 0); }
-			|	TOKEN_FALSE				{ $$ = expr_create(EXPR_FALSE, 0, 0); }
+atomic		:	TOKEN_INT_LIT			{ $$ = expr_create_integer_literal(strtol(yytext, NULL, 10), 9); }
+			|	TOKEN_FLOAT_LIT			{ $$ = expr_create_float_literal(strtod(yytext, NULL), 9); }
+			|	TOKEN_CHAR_LIT			{ $$ = expr_create_char_literal(*yytext, 9); }
+			|	TOKEN_STR_LIT			{ $$ = expr_create_string_literal(yytext, 9); }
+			|	TOKEN_TRUE				{ $$ = expr_create(EXPR_TRUE, 0, 0, 9); }
+			|	TOKEN_FALSE				{ $$ = expr_create(EXPR_FALSE, 0, 0, 9); }
 			|	id						{ $$ = $1; }
 			;
 
@@ -210,21 +211,21 @@ opt_expr	:	expr					{ $$ = $1; }
 			|	/* Epsilon */			{ $$ = 0; }
 			;
 
-expr_list	:	expr TOKEN_COMMA expr_list		{ $$ = expr_create(EXPR_TERM, $1, $3); }
-			|	expr							{ $$ = expr_create(EXPR_TERM, $1, 0); }
+expr_list	:	expr TOKEN_COMMA expr_list		{ $$ = expr_create(EXPR_TERM, $1, $3, 8); }
+			|	expr							{ $$ = expr_create(EXPR_TERM, $1, 0, 8); }
 			;
 
 opt_expr_list	:	expr_list			{ $$ = $1; }
 				|	/* Epsilon */		{ $$ = 0; }
 				;
 
-expr_block	:	TOKEN_LBRACE expr_list TOKEN_RBRACE	{ $$ = expr_create(EXPR_BLOCK, $2, 0); }		// Array initializer
+expr_block	:	TOKEN_LBRACE expr_list TOKEN_RBRACE	{ $$ = expr_create(EXPR_BLOCK, $2, 0, 8); }		// Array initializer
 			;
 
-expr_block_list	:	expr_block TOKEN_COMMA expr_block_list	{ $$ = expr_create(EXPR_BLOCK, $1, $3); }
+expr_block_list	:	expr_block TOKEN_COMMA expr_block_list	{ $$ = expr_create(EXPR_BLOCK, $1, $3, 8); }
 				|	expr_block								{ $$ = $1; }
 
-opt_expr_block_list	:	TOKEN_LBRACE expr_block_list TOKEN_RBRACE		{ $$ = expr_create(EXPR_BLOCK, $2, 0); }
+opt_expr_block_list	:	TOKEN_LBRACE expr_block_list TOKEN_RBRACE		{ $$ = expr_create(EXPR_BLOCK, $2, 0, 8); }
 					|	expr_block										{ $$ = $1; }
 					|	expr											{ $$ = $1; }
 					;
@@ -251,7 +252,7 @@ opt_param_list	:	param_list			{ $$ = $1; }
 				;
 
 /* Misc */
-id			:	TOKEN_IDENT		{ $$ = expr_create_name(yytext); }
+id			:	TOKEN_IDENT		{ $$ = expr_create_name(yytext, 9); }
 			;
 
 %%

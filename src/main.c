@@ -8,6 +8,7 @@ void usage(char* prog_name) {
     fprintf(stderr, "\t--encode\n");
     fprintf(stderr, "\t--scan\n");
     fprintf(stderr, "\t--parse\n");
+    fprintf(stderr, "\t--print\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -28,7 +29,9 @@ int main(int argc, char* argv[]) {
     } else if (streq(argv[1], "--scan")) {
         status = scan("verbose");
     } else if (streq(argv[1], "--parse")) {
-        status = parse();
+        status = parse("verbose");
+    } else if (streq(argv[1], "--print")) {
+        status = pprint();
     } else {
         usage(argv[0]);
         status = FAILURE;

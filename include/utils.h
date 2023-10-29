@@ -18,6 +18,5 @@
 
 /* Compatible with Bison output header */
 typedef enum yytokentype token_t;
-#define TOKEN_EOF 0
 
 #endif
