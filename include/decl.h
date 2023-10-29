@@ -6,7 +6,7 @@
 #include "expr.h"
 
 struct decl {
-	char *name;
+	const char *name;
 	struct type *type;
 	struct expr *value;
 	struct stmt *code;
@@ -14,9 +14,11 @@ struct decl {
 	struct decl *next;
 };
 
-struct decl * decl_create( char *name, struct type *type, struct expr *value, struct stmt *code, struct decl *next );
+struct decl * decl_create( const char *name, struct type *type, struct expr *value, struct stmt *code, struct decl *next );
 void decl_delete( struct decl *d );
 void decl_print( struct decl *d, int indent );
+
+void indent_by( int amt );
 
 #endif
 

@@ -77,7 +77,7 @@
 };
 
 %type <expr> expr expr1 expr2 expr3 expr4 expr5 expr6 expr7 expr8 atomic opt_expr opt_expr_list opt_expr_block_list expr_block expr_block_list expr_list id
-%type <decl> decl decl_list init
+%type <decl> decl decl_list program
 %type <type> type
 %type <stmt> stmt stmt_list stmt_block stmt_outer stmt_nested stmt_atomic
 %type <param_list> param_list opt_param_list
@@ -100,53 +100,50 @@ extern char* yytext;
 extern int yylex();
 extern int yyerror(const char* str);
 
-struct decl* result = 0;
+struct decl* root = 0;
 %}
 
 %%
-program		:	decl_list		{ } // { result = $1; return 0; }
+program		:	decl_list		{ root = $1; return 0; }
 			;
 
 /* Declarations */
-decl_list	:	decl decl_list			{ } // { $$ = $1; $1->next = $2; }
-			|	/* Epsilon */			{ } // { $$ = 0; }
+decl_list	:	decl decl_list			{ $$ = $1; $1->next = $2; }
+			|	/* Epsilon */			{ $$ = 0; }
 			;
 
-decl		:	id TOKEN_COLON type init TOKEN_SEMI			{ }		// Global variables, function declaration
-			|	id TOKEN_COLON type TOKEN_ASSIGN stmt_block	{ }		// Function definition
-			;
-
-init		:	TOKEN_ASSIGN opt_expr_block_list	{ }
-			|	/* Epsilon */						{ } // { $$ = 0; }
+decl		:	id TOKEN_COLON type TOKEN_ASSIGN opt_expr_block_list TOKEN_SEMI			{ $$ = decl_create($1->name, $3, $5, 0, 0); }		// Global variables
+			|	id TOKEN_COLON type TOKEN_SEMI				{ $$ = decl_create($1->name, $3, 0, 0, 0); }		// Function declaration
+			|	id TOKEN_COLON type TOKEN_ASSIGN stmt_block	{ $$ = decl_create($1->name, $3, 0, $5, 0); }		// Function definition
 			;
 
 /* Statements */
-stmt_list	:	stmt stmt_list			{ }
-			|	/* Epsilon */			{ } // { $$ = 0; }
+stmt_list	:	stmt stmt_list			{ $$ = $1; $1->next = $2; }
+			|	/* Epsilon */			{ $$ = 0; }
 			;
 
-stmt		:	stmt_outer			{ }
-			|	stmt_nested			{ }
+stmt		:	stmt_outer			{ $$ = $1; }
+			|	stmt_nested			{ $$ = $1; }
 			;
 
-stmt_outer	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_outer	{ }
-			|	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt								{ }
-			| 	TOKEN_FOR TOKEN_LPAREN opt_expr TOKEN_SEMI opt_expr TOKEN_SEMI opt_expr TOKEN_RPAREN stmt_outer		{ }
+stmt_outer	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_outer	{ $$ = stmt_create(STMT_IF_ELSE, 0, 0, $3, 0, $5, $7, 0); }
+			|	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt								{ $$ = stmt_create(STMT_IF_ELSE, 0, 0, $3, 0, $5, 0, 0); }
+			| 	TOKEN_FOR TOKEN_LPAREN opt_expr TOKEN_SEMI opt_expr TOKEN_SEMI opt_expr TOKEN_RPAREN stmt_outer		{ $$ = stmt_create(STMT_FOR, 0, $3, $5, $7, $9, 0, 0); }
 			;
 
-stmt_nested	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_nested	{ }			// Solving dangling else problem
-			| 	TOKEN_FOR TOKEN_LPAREN opt_expr TOKEN_SEMI opt_expr TOKEN_SEMI opt_expr TOKEN_RPAREN stmt_nested	{ }
-			|	stmt_atomic					{ }
+stmt_nested	:	TOKEN_IF TOKEN_LPAREN expr TOKEN_RPAREN stmt_nested TOKEN_ELSE stmt_nested	{ $$ = stmt_create(STMT_IF_ELSE, 0, 0, $3, 0, $5, $7, 0); }			// Solving dangling else problem
+			| 	TOKEN_FOR TOKEN_LPAREN opt_expr TOKEN_SEMI opt_expr TOKEN_SEMI opt_expr TOKEN_RPAREN stmt_nested	{ $$ = stmt_create(STMT_FOR, 0, $3, $5, $7, $9, 0, 0); }
+			|	stmt_atomic					{ $$ = $1; }
 			;
 
-stmt_atomic	:	decl						{ }
-			|	stmt_block					{ }
-			|	expr TOKEN_SEMI				{ }
-			|	TOKEN_RETURN opt_expr TOKEN_SEMI		{ }
-			|	TOKEN_PRINT opt_expr_list TOKEN_SEMI	{ }
+stmt_atomic	:	decl						{ $$ = stmt_create(STMT_DECL, $1, 0, 0, 0, 0, 0, 0); }
+			|	stmt_block					{ $$ = $1; }
+			|	expr TOKEN_SEMI				{ $$ = stmt_create(STMT_EXPR, 0, 0, $1, 0, 0, 0, 0); }
+			|	TOKEN_RETURN opt_expr TOKEN_SEMI		{ $$ = stmt_create(STMT_RETURN, 0, 0, $2, 0, 0, 0, 0); }
+			|	TOKEN_PRINT opt_expr_list TOKEN_SEMI	{ $$ = stmt_create(STMT_PRINT, 0, 0, $2, 0, 0, 0, 0); }
 			;
 
-stmt_block	:	TOKEN_LBRACE stmt_list TOKEN_RBRACE	{ }
+stmt_block	:	TOKEN_LBRACE stmt_list TOKEN_RBRACE	{ $$ = stmt_create(STMT_BLOCK, 0, 0, 0, 0, $2, 0, 0); }
 			;
 
 /* Expressions */
@@ -245,11 +242,11 @@ type		:	TOKEN_INT				{ $$ = type_create(TYPE_INT); }
 			;
 
 /* Params */
-param_list	:	id TOKEN_COLON type TOKEN_COMMA param_list		{ }
-			|	id TOKEN_COLON type								{ }
+param_list	:	id TOKEN_COLON type TOKEN_COMMA param_list		{ $$ = param_list_create($1->name, $3, $5); }
+			|	id TOKEN_COLON type								{ $$ = param_list_create($1->name, $3, 0); }
 			;
 
-opt_param_list	:	param_list			{ }
+opt_param_list	:	param_list			{ $$ = $1; }
 				|	/* Epsilon */		{ $$ = 0; }
 				;
 
