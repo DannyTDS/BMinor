@@ -1,0 +1,15 @@
+// Block grouped statements
+f: function void () = {
+    x: integer = 5;
+    {
+        print "this is a grouped statement";
+        y: float = 10;
+        z: array [y] integer;
+    }
+    {
+        if (!(x < y))
+            print "True";
+        else
+            print "False";
+    }
+}

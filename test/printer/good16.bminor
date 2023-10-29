@@ -1,0 +1,40 @@
+// If - else statements
+f: function void (temp: integer) = {
+    if( temp>100 ) {
+        print "It's really hot!\n";
+    } else if( temp>70 ) {
+        print "It's pretty warm.\n";
+    } else {
+        print "It's not too bad.\n";
+    }
+
+    // Single if statement
+    if (true)
+        print "There is no else statement";
+
+    // Classic dangling else
+    if (true)
+        if (true)
+            print true;
+        else
+            print false;
+
+    // More complex statements
+    ddl: integer = 3;
+    i: integer;
+    if (temp > 100)
+        if (ddl > 5)
+            for (i=0;i<10;i++)
+                shout("YAYYYYYYY");
+        else
+            for (i=0;i<10;i++)
+                shout("AHHHHHHHH");
+        else
+            if (tired) print "I\"ll take a nap instead";
+            print;
+    
+    for(;;)
+        if (true) print true;
+
+    return 0;
+}

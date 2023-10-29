@@ -1,0 +1,9 @@
+// Nested for loops
+main: function void () = {
+    i: integer;
+    j: integer;
+    for (i=0; i<10; i++) {
+        for (j=0; j<10; j++) print(j);
+    }
+    return i;
+}

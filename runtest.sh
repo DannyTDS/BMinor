@@ -110,3 +110,30 @@ do
 	fi
 done
 echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+#####################
+#	Printer tests	#
+#####################
+total_tests=0
+failures=0
+successes=0
+echo "Test printer good..."
+for testfile in test/printer/good*.bminor
+do
+	((total_tests++))
+	if ./bminor --print $testfile > $testfile.out 2>&1
+	then
+		# Feed printed result back through parser
+		if ./bminor --parse $testfile.out > $testfile.reparse.out 2>&1
+		then
+			((successes++))
+		else
+			((failures++))
+			echo "$testfile failure in re-parsing the printer output (INCORRECT)"
+		fi
+	else
+		((failures++))
+		echo "$testfile failure (INCORRECT)"
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"

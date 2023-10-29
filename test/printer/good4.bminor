@@ -1,0 +1,10 @@
+main: function void () = {
+    x: integer = 3;
+    y: integer = -3;
+    if (!(x+y)) print "case1";
+    else if (x&&y) print "case2";
+    else if (((x))||y) print "case3";
+    else if ((x)/(y-2)) print "case4";
+    else print "case5";
+    return x+y;
+}

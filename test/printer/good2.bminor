@@ -1,0 +1,8 @@
+/* Test nested braces */
+main: function void() = {
+    {
+        {
+            if (true) return;
+        }
+    }
+}
