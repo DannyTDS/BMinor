@@ -110,7 +110,7 @@ int string_encode(const char *s, char *es) {
 		} else if ((int)*s < MINASCII || (int)*s > MAXASCII) {
 			/* current char not printable */
 			unsigned char ch = *s++;
-			sprintf(es, "\\0x%2x", ch);
+			sprintf(es, "\\0x%02x", ch);
 			es += 5*sizeof(char);
 		} else {
 			/* ordinary char inside printable ASCII range */

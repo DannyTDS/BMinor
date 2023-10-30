@@ -95,7 +95,7 @@ void expr_print( struct expr *e )
 		/* Take the encoded char part in between ""s */
 		char ec[BUFSIZ];
 		sscanf(es, "\"%[^\"]", ec);
-		printf("%s", ec);
+		printf("\'%s\'", ec);
 		return;
 	} else if (e->kind == EXPR_STR_LIT) {
 		char es[BUFSIZ];
