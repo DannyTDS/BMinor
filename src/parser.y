@@ -222,7 +222,7 @@ opt_expr_list	:	expr_list			{ $$ = $1; }
 expr_block	:	TOKEN_LBRACE expr_list TOKEN_RBRACE	{ $$ = expr_create(EXPR_BLOCK, $2, 0, 8); }		// Array initializer
 			;
 
-expr_block_list	:	expr_block TOKEN_COMMA expr_block_list	{ $$ = expr_create(EXPR_BLOCK, $1, $3, 8); }
+expr_block_list	:	expr_block TOKEN_COMMA expr_block_list	{ $$ = $1; $$->right = $3; }
 				|	expr_block								{ $$ = $1; }
 
 opt_expr_block_list	:	TOKEN_LBRACE expr_block_list TOKEN_RBRACE		{ $$ = expr_create(EXPR_BLOCK, $2, 0, 8); }

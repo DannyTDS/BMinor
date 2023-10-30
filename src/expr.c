@@ -251,10 +251,14 @@ struct expr * expr_wrap(struct expr* e) {
 
 struct expr * expr_wrap_auto(struct expr* e, assocRule_t rule) {
 	/* Check the precedence value of two exprs. Apply necessary grouping. */
-	/* Higher precedence = higer precedence in the AST = lower precedence */
+	/* Higher precedence = higer level in the AST */
 	if (e->left && e->left->precedence < e->precedence) e->left = expr_wrap(e->left);
-	else if (rule == ASSOC_LEFT && e->left->precedence == e->precedence) e->left = expr_wrap(e->left);
 	if (e->right && e->right->precedence < e->precedence) e->right = expr_wrap(e->right);
-	else if (rule == ASSOC_RIGHT && e->right->precedence == e->precedence) e->right = expr_wrap(e->right);
+	if (rule == ASSOC_LEFT) {
+		if (e->right && e->right->precedence == e->precedence) e->right = expr_wrap(e->right);
+	}
+	if (rule == ASSOC_RIGHT) {
+		if (e->left && e->left->precedence == e->precedence) e->left = expr_wrap(e->left);
+	}
 	return e;
 }
