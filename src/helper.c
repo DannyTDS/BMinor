@@ -1,5 +1,16 @@
 #include "helper.h"
 
+int resolve() {
+    /* Halt on parse / scan error */
+    if (parse("simple") != SUCCESS) return FAILURE;
+    scope_enter();
+    decl_resolve(root);
+    scope_exit();
+    if (resolve_status != SUCCESS) info("Name resolution failed.");
+    else info("Name resolution successful!");
+    return resolve_status;
+}
+
 int pprint() {
     /* Trivia: print operation will always return SUCCESS since it implies a valid BMinor program */
     /* Halt on parse / scan error */

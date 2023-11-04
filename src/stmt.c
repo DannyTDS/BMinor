@@ -121,3 +121,8 @@ struct stmt * stmt_wrap(struct stmt * s)
     if (s->kind != STMT_BLOCK) return stmt_create(STMT_BLOCK, 0, 0, 0, 0, s, 0, 0);
     else return s;
 }
+
+
+void stmt_resolve(struct stmt* s) {
+    
+}

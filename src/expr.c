@@ -1,4 +1,5 @@
 #include "expr.h"
+#include "utils.h"
 #include "encoder.h"
 
 #include <stdio.h>
@@ -261,4 +262,25 @@ struct expr * expr_wrap_auto(struct expr* e, assocRule_t rule) {
 		if (e->left && e->left->precedence == e->precedence) e->left = expr_wrap(e->left);
 	}
 	return e;
+}
+
+
+void expr_resolve( struct expr* e ) {
+	if (!e) return;
+	
+	// Resolve identifiers
+	if (e->kind == EXPR_IDENT) {
+		e->symbol = scope_lookup(e->name);
+		if (!e->symbol) {
+			error("Resolve error: unable to resolve name %s.", e->name);
+			resolve_status = FAILURE;
+		} else {
+			printf("%s resolves to ", e->name);
+			symbol_print(e->symbol);
+			printf("\n");
+		}
+	} else {
+		expr_resolve(e->left);
+		expr_resolve(e->right);
+	}
 }

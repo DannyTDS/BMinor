@@ -1,4 +1,5 @@
 #include "decl.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,4 +56,32 @@ void decl_print( struct decl *d, int indent )
 
     // Loop over the linked list
     decl_print(d->next, indent);
+}
+
+
+void decl_resolve(struct decl* d) {
+    if (!d) return;
+
+    symbol_t kind = (scope_level() > 0) ? SYMBOL_LOCAL : SYMBOL_GLOBAL;
+    struct symbol* sym = symbol_create(kind, d->type, d->name);
+
+    // Resolve expressions
+    if (d->value) {
+        expr_resolve(d->value);
+    }
+
+    // Bind symbol after expression has been evaluated.
+    // Avoid situations like "x = x+1" at first declaration.
+    scope_bind(d->name, sym);
+    d->symbol = sym;
+
+    // Resolve function definitions
+    if (d->code) {
+        scope_enter();
+        param_list_resolve(d->type->params);
+        stmt_resolve(d->code);
+        scope_exit();
+    }
+
+    decl_resolve(d->next);
 }

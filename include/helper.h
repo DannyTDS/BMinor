@@ -1,6 +1,7 @@
 #ifndef HELPER_H
 #define HELPER_H
 
+#include "scope.h"
 #include "utils.h"
 #include "token.h"
 #include "encoder.h"
@@ -13,6 +14,7 @@ extern char *yytext;
 /* Root node of the AST */
 extern struct decl *root;
 
+int resolve();
 int pprint();
 int parse(char* mode);
 int scan(char* mode);

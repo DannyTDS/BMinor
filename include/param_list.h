@@ -3,6 +3,7 @@
 
 #include "type.h"
 #include "symbol.h"
+#include "scope.h"
 
 struct param_list {
 	const char *name;
@@ -14,5 +15,6 @@ struct param_list {
 struct param_list * param_list_create( const char *name, struct type *type, struct param_list *next );
 void param_list_delete( struct param_list *a );
 void param_list_print( struct param_list *a );
+void param_list_resolve( struct param_list *a );
 
 #endif

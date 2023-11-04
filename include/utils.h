@@ -19,4 +19,7 @@
 /* Compatible with Bison output header */
 typedef enum yytokentype token_t;
 
+/* For name resolving and typechecking */
+extern int resolve_status;
+
 #endif

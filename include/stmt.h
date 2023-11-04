@@ -2,6 +2,8 @@
 #define STMT_H
 
 #include "decl.h"
+#include "symbol.h"
+#include "scope.h"
 #include <stdbool.h>
 
 typedef enum {
@@ -31,6 +33,7 @@ struct stmt * stmt_create( stmt_t kind, struct decl *decl, struct expr *init_exp
 
 void stmt_delete( struct stmt *s );
 void stmt_print( struct stmt *s, int indent );
+void stmt_resolve( struct stmt *s );
 
 struct stmt * stmt_wrap( struct stmt * s );
 
