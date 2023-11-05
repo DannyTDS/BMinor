@@ -35,5 +35,9 @@ void param_list_print( struct param_list *a )
 
 
 void param_list_resolve(struct param_list *a) {
-    
+    if (!a) return;
+    struct symbol* sym = symbol_create(SYMBOL_PARAM, a->type, a->name);
+    a->symbol = sym;
+    scope_bind(a->name, sym);
+    param_list_resolve(a->next);
 }

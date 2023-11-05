@@ -273,7 +273,7 @@ void expr_resolve( struct expr* e ) {
 		e->symbol = scope_lookup(e->name);
 		if (!e->symbol) {
 			error("Resolve error: unable to resolve name %s.", e->name);
-			resolve_status = FAILURE;
+			resolve_error++;
 		} else {
 			printf("%s resolves to ", e->name);
 			symbol_print(e->symbol);

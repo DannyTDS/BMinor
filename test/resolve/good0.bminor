@@ -1,0 +1,7 @@
+// Basic expressions
+
+x: integer = 1;
+y: integer = 2;
+z: integer = x+y;
+w: integer = w++;
+t: integer = w+x+y+z;

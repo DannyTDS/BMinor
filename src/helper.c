@@ -1,14 +1,21 @@
 #include "helper.h"
 
+int resolve_error = 0;
+
 int resolve() {
     /* Halt on parse / scan error */
     if (parse("simple") != SUCCESS) return FAILURE;
     scope_enter();
     decl_resolve(root);
     scope_exit();
-    if (resolve_status != SUCCESS) info("Name resolution failed.");
-    else info("Name resolution successful!");
-    return resolve_status;
+    if (resolve_error != 0) {
+        info("Name resolution failed: %d error(s)", resolve_error);
+        return FAILURE;
+    }
+    else {
+        info("Name resolution successful!");
+        return SUCCESS;
+    }
 }
 
 int pprint() {

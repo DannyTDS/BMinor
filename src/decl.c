@@ -72,6 +72,11 @@ void decl_resolve(struct decl* d) {
 
     // Bind symbol after expression has been evaluated.
     // Avoid situations like "x = x+1" at first declaration.
+    if (scope_lookup_current(d->name)) {
+        // Multiple definitions
+        error("Resolve error: Multiple definitions of %s", d->name);
+        resolve_error++;
+    }
     scope_bind(d->name, sym);
     d->symbol = sym;
 

@@ -4,7 +4,6 @@
 
 /* Top of the stack */
 struct scope* stack;
-int resolve_status = SUCCESS;
 
 void scope_enter() {
     struct scope* new_scope = calloc(1, sizeof(struct scope));
