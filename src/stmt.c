@@ -124,5 +124,14 @@ struct stmt * stmt_wrap(struct stmt * s)
 
 
 void stmt_resolve(struct stmt* s) {
-    
+    if (!s) return;
+
+    if (s->decl) decl_resolve(s->decl);
+    if (s->expr) expr_resolve(s->expr);
+    if (s->body) stmt_resolve(s->body);
+    if (s->else_body) stmt_resolve(s->else_body);
+    if (s->init_expr) expr_resolve(s->init_expr);
+    if (s->next_expr) expr_resolve(s->next_expr);
+
+    stmt_resolve(s->next);
 }

@@ -1,5 +1,8 @@
 // Basic param lists
 
 main: function void (argc: integer, argv: array[] char) = {
-
+    x: integer = argc;
+    x: float = 1.0;
+    print x;
+    return argv[0];
 }

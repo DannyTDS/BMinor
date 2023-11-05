@@ -38,7 +38,6 @@ void scope_bind( const char *name, struct symbol *sym ) {
     stack->size++;
     if (!hash_table_insert(stack->ht, name, sym)) {
         error("Hash table error: unable to insert key %s", name);
-        exit(FAILURE);
     }
 };
 

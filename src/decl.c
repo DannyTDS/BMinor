@@ -74,10 +74,11 @@ void decl_resolve(struct decl* d) {
     // Avoid situations like "x = x+1" at first declaration.
     if (scope_lookup_current(d->name)) {
         // Multiple definitions
-        error("Resolve error: Multiple definitions of %s", d->name);
+        error("Resolve error: multiple definitions of %s", d->name);
         resolve_error++;
+    } else {
+        scope_bind(d->name, sym);
     }
-    scope_bind(d->name, sym);
     d->symbol = sym;
 
     // Resolve function definitions
