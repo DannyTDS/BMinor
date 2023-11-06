@@ -126,12 +126,42 @@ struct stmt * stmt_wrap(struct stmt * s)
 void stmt_resolve(struct stmt* s) {
     if (!s) return;
 
-    if (s->decl) decl_resolve(s->decl);
-    if (s->expr) expr_resolve(s->expr);
-    if (s->body) stmt_resolve(s->body);
-    if (s->else_body) stmt_resolve(s->else_body);
-    if (s->init_expr) expr_resolve(s->init_expr);
-    if (s->next_expr) expr_resolve(s->next_expr);
+    switch (s->kind) {
+        case STMT_DECL:
+            decl_resolve(s->decl);
+            break;
+        case STMT_EXPR:
+            expr_resolve(s->expr);
+            break;
+        case STMT_IF_ELSE:
+            expr_resolve(s->expr);
+            scope_enter();
+            stmt_resolve(s->body);
+            scope_exit();
+            scope_enter();
+            stmt_resolve(s->else_body);
+            scope_exit();
+            break;
+        case STMT_FOR:
+            expr_resolve(s->init_expr);
+            expr_resolve(s->expr);
+            expr_resolve(s->next_expr);
+            scope_enter();
+            stmt_resolve(s->body);
+            scope_exit();
+            break;
+        case STMT_PRINT:
+            expr_resolve(s->expr);
+            break;
+        case STMT_RETURN:
+            expr_resolve(s->expr);
+            break;
+        case STMT_BLOCK:
+            scope_enter();
+            stmt_resolve(s->body);
+            scope_exit();
+            break;
+    }
 
     stmt_resolve(s->next);
 }

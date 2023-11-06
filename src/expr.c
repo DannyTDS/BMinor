@@ -272,7 +272,7 @@ void expr_resolve( struct expr* e ) {
 	if (e->kind == EXPR_IDENT) {
 		e->symbol = scope_lookup(e->name);
 		if (!e->symbol) {
-			error("Resolve error: unable to resolve name %s.", e->name);
+			error("Resolve error: undefined name %s.", e->name);
 			resolve_error++;
 		} else {
 			printf("%s resolves to ", e->name);
