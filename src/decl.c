@@ -110,6 +110,10 @@ void decl_resolve(struct decl* d) {
                 error("Resolve error: prototype is redeclared as non-function type: %s", d->name);
                 resolve_error++;
             }
+        } else if (found_sym->kind==SYMBOL_PARAM && found_sym->allow_redecl) {
+            // Redeclaration of a param. Warn, bind with new declaration
+            warn("Resolve warning: redeclaring param in local scope: %s", d->name);
+            symbol_update(found_sym, sym);
         } else {
             // Multiple definitions of non-prototypes is not OK
             error("Resolve error: multiple definitions of %s", d->name);

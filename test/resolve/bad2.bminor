@@ -1,6 +1,6 @@
-// Multiple definitions in local
+// Multiple redeclarations of a param
 
 main: function void (x: integer) = {
-    x: integer = 2*x;
-    y: integer = 2*x;
+    x: float;
+    x: char;
 }

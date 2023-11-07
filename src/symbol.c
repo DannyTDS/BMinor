@@ -9,6 +9,7 @@ struct symbol * symbol_create( symbol_t kind, struct type *type, const char *nam
     s->type = type;
     s->name = name;
     s->is_prototype = 0;
+    s->allow_redecl = 0;
     return s;
 }
 
@@ -35,4 +36,15 @@ void symbol_print(struct symbol* s) {
             printf("param %d", s->which);
             break;
     }
+}
+
+
+void symbol_update( struct symbol* old, struct symbol* new) {
+    // Update old's attributes to new's
+    old->kind = new->kind;
+    old->name = new->name;
+    old->type = new->type;
+    old->which = new->which;
+    old->is_prototype = new->is_prototype;
+    old->allow_redecl = new->allow_redecl;
 }

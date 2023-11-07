@@ -1,0 +1,6 @@
+// Redeclaring params
+
+f: function void (x: integer) = {
+    x: float = 2.0*x;
+    return x;
+}
