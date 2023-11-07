@@ -1,0 +1,7 @@
+// Function definition does not match declaration
+
+f: function void();
+
+f: function void(x: integer) = {
+    print x;
+}

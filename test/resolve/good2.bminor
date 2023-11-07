@@ -1,0 +1,11 @@
+// Blocked statements
+
+x: integer = 5;
+
+compute: function void (x: integer) = {
+    print x;
+    {
+        x: integer = 2*x;
+        return x;
+    }
+}

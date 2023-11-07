@@ -1,0 +1,5 @@
+// Multiple function prototypes with different signatures
+
+f: function void();
+f: function void();
+f: function integer();

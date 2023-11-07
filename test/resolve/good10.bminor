@@ -1,0 +1,4 @@
+// Multiple function prototypes with same signatures
+
+f: function integer();
+f: function integer();

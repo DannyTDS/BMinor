@@ -1,0 +1,11 @@
+// More than one function definition
+
+f: function void();
+
+f: function void() = {
+    return 1;
+}
+
+f: function void() = {
+    return 0;
+}

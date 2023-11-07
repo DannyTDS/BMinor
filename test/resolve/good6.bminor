@@ -1,0 +1,20 @@
+// Nested scopes
+
+x: integer = 10;
+
+f: function integer (x: integer) = {
+    return 2*x;
+}
+
+g: function integer () = {
+    return 2*x;
+}
+
+main: function void (x: integer) = {
+    y: integer = f(x);
+    {
+        x: integer;
+        for (x=0; x<10; x++) y = y+x;
+    }
+    return x+y;
+}

@@ -1,0 +1,5 @@
+// prototype with differnet re-definition
+
+f: function void();
+
+f: integer = 1;

@@ -1,0 +1,5 @@
+// Multiple declarations in param list
+
+main: function void (x: integer, x: float) = {
+    return x;
+}

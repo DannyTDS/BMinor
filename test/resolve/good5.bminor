@@ -1,0 +1,7 @@
+// function calls
+
+f: function void ();
+
+main: function void () = {
+    f();
+}

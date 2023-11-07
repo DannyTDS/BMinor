@@ -1,0 +1,7 @@
+// If-else statements
+
+main: function void (argc: integer, argv: array[] array[] char) = {
+    if (argc == 1) return;
+    else if (argc == 2) return argv[1];
+    else return argv[2];
+}

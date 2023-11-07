@@ -1,0 +1,6 @@
+// Multiple definitions in local
+
+main: function void (x: integer) = {
+    x: integer = 2*x;
+    y: integer = 2*x;
+}

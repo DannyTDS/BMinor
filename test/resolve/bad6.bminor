@@ -1,0 +1,11 @@
+// If-else cross-referencing variables
+
+main: function void(x: integer) = {
+    if (x>0) {
+        inner: integer = 5;
+        return elseinner;
+    } else {
+        elseinner: integer = 3;
+        return inner;
+    }
+}

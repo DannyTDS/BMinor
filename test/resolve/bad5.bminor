@@ -1,0 +1,4 @@
+// Multiple function prototypes with different signatures
+
+f: function void(x: integer);
+f: function void(y: integer);

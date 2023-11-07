@@ -1,0 +1,5 @@
+// undefined access
+
+main: function void () = {
+    return x;
+}

@@ -1,0 +1,7 @@
+// Prototype and definition
+
+f: function void();
+
+f: function void() = {
+    return 1;
+}

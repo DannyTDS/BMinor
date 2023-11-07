@@ -1,0 +1,12 @@
+// different types of nesting
+
+main: function void (x: integer) = {
+    if (x>0) {
+        x: float = 0.0;
+    } else {
+        x: integer;
+        for (x=0;x<10;x++) {
+            x: char='c';
+        }
+    }
+}

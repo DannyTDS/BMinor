@@ -1,0 +1,17 @@
+// Very deep nested scopes
+
+main: function void(x: integer) = {
+    {
+        x: integer = 0;
+        {
+        x: integer = 0;
+        {
+        x: integer = 0;
+        {
+        x: integer = 0;
+    }
+    }
+    }
+    }
+    return x;
+}

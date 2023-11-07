@@ -1,0 +1,6 @@
+// For loops
+
+main: function void (argc: integer, argv: array[] array[] char) = {
+    i: integer;
+    for (i=0; i<10; i++) print i;
+}

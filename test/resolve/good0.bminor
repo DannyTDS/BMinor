@@ -3,5 +3,5 @@
 x: integer = 1;
 y: integer = 2;
 z: integer = x+y;
-w: integer = w++;
+w: integer = z++;
 t: integer = w+x+y+z;
