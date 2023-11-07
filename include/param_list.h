@@ -17,4 +17,6 @@ void param_list_delete( struct param_list *a );
 void param_list_print( struct param_list *a );
 void param_list_resolve( struct param_list *a );
 
+int param_list_cmp( struct param_list *a1, struct param_list *a2 );
+
 #endif

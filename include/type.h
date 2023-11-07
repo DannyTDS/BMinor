@@ -30,5 +30,6 @@ struct type * type_create_function( struct type *subtype, struct param_list *par
 
 void		  type_delete( struct type *t );
 void          type_print( struct type *t );
+int			  type_cmp( struct type* t1, struct type* t2);
 
 #endif

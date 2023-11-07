@@ -70,12 +70,51 @@ void decl_resolve(struct decl* d) {
         expr_resolve(d->value);
     }
 
+    // Mark function declarations for special handling
+    if (d->type->kind == TYPE_FUNC && !d->code) {
+        sym->is_prototype = 1;
+    }
+
     // Bind symbol after expression has been evaluated.
     // Avoid situations like "x = x+1" at first declaration.
-    if (scope_lookup_current(d->name)) {
-        // Multiple definitions
-        error("Resolve error: multiple definitions of %s", d->name);
-        resolve_error++;
+    struct symbol* found_sym = scope_lookup_current(d->name);
+    if (found_sym) {
+        // Function prototypes can be declared more than once, as long as they have the same signature
+        if (found_sym->is_prototype) {
+            if (sym->is_prototype) {
+                // Evaluating two function prototypes
+                if (type_cmp(sym->type, found_sym->type)==0) {
+                    // Allowed, but don't bind
+                    warn("Resolve warning: multiple prototypes of %s", d->name);
+                } else {
+                    // Not allowed different prototypes
+                    error("Resolve error: different prototypes of %s", d->name);
+                    resolve_error++;
+                }
+            } else if (sym->type->kind==TYPE_FUNC && d->code) {
+                // Trying to resolve a function definition to a previously declared prototype
+                if (type_cmp(sym->type, found_sym->type)==0) {
+                    // Bind definition to prototype, and disallow any other definitions
+                    printf("%s defines ", d->name);
+                    symbol_print(found_sym);
+                    printf("\n");
+                    // Disallow other binds
+                    found_sym->is_prototype = 0;
+                } else {
+                    // Definition doesn't agree with prototype signature
+                    error("Resolve error: definition doesn't match prototype: %s", d->name);
+                    resolve_error++;
+                }
+            } else {
+                // Previous prototype is re-defined to another type
+                error("Resolve error: prototype is redeclared as non-function type: %s", d->name);
+                resolve_error++;
+            }
+        } else {
+            // Multiple definitions of non-prototypes is not OK
+            error("Resolve error: multiple definitions of %s", d->name);
+            resolve_error++;
+        }
     } else {
         scope_bind(d->name, sym);
     }
@@ -85,7 +124,9 @@ void decl_resolve(struct decl* d) {
     if (d->code) {
         scope_enter();
         param_list_resolve(d->type->params);
-        stmt_resolve(d->code);
+        // Function definitions are a STMT_BLOCK by itself in the AST.
+        // Override so that we don't create a new scope (other than the param_list) for this STMT_BLOCK.
+        stmt_resolve(d->code->body);
         scope_exit();
     }
 

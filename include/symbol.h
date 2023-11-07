@@ -15,6 +15,7 @@ struct symbol {
 	struct type *type;
 	const char *name;
 	int which;
+	int is_prototype;
 };
 
 #include "scope.h"

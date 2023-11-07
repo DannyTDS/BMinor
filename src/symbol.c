@@ -8,6 +8,7 @@ struct symbol * symbol_create( symbol_t kind, struct type *type, const char *nam
     s->kind = kind;
     s->type = type;
     s->name = name;
+    s->is_prototype = 0;
     return s;
 }
 
@@ -24,7 +25,8 @@ void symbol_print(struct symbol* s) {
     if (!s) return;
     switch (s->kind) {
         case SYMBOL_GLOBAL:
-            printf("global %s", s->name);
+            if (s->is_prototype) printf("global prototype %s", s->name);
+            else printf("global %s", s->name);
             break;
         case SYMBOL_LOCAL:
             printf("local %d", s->which);
