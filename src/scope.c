@@ -58,3 +58,24 @@ struct symbol *scope_lookup( const char *name ) {
 struct symbol *scope_lookup_current( const char *name ) {
     return hash_table_lookup(stack->ht, name);
 };
+
+
+// For debugging
+void scope_print() {
+    puts("===============");
+    struct scope* curr = stack;
+    while (curr) {
+        printf("[%d] {", curr->level);
+        hash_table_firstkey(curr->ht);
+        char* key;
+        void* sym;
+        while (hash_table_nextkey(curr->ht, &key, &sym) != 0 ) {
+            printf("%s: ", key);
+            symbol_print((struct symbol*)sym);
+            printf(",");
+        }
+        printf("}\n");
+        curr = curr->next;
+    }
+    puts("===============");
+}

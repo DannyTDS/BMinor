@@ -19,4 +19,6 @@ void scope_bind( const char *name, struct symbol *sym );
 struct symbol *scope_lookup( const char *name );
 struct symbol *scope_lookup_current( const char *name );
 
+void scope_print();
+
 #endif
