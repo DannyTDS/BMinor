@@ -1,0 +1,15 @@
+// Multiple function local scopes
+
+
+f: function void (x: integer, y: integer) = {
+    z: integer = x+y;
+    w: integer = z*2;
+    return w;
+}
+
+
+g: function void (s: float, t: float) = {
+    m: float = s-t;
+    print m;
+    return 2*m;
+}
