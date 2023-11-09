@@ -25,6 +25,10 @@ void scope_enter() {
 void scope_exit() {
     if (!stack) return;
     struct scope* next_scope = stack->next;
+    // Update size field for consistency in local scopes
+    if (stack->level > 1) {
+        next_scope->size = stack->size;
+    }
     hash_table_delete(stack->ht);
     stack = next_scope;
 };
@@ -32,6 +36,14 @@ void scope_exit() {
 int scope_level() {
     return (stack) ? stack->level : -1;
 };
+
+void scope_size_incre() {
+    stack->size++;
+}
+
+int scope_size() {
+    return (stack) ? stack->size : -1;
+}
 
 void scope_bind( const char *name, struct symbol *sym ) {
     sym->which = stack->size;

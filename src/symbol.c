@@ -44,7 +44,9 @@ void symbol_update( struct symbol* old, struct symbol* new) {
     old->kind = new->kind;
     old->name = new->name;
     old->type = new->type;
-    old->which = new->which;
+    // For which, override as if this is a new binding
+    old->which = scope_size();
+    scope_size_incre();
     old->is_prototype = new->is_prototype;
     old->allow_redecl = new->allow_redecl;
 }
