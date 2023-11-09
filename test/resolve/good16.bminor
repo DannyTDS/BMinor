@@ -1,7 +1,8 @@
 // Declarations in nested scopes
 
-f: function void (x: integer) = {
+f: function void (x: integer, y: integer) = {
     print x;
+    print y;
     {
         x: integer;
         print x;
