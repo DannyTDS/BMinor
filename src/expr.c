@@ -284,3 +284,8 @@ void expr_resolve( struct expr* e ) {
 		expr_resolve(e->right);
 	}
 }
+
+
+void expr_typecheck( struct expr* e ) {
+	if (!e) return;
+}

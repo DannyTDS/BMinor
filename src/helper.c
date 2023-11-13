@@ -1,8 +1,22 @@
 #include "helper.h"
 
 int resolve_error = 0;
+int typecheck_error = 0;
 
-int resolve() {
+int typecheck() {
+    if (resolve("simple") != SUCCESS) return FAILURE;
+    // TODO:
+    if (typecheck_error != 0) {
+        info("Typecheck failed: %d error(s)", typecheck_error);
+        return FAILURE;
+    }
+    else {
+        info("Typecheck successful!");
+        return SUCCESS;
+    }
+}
+
+int resolve(char* mode) {
     /* Halt on parse / scan error */
     if (parse("simple") != SUCCESS) return FAILURE;
     scope_enter();
@@ -11,9 +25,8 @@ int resolve() {
     if (resolve_error != 0) {
         info("Name resolution failed: %d error(s)", resolve_error);
         return FAILURE;
-    }
-    else {
-        info("Name resolution successful!");
+    } else {
+        if (streq(mode, "verbose")) info("Name resolution successful!");
         return SUCCESS;
     }
 }

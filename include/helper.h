@@ -14,7 +14,8 @@ extern char *yytext;
 /* Root node of the AST */
 extern struct decl *root;
 
-int resolve();
+int typecheck();
+int resolve(char* mode);
 int pprint();
 int parse(char* mode);
 int scan(char* mode);

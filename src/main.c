@@ -10,6 +10,7 @@ void usage(char* prog_name) {
     fprintf(stderr, "\t--parse\n");
     fprintf(stderr, "\t--print\n");
     fprintf(stderr, "\t--resolve\n");
+    fprintf(stderr, "\t--typecheck\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -34,7 +35,9 @@ int main(int argc, char* argv[]) {
     } else if (streq(argv[1], "--print")) {
         status = pprint();
     } else if (streq(argv[1], "--resolve")) {
-        status = resolve();
+        status = resolve("verbose");
+    } else if (streq(argv[1], "--typecheck")) {
+        status = typecheck();
     } else {
         usage(argv[0]);
         status = FAILURE;

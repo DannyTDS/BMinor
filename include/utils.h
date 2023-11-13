@@ -23,5 +23,6 @@ typedef enum yytokentype token_t;
 
 /* For name resolving and typechecking */
 extern int resolve_error;
+extern int typecheck_error;
 
 #endif
