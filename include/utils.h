@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define SUCCESS 0
 #define FAILURE 1
+
+#define TRUE 1
+#define FALSE 0
 
 #define streq(a, b)         (strcmp(a, b) == 0)
 /* TODO: Temporarily write all messages to stdout. To be compatible with typechecker error messages.

@@ -297,30 +297,30 @@ struct type* expr_typecheck( struct expr* e ) {
 		/* Special handling for unary add/sub signs */
 		case EXPR_ADD:
 			/* If unary, expr is stored in right leaf */
-			if (!e->left) expr_typecheck_value(e->right, 0, rtype, 0, "add");
-			else expr_typecheck_value(e->left, e->right, ltype, rtype, "add");
-			res = type_create(TYPE_INT);
+			if (!e->left) {
+				res = expr_typecheck_value(e->right, 0, rtype, 0, "add");
+			} else {
+				res = expr_typecheck_value(e->left, e->right, ltype, rtype, "add");
+			}
 			break;
 		case EXPR_SUB:
-			if (!e->left) expr_typecheck_value(e->right, 0, rtype, 0, "sub");
-			else expr_typecheck_value(e->left, e->right, ltype, rtype, "sub");
-			res = type_create(TYPE_INT);
+			if (!e->left) {
+				res = expr_typecheck_value(e->right, 0, rtype, 0, "sub");
+			} else {
+				res = expr_typecheck_value(e->left, e->right, ltype, rtype, "sub");
+			}
 			break;
 		case EXPR_MUL:
-			expr_typecheck_value(e->left, e->right, ltype, rtype, "multiple");
-			res = type_create(TYPE_INT);
+			res = expr_typecheck_value(e->left, e->right, ltype, rtype, "multiple");
 			break;
 		case EXPR_DIV:
-			expr_typecheck_value(e->left, e->right, ltype, rtype, "divide");
-			res = type_create(TYPE_INT);
+			res = expr_typecheck_value(e->left, e->right, ltype, rtype, "divide");
 			break;
 		case EXPR_EXP:
-			expr_typecheck_value(e->left, e->right, ltype, rtype, "exponent");
-			res = type_create(TYPE_INT);
+			res = expr_typecheck_value(e->left, e->right, ltype, rtype, "exponent");
 			break;
 		case EXPR_MOD:
-			expr_typecheck_value(e->left, e->right, ltype, rtype, "mod");
-			res = type_create(TYPE_INT);
+			res = expr_typecheck_value(e->left, e->right, ltype, rtype, "mod");
 			break;
 		/* Literals only return the type they represent */
 		case EXPR_INT_LIT:
@@ -353,15 +353,14 @@ struct type* expr_typecheck( struct expr* e ) {
 			res = type_create(TYPE_BOOL);
 			break;
 		case EXPR_INCRE:
-			/* Unary, value stored in left child */
-			expr_typecheck_value(e->left, 0, ltype, 0, "increment");
-			res = type_create(TYPE_INT);
+			/* Unary, value stored in left child. Always return TYPE_INT */
+			res = expr_typecheck_value(e->left, 0, ltype, 0, "increment");
 			break;
 		case EXPR_DECRE:
-			expr_typecheck_value(e->left, 0, ltype, 0, "decrement");
-			res = type_create(TYPE_INT);
+			res = expr_typecheck_value(e->left, 0, ltype, 0, "decrement");
 			break;
 		case EXPR_LT:
+			/* Override return value from expr_typecheck_value since comparisons always return boolean */
 			expr_typecheck_value(e->left, e->right, ltype, rtype, "less than");
 			res = type_create(TYPE_BOOL);
 			break;
@@ -377,6 +376,7 @@ struct type* expr_typecheck( struct expr* e ) {
 			expr_typecheck_value(e->left, e->right, ltype, rtype, "greater than or equal to");
 			res = type_create(TYPE_BOOL);
 			break;
+		/* EQ and NE require some special handling over types, but they also always return boolean */
 		case EXPR_EQ:
 			expr_typecheck_value(e->left, e->right, ltype, rtype, "equal");
 			res = type_create(TYPE_BOOL);
@@ -387,14 +387,20 @@ struct type* expr_typecheck( struct expr* e ) {
 			break;
 		case EXPR_ASSIGN:
 			//FIXME:
-			/* Can only assign to identifier or array index */
-			if (e->left->kind != EXPR_IDENT && e->left->kind != EXPR_INDEX) {
+			/* Can only assign to non-function non-array identifier or array index */
+			if (ltype->kind == TYPE_FUNC) {
+				error("Type error: cannot assign to function type '%s'", e->left->name);
+				typecheck_error++;
+			} else if (ltype->kind == TYPE_ARRAY && e->left->kind != EXPR_INDEX) {
+				error("Type error: cannot assign to array type '%s', use indexing instead", e->left->name);
+				typecheck_error++;
+			} else if (e->left->kind != EXPR_IDENT && e->left->kind != EXPR_INDEX) {
 				printf("[ERROR]    Type error: left side of assignent cannot be ");
 				type_print(ltype);
 				printf("\n");
 				typecheck_error++;
 			} else if (type_cmp(ltype, rtype) != 0) {
-				/* Non auto types: Assignment type must match */
+				/* Assignment type must match */
 				printf("[ERROR]    Type error: cannot assign ");
 				type_print(rtype);
 				printf(" (");
@@ -485,7 +491,7 @@ struct type* expr_typecheck( struct expr* e ) {
 					/* Compare the subtype of arrays */
 					if (!exp_type) exp_type = type_copy(act_type);		// Set expected type to first block's type
 					else if (type_cmp(exp_type->subtype, act_type->subtype)!=0) {
-						printf("[ERROR]    Type error: inconsistent types found in nested array instatiation: expected array of ");
+						printf("[ERROR]    Type error: inconsistent types found in nested array instatiation: expect array of ");
 						type_print(exp_type->subtype);
 						printf(", but found array of ");
 						type_print(act_type->subtype);
@@ -498,7 +504,7 @@ struct type* expr_typecheck( struct expr* e ) {
 					act_type = expr_typecheck(term);
 					if (!exp_type) exp_type = type_copy(act_type);		// Set expected type to first term's type
 					else if (type_cmp(exp_type, act_type)!=0) {
-						printf("[ERROR]    Type error: inconsistent types found in array instatiation: expected ");
+						printf("[ERROR]    Type error: inconsistent types found in array instatiation: expect ");
 						type_print(exp_type);
 						printf(", but found ");
 						type_print(act_type);
@@ -526,7 +532,7 @@ struct type* expr_typecheck( struct expr* e ) {
 */
 void expr_typecheck_error( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc) {
 	char* opkind = (rtype) ? "binary" : "unary";
-	printf("[ERROR]    Type error: invalid operands to %s '%s': ", opkind, desc);
+	printf("[ERROR]    Type error: invalid operands to %s %s: ", opkind, desc);
 	type_print(ltype);
 	printf(" (");
 	expr_print(lexpr);
@@ -548,23 +554,37 @@ void expr_typecheck_error( struct expr *lexpr, struct expr *rexpr, struct type *
  * Supports unary and binary typecheck. If typechecking an unary operator, pass in `rexpr` and `rtype` as NULL.
  * 
  * @param desc: Descriptive string of the action taken by the operator.
+ * @return Return a copy of `ltype` upon success. Otherwise return a fake type of `TYPE_INT`.
 */
-void expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc ) {
+struct type* expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc ) {
 	/* Typecheck unary */
 	if (!rtype) {
-		if (ltype->kind == TYPE_INT || ltype->kind == TYPE_FLOAT) return;
-		else {
+		if (ltype->kind == TYPE_INT || ltype->kind == TYPE_FLOAT) {
+			return type_copy(ltype);
+		} else {
 			/* Unary sign applied to unsupported type */
 			expr_typecheck_error(lexpr, 0, ltype, 0, desc);
-			return;
+			return type_create(TYPE_INT);
 		}
 	} else {
 		/* Typecheck binary*/
-		if (type_cmp(ltype, rtype)==0 && (ltype->kind == TYPE_INT || ltype->kind == TYPE_FLOAT)) return;
-		else {
-			/* Type error in binary ops */
+		if (type_cmp(ltype, rtype)!=0) {
+			/* Not the same type */
 			expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
-			return;
+			return type_create(TYPE_INT);
+		} else if (streq(desc, "equal") || streq(desc, "not equal")) {
+			/* The equality operators != and == may be applied to any type except
+			void, array, or function and always return boolean. */
+			if (ltype->kind == TYPE_VOID || ltype->kind == TYPE_FUNC || ltype->kind == TYPE_ARRAY) {
+				expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
+			}
+			return type_create(TYPE_INT);
+		} else if (ltype->kind != TYPE_INT && ltype->kind != TYPE_FLOAT) {
+			/* Type error */
+			expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
+			return type_create(TYPE_INT);
+		} else {
+			return type_copy(ltype);
 		}
 	}
 }
@@ -575,6 +595,7 @@ void expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *
  * Supports unary and binary typecheck. If typechecking an unary operator, pass in rexpr and rtype as NULL.
  * 
  * @param desc: Descriptive string of the action taken by the operator.
+ * @return Return void since boolean operation always result in boolean.
 */
 void expr_typecheck_boolean( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc ) {
 	if (!rtype) {
@@ -586,4 +607,30 @@ void expr_typecheck_boolean( struct expr *lexpr, struct expr *rexpr, struct type
 			expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
 		}
 	}
+}
+
+/**
+ * Checks whether the given expression is a constant.
+ * 
+ * Constant includes: literals, array initializers.
+ * @return Return 1 if expression is constant, 0 otherwise.
+*/
+int expr_typecheck_constant( struct expr *e ) {
+	/* Reached the end of linked list (nested array initialliers) */
+	if (!e) return TRUE;
+	switch(e->kind) {
+		case EXPR_INT_LIT:
+		case EXPR_FLOAT_LIT:
+		case EXPR_CHAR_LIT:
+		case EXPR_STR_LIT:
+		case EXPR_TRUE:
+		case EXPR_FALSE:
+			return TRUE;
+		case EXPR_TERM:
+		case EXPR_BLOCK:
+			return expr_typecheck_constant(e->left) && expr_typecheck_constant(e->right);
+		default:
+			return FALSE;
+	}
+	return TRUE;
 }

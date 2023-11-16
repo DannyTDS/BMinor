@@ -190,7 +190,7 @@ void stmt_typecheck( struct stmt *s, struct decl *func_decl ) {
             /* Check condition is boolean */
             rtype = expr_typecheck(s->expr);
             if (rtype->kind != TYPE_BOOL) {
-                printf("[ERROR]    Type error: condition must be boolean, found ");
+                printf("[ERROR]    Type error: if-else condition must be boolean, found ");
                 type_print(rtype);
                 printf(" (");
                 expr_print(s->expr);
@@ -213,8 +213,8 @@ void stmt_typecheck( struct stmt *s, struct decl *func_decl ) {
                 typecheck_error++;
             }
             rtype = expr_typecheck(s->expr);
-            if (rtype && rtype->kind != TYPE_INT) {
-                printf("[ERROR]    Type error: for-loop end must be integer, found ");
+            if (rtype && rtype->kind != TYPE_BOOL) {
+                printf("[ERROR]    Type error: for-loop end must be boolean, found ");
                 type_print(rtype);
                 printf(" (");
                 expr_print(s->expr);

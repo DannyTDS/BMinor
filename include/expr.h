@@ -83,7 +83,8 @@ struct expr * expr_wrap_auto(struct expr *e, assocRule_t rule);			// Automatical
 
 void expr_resolve( struct expr *e );
 struct type * expr_typecheck( struct expr *e );
-void expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
+struct type* expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
 void expr_typecheck_boolean( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
 void expr_typecheck_error( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
+int expr_typecheck_constant( struct expr *e );
 #endif

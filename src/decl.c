@@ -171,6 +171,11 @@ void decl_typecheck( struct decl *d ) {
                 }
             }
         }
+        /* Check functions defined in local space */
+        if (d->symbol->kind == SYMBOL_LOCAL) {
+            error("Type error: declaring function '%s' in local scope is not supported", d->name);
+            typecheck_error++;
+        }
     }
 
     if (d->type->kind == TYPE_ARRAY) {
@@ -215,6 +220,7 @@ void decl_typecheck( struct decl *d ) {
 
     /* Variable definition */
     if (d->value) {
+        /* 1. Check type match */
         /* Check it is NOT a function */
         if (d->type->kind == TYPE_FUNC) {
             error("Type error: %s is declared as function but received expression assignment", d->name);
@@ -232,6 +238,11 @@ void decl_typecheck( struct decl *d ) {
                 printf("\n");
                 typecheck_error++;
             }
+            /* Local arrays are not permitted to use array initializer */
+            if (d->symbol->kind == SYMBOL_LOCAL && d->value->kind == EXPR_BLOCK) {
+                error("Type error: name '%s' is defined in local scope but received array initializer assignment", d->name);
+                typecheck_error++;
+            }
         } else {
             rtype = expr_typecheck(d->value);
             if (type_cmp(d->type, rtype)!=0) {
@@ -245,6 +256,11 @@ void decl_typecheck( struct decl *d ) {
                 printf("\n");
                 typecheck_error++;
             }
+        }
+        /* 2. If in global scope, must be constant assignment */
+        if (d->symbol->kind == SYMBOL_GLOBAL && !expr_typecheck_constant(d->value)) {
+            error("Type error: name '%s' is defined in global scope but received non-constant assignment", d->name);
+            typecheck_error++;
         }
     }
 
