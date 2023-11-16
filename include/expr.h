@@ -82,5 +82,8 @@ struct expr * expr_wrap(struct expr *e);
 struct expr * expr_wrap_auto(struct expr *e, assocRule_t rule);			// Automatically group lower precedence expr
 
 void expr_resolve( struct expr *e );
-void expr_typecheck( struct expr *e );
+struct type * expr_typecheck( struct expr *e );
+void expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
+void expr_typecheck_boolean( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
+void expr_typecheck_error( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
 #endif

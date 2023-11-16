@@ -27,6 +27,7 @@ struct type * type_create( type_t kind );
 
 struct type * type_create_array( struct type *subtype, struct expr *arr_size );
 struct type * type_create_function( struct type *subtype, struct param_list *params );
+struct type * type_copy( struct type *src );
 
 void		  type_delete( struct type *t );
 void          type_print( struct type *t );

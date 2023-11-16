@@ -34,6 +34,7 @@ struct stmt * stmt_create( stmt_t kind, struct decl *decl, struct expr *init_exp
 void stmt_delete( struct stmt *s );
 void stmt_print( struct stmt *s, int indent );
 void stmt_resolve( struct stmt *s );
+void stmt_typecheck( struct stmt *s, struct decl *func_decl );
 
 struct stmt * stmt_wrap( struct stmt * s );
 

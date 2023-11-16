@@ -1,4 +1,5 @@
 #include "stmt.h"
+#include "utils.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,4 +165,91 @@ void stmt_resolve(struct stmt* s) {
     }
 
     stmt_resolve(s->next);
+}
+
+
+/**
+ * @param func_decl: Pass in function decl where the stmt is defined in. Helps to determine function return type.
+*/
+void stmt_typecheck( struct stmt *s, struct decl *func_decl ) {
+    if (!s) return;
+
+    struct type* rtype;
+    struct type* init_type;
+    struct type* next_type;
+
+    switch(s->kind) {
+        case STMT_DECL:
+            decl_typecheck(s->decl);
+            break;
+        case STMT_PRINT:
+        case STMT_EXPR:
+            expr_typecheck(s->expr);
+            break;
+        case STMT_IF_ELSE:
+            /* Check condition is boolean */
+            rtype = expr_typecheck(s->expr);
+            if (rtype->kind != TYPE_BOOL) {
+                printf("[ERROR]    Type error: condition must be boolean, found ");
+                type_print(rtype);
+                printf(" (");
+                expr_print(s->expr);
+                printf(")\n");
+                typecheck_error++;
+            }
+            /* Check bodies */
+            stmt_typecheck(s->body, func_decl);
+            stmt_typecheck(s->else_body, func_decl);
+            break;
+        case STMT_FOR:
+            /* Check conditions */
+            init_type = expr_typecheck(s->init_expr);
+            if (init_type && init_type->kind != TYPE_INT) {
+                printf("[ERROR]    Type error: for-loop start must be integer, found ");
+                type_print(init_type);
+                printf(" (");
+                expr_print(s->init_expr);
+                printf(")\n");
+                typecheck_error++;
+            }
+            rtype = expr_typecheck(s->expr);
+            if (rtype && rtype->kind != TYPE_INT) {
+                printf("[ERROR]    Type error: for-loop end must be integer, found ");
+                type_print(rtype);
+                printf(" (");
+                expr_print(s->expr);
+                printf(")\n");
+                typecheck_error++;
+            }
+            next_type = expr_typecheck(s->next_expr);
+            if (next_type && next_type->kind != TYPE_INT) {
+                printf("[ERROR]    Type error: for-loop step must be integer, found ");
+                type_print(next_type);
+                printf(" (");
+                expr_print(s->next_expr);
+                printf(")\n");
+                typecheck_error++;
+            }
+            stmt_typecheck(s->body, func_decl);
+            break;
+        case STMT_RETURN:
+            rtype = expr_typecheck(s->expr);
+            if (!rtype) rtype = type_create(TYPE_VOID);
+            if (type_cmp(func_decl->symbol->type->subtype, rtype)!=0) {
+                printf("[ERROR]    Type error: function '%s' expects return type ", func_decl->symbol->name);
+                type_print(func_decl->symbol->type->subtype);
+                printf(" but actually returned ");
+                type_print(rtype);
+                printf(" (");
+				expr_print(s->expr);
+				printf(")\n");
+                typecheck_error++;
+            }
+            break;
+        case STMT_BLOCK:
+            stmt_typecheck(s->body, func_decl);
+            break;
+    }
+
+    stmt_typecheck(s->next, func_decl);
 }

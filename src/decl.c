@@ -70,6 +70,13 @@ void decl_resolve(struct decl* d) {
         expr_resolve(d->value);
     }
 
+    // Resolve array length *RECURSIVELY*
+    if (d->type->kind == TYPE_ARRAY) {
+        for (struct type* arr_type = d->type; arr_type->kind == TYPE_ARRAY; arr_type = arr_type->subtype) {
+            expr_resolve(arr_type->arr_size);
+        }
+    }
+
     // Mark function declarations for special handling
     if (d->type->kind == TYPE_FUNC && !d->code) {
         sym->is_prototype = 1;
@@ -135,4 +142,125 @@ void decl_resolve(struct decl* d) {
     }
 
     decl_resolve(d->next);
+}
+
+
+void decl_typecheck( struct decl *d ) {
+    if (!d) return;
+
+    /* TODO: Sanity tests before we typecheck specific fields */
+    if (d->type->kind == TYPE_FUNC) {
+        /* Function cannot return array or another function */
+        if (d->type->subtype->kind == TYPE_ARRAY || d->type->subtype->kind == TYPE_FUNC) {
+            printf("[ERROR]    Type error: function '%s' does not support return type ", d->name);
+            type_print(d->type->subtype);
+            printf("\n");
+            typecheck_error++;
+        }
+        /* Check parameters */
+        for (struct param_list* param = d->type->params; param; param = param->next) {
+            if (param->type->kind == TYPE_FUNC) {
+                /* Parameters cannot contain function type */
+                error("Type error: declaring parameter '%s' of function '%s' as function type is not supported", param->name, d->name);
+                typecheck_error++;
+            } else if (param->type->kind == TYPE_ARRAY) {
+                /* Array param cannot have declared length */
+                if (param->type->arr_size) {
+                    error("Type error: array parameter '%s' of function '%s' must be declared with empty length", param->name, d->name);
+                    typecheck_error++;
+                }
+            }
+        }
+    }
+
+    if (d->type->kind == TYPE_ARRAY) {
+        /* IMPORTANT: Check array recursively since we allow nested arrays */
+        struct type* curr = d->type;
+        while (curr->kind == TYPE_ARRAY) {
+            /* Array of functions */
+            if (curr->subtype->kind == TYPE_FUNC) {
+                error("Type error: declaring array '%s' as array of functions is not supported", d->name);
+                typecheck_error++;
+            }
+            /* Array length */
+            struct type* len_type = expr_typecheck(curr->arr_size);
+            if (d->symbol->kind == SYMBOL_GLOBAL) {
+                if (!len_type) {
+                    error("Type error: global array '%s' must be declared with constant integer length", d->name);
+                    typecheck_error++;
+                } else if (curr->arr_size->kind != EXPR_INT_LIT) {
+                    printf("[ERROR]    Type error: expect declared length of global array '%s' to be constant integer, but found ", d->name);
+                    type_print(len_type);
+                    printf("\n");
+                    typecheck_error++;
+                }
+            } else if (d->symbol->kind == SYMBOL_LOCAL) {
+                /* If in local scope, non-integer evaluation */
+                if (!len_type) {
+                    error("Type error: local array '%s' must be declared with length that evaluates to integer", d->name);
+                    typecheck_error++;
+                } else if (len_type->kind != TYPE_INT) {
+                    printf("[ERROR]    Type error: expect declared length of local array '%s' to be integer, but found ", d->name);
+                    type_print(d->type->arr_size->symbol->type);
+                    printf("\n");
+                    typecheck_error++;
+                }
+            }
+            /* Recurse to the subtype of the array */
+            curr = curr->subtype;
+        }
+    }
+
+    struct type* rtype;
+
+    /* Variable definition */
+    if (d->value) {
+        /* Check it is NOT a function */
+        if (d->type->kind == TYPE_FUNC) {
+            error("Type error: %s is declared as function but received expression assignment", d->name);
+            typecheck_error++;
+        } else if (d->type->kind == TYPE_ARRAY) {
+            rtype = expr_typecheck(d->value);       // rtype = type(TYPE_ARRAY, subtype=element type)
+            if (type_cmp(rtype->subtype, d->type->subtype)!=0) {
+                printf("[ERROR]    Type error: array '%s' is declared as array of ", d->name);
+                type_print(d->type->subtype);
+                printf(" but assignment is array of ");
+                type_print(rtype->subtype);
+                printf(" (");
+                expr_print(d->value);
+                printf(")");
+                printf("\n");
+                typecheck_error++;
+            }
+        } else {
+            rtype = expr_typecheck(d->value);
+            if (type_cmp(d->type, rtype)!=0) {
+                printf("[ERROR]    Type error: name '%s' is declared as ", d->name);
+                type_print(d->type);
+                printf(" but assignment is ");
+                type_print(rtype);
+                printf(" (");
+                expr_print(d->value);
+                printf(")");
+                printf("\n");
+                typecheck_error++;
+            }
+        }
+    }
+
+    /* Function definition */
+    if (d->code) {
+        /* Check it is a function */
+        if (d->type->kind != TYPE_FUNC) {
+            printf("[ERROR]    Type error: name '%s' is declared as ", d->name);
+            type_print(d->type);
+            printf(" but received function definition\n");
+            typecheck_error++;
+        } else {
+            stmt_typecheck(d->code, d);
+        }
+    }
+    
+    /* Loop through the decl list */
+    decl_typecheck(d->next); 
 }

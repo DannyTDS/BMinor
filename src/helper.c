@@ -5,7 +5,7 @@ int typecheck_error = 0;
 
 int typecheck() {
     if (resolve("simple") != SUCCESS) return FAILURE;
-    // TODO:
+    decl_typecheck(root);
     if (typecheck_error != 0) {
         info("Typecheck failed: %d error(s)", typecheck_error);
         return FAILURE;
