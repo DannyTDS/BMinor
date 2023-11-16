@@ -1,0 +1,10 @@
+/* Assign functions to variables */
+
+f1: function void () = {
+    return;
+}
+
+f2: function void () = {
+    f3: function void() = f1;
+    return f3;
+}

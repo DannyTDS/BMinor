@@ -1,0 +1,26 @@
+/* Assign an integer expression to local variable. */
+
+x: integer = 5;
+y: integer = 10;
+
+s: float = 2.3;
+t: float = 2E-5;
+
+test: function integer();
+testf: function float();
+
+main: function void ()=
+{
+	x:integer = y * 10 + 15 - test();
+	s:float = t * 1.0 - 1.5 + testf();
+}
+
+test: function integer () =
+{
+	return 5;
+}
+
+testf: function float () =
+{
+	return 2.5;
+}

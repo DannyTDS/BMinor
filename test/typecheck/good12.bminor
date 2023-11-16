@@ -1,0 +1,10 @@
+/* Array initializing in local */
+
+main: function integer (argc: integer, argv: array [] array [] char) = {
+    a: array [3] integer;
+    i: integer;
+    for (i=0; i<argc; i++) {
+        a[i] = i;
+    }
+    return a[1]%2;
+}

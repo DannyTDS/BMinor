@@ -174,3 +174,40 @@ do
 	fi
 done
 echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+#####################
+#	Typecheck tests	#
+#####################
+total_tests=0
+failures=0
+successes=0
+echo "Test typecheck good..."
+for testfile in test/typecheck/good*.bminor
+do
+	((total_tests++))
+	if ./bminor --typecheck $testfile > $testfile.out 2>&1
+	then
+		((successes++))
+	else
+		((failures++))
+		echo "$testfile failure (INCORRECT)"
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+total_tests=0
+failures=0
+successes=0
+echo "Test typecheck bad..."
+for testfile in test/typecheck/bad*.bminor
+do
+	((total_tests++))
+	if ./bminor --typecheck $testfile > $testfile.out 2>&1
+	then
+		echo "$testfile success (INCORRECT)"
+		((failures++))
+	else
+		((successes++))
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"

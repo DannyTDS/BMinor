@@ -1,0 +1,3 @@
+/* Cannot have array of functions */
+
+a: array [3] function void();

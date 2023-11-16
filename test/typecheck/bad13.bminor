@@ -1,0 +1,10 @@
+/* Cannot have function return other function */
+
+
+f1: function integer (a: integer) = {
+    return a;
+}
+
+f2: function function integer (a: integer) () = {
+    return f1;
+}

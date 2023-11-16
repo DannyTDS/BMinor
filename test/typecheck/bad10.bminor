@@ -1,0 +1,14 @@
+/* Different types passed to binary operator */
+
+x: integer = 1;
+y: float = 1.5;
+
+f: function char (x: integer, y: float) = {
+    if (x > y) return 'y';
+    else return 'n';
+}
+
+main: function void () = {
+    if (f(x, y)=='y') print x;
+    else print y;
+}

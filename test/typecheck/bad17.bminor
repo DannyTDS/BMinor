@@ -1,0 +1,7 @@
+/* function attempts to return array */
+
+a: array [3] integer = {1, 2, 3};
+
+f: function array [] integer () = {
+    return a;
+}

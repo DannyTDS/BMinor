@@ -1,0 +1,13 @@
+/* incre / decre applied to ints and floats */
+
+x: integer = 1;
+y: float = 1.5;
+
+f: function void (x: integer, y: float) = {
+    x = x++;
+    y = y++;
+}
+
+main: function void () = {
+    f(x, y);
+}

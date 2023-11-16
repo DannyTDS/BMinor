@@ -1,0 +1,5 @@
+/* Non constant global array length */
+
+x: integer = 3;
+a: array [x] integer = {1, 2, 3};
+b: array [1+2] integer = {1, 2, 3};

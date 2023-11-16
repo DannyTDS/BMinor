@@ -1,0 +1,15 @@
+/* Chained assignments */
+
+x: integer;
+y: integer;
+
+f: function integer (a: float, b: float) = {
+    if (a>b) return 1;
+    else return 0;
+}
+
+main: function void (c: float) = {
+    x = y = 2*f(c, 1.0);
+    x = x++;
+    y = y--;
+}

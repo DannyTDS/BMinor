@@ -1,0 +1,14 @@
+/*Assign to non ident / index*/
+
+x: integer = 1;
+y: integer = 2;
+
+f: function void();
+a: array [3] integer = {1, 2, 3};
+
+main: function void() = {
+    1=x;
+    main=f;
+    f=main;
+    a=a;
+}

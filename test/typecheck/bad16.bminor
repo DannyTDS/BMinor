@@ -1,0 +1,6 @@
+/* Array initializer in local */
+
+main: function integer (argc: integer, argv: array [] array [] char) = {
+    a: array [3] integer = {1, 2, 3};
+    return a[1];
+}

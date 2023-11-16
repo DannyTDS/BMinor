@@ -1,0 +1,8 @@
+/* Declare functions in local space */
+
+f: function void () = {
+    g: function void ();
+    h: function void () = {
+        
+    }
+}
