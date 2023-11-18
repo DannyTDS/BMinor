@@ -227,11 +227,12 @@ void decl_typecheck( struct decl *d ) {
             typecheck_error++;
         } else if (d->type->kind == TYPE_ARRAY) {
             rtype = expr_typecheck(d->value);       // rtype = type(TYPE_ARRAY, subtype=element type)
-            if (type_cmp(rtype->subtype, d->type->subtype)!=0) {
-                printf("[ERROR]    Type error: array '%s' is declared as array of ", d->name);
-                type_print(d->type->subtype);
-                printf(" but assignment is array of ");
-                type_print(rtype->subtype);
+            /* Check rtype is array type and two array types (possibly nested arrays) are the same */
+            if (rtype->kind != TYPE_ARRAY || type_cmp(rtype, d->type)!=0) {
+                printf("[ERROR]    Type error: name '%s' is declared as ", d->name);
+                type_print(d->type);
+                printf(" but assignment is ");
+                type_print(rtype);
                 printf(" (");
                 expr_print(d->value);
                 printf(")");
@@ -240,7 +241,7 @@ void decl_typecheck( struct decl *d ) {
             }
             /* Local arrays are not permitted to use array initializer */
             if (d->symbol->kind == SYMBOL_LOCAL && d->value->kind == EXPR_BLOCK) {
-                error("Type error: name '%s' is defined in local scope but received array initializer assignment", d->name);
+                error("Type error: array '%s' is defined in local scope but received array initializer assignment", d->name);
                 typecheck_error++;
             }
         } else {

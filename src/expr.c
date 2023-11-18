@@ -389,10 +389,7 @@ struct type* expr_typecheck( struct expr* e ) {
 			//FIXME:
 			/* Can only assign to non-function non-array identifier or array index */
 			if (ltype->kind == TYPE_FUNC) {
-				error("Type error: cannot assign to function type '%s'", e->left->name);
-				typecheck_error++;
-			} else if (ltype->kind == TYPE_ARRAY && e->left->kind != EXPR_INDEX) {
-				error("Type error: cannot assign to array type '%s', use indexing instead", e->left->name);
+				error("Type error: cannot assign value to function type '%s'", e->left->name);
 				typecheck_error++;
 			} else if (e->left->kind != EXPR_IDENT && e->left->kind != EXPR_INDEX) {
 				printf("[ERROR]    Type error: left side of assignent cannot be ");
@@ -465,7 +462,7 @@ struct type* expr_typecheck( struct expr* e ) {
 				typecheck_error++;
 				res = type_copy(ltype);
 			} else if (rtype->kind != TYPE_INT) {
-				printf("[ERROR]    Type error: index cannot be ");
+				printf("[ERROR]    Type error: array index cannot be ");
 				type_print(rtype);
 				printf(" (");
 				expr_print(e->right);
@@ -484,9 +481,11 @@ struct type* expr_typecheck( struct expr* e ) {
 			/* Only appears in array declaration. Typecheck *RECURSIVELY* */
 			struct type* exp_type=0;			// Expected type
 			struct type* act_type;			// Actual type
+			int elem_cnt=0;					// Counter of elements in current level
 			if (e->left->kind == EXPR_BLOCK) {
 				/* Check for nested arrays */
 				for (struct expr* block = e->left; block; block = block->right) {
+					elem_cnt++;
 					act_type = expr_typecheck(block);
 					/* Compare the subtype of arrays */
 					if (!exp_type) exp_type = type_copy(act_type);		// Set expected type to first block's type
@@ -498,9 +497,19 @@ struct type* expr_typecheck( struct expr* e ) {
 						printf("\n");
 						typecheck_error++;
 					}
+					/* Compare length of nested arrays. Each dimension should have the same length. */
+					if (exp_type->arr_size->int_literal != act_type->arr_size->int_literal) {
+						printf("[ERROR]    Type error: inconsistent lengths found in nested array instatiation: expect array of length ");
+						expr_print(exp_type->arr_size);
+						printf(", but found array of length ");
+						expr_print(act_type->arr_size);
+						printf("\n");
+						typecheck_error++;
+					}
 				}
 			} else {
 				for (struct expr* term = e->left; term; term = term->right) {
+					elem_cnt++;
 					act_type = expr_typecheck(term);
 					if (!exp_type) exp_type = type_copy(act_type);		// Set expected type to first term's type
 					else if (type_cmp(exp_type, act_type)!=0) {
@@ -513,7 +522,8 @@ struct type* expr_typecheck( struct expr* e ) {
 					}
 				}
 			}
-			res = type_create_array(exp_type, 0);
+			/* Literal values have precedence 9 */
+			res = type_create_array(exp_type, expr_create_integer_literal(elem_cnt, 9));
 			break;
 		}
 		case EXPR_GROUP:

@@ -1,0 +1,15 @@
+/* Test array indexing */
+
+f: function integer (a: array [] integer) = {
+    i: integer;
+    for (i=0 ; ; i++) {
+        a[i] = i;
+    }
+    return i;
+}
+
+main: function void () = {
+    x: array [10] integer;
+    i: integer = f(x);
+    print i;
+}

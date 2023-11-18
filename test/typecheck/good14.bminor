@@ -1,0 +1,14 @@
+/* Assign array to array variable */
+
+a: array [3] integer = {1, 2, 3};
+
+f: function void(a: array [] integer, b: array [] integer) = {
+    b = a;
+    c: array [3] integer = b;
+}
+
+main: function void() = {
+    l: integer = 3;
+    x: array [l] integer;
+    f(a, x);
+}

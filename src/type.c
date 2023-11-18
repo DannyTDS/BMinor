@@ -82,9 +82,12 @@ void type_print( struct type *t ) {
 int type_cmp( struct type* t1, struct type* t2) {
     if (t1->kind != t2->kind) return 1;
     if (t1->kind == TYPE_ARRAY) {
-        /* Omit from checking the length of array */
-        if (type_cmp(t1->subtype, t2->subtype)==0) return 0;
-        else return 1;
+        if (type_cmp(t1->subtype, t2->subtype)!=0) return 1;
+        /* Check length of array if defined as literal. Otherwise omit the check. */
+        else if (!t1->arr_size || !t2->arr_size) return 0;
+        else if (!t1->arr_size->int_literal || !t2->arr_size->int_literal) return 0;
+        else if (t1->arr_size->int_literal != t2->arr_size->int_literal) return 1;
+        else return 0;
     } else if (t1->kind == TYPE_FUNC) {
         if (type_cmp(t1->subtype, t2->subtype)==0 && param_list_cmp(t1->params, t2->params)==0) return 0;
         else return 1;
