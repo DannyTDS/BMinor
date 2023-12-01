@@ -13,8 +13,11 @@ extern int yylex();
 extern char *yytext;
 /* Root node of the AST */
 extern struct decl *root;
+/* Codegen output file */
+FILE *output;
 
-int typecheck();
+int codegen();
+int typecheck(char* mode);
 int resolve(char* mode);
 int pprint();
 int parse(char* mode);

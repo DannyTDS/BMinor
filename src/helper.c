@@ -3,7 +3,16 @@
 int resolve_error = 0;
 int typecheck_error = 0;
 
-int typecheck() {
+int codegen() {
+    /* codegen() will always return SUCCESS, indicating the assembly has been generated. 
+    Any error in codegen process shall be catched midway and exit immediately.*/
+    // FIXME: temporary testing
+    if (typecheck("simple") != SUCCESS) return FAILURE;
+    expr_codegen(root->value);
+    return SUCCESS;
+}
+
+int typecheck(char* mode) {
     if (resolve("simple") != SUCCESS) return FAILURE;
     decl_typecheck(root);
     if (typecheck_error != 0) {
@@ -11,7 +20,7 @@ int typecheck() {
         return FAILURE;
     }
     else {
-        info("Typecheck successful!");
+        if (streq(mode, "verbose")) info("Typecheck successful!");
         return SUCCESS;
     }
 }
