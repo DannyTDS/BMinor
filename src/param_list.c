@@ -56,6 +56,7 @@ int param_list_cmp( struct param_list *a1, struct param_list *a2 ) {
     // Return 0 if a1 and a2 are the same, 1 otherwise
     if (!a1 && !a2) return 0;
     if ((!a1 && a2) || (a1 && !a2)) return 1;
-    if (!streq(a1->name, a2->name) || type_cmp(a1->type, a2->type)!=0) return 1;
+    // Params are considered the same as long as they have the same type. Can have different names.
+    if (type_cmp(a1->type, a2->type)!=0) return 1;
     else return param_list_cmp(a1->next, a2->next);
 }

@@ -80,6 +80,7 @@ void decl_resolve(struct decl* d) {
     // Mark function declarations for special handling
     if (d->type->kind == TYPE_FUNC && !d->code) {
         sym->is_prototype = 1;
+        sym->allow_redecl = 1;
     }
 
     // Bind symbol after expression has been evaluated.
@@ -100,16 +101,22 @@ void decl_resolve(struct decl* d) {
                 }
             } else if (sym->type->kind==TYPE_FUNC && d->code) {
                 // Trying to resolve a function definition to a previously declared prototype
-                if (type_cmp(sym->type, found_sym->type)==0) {
+                if (found_sym->allow_redecl) {
+                    if (type_cmp(sym->type, found_sym->type)==0) {
                     // Bind definition to prototype, and disallow any other definitions
                     printf("%s defines ", d->name);
                     symbol_print(found_sym);
                     printf("\n");
-                    // Disallow other binds
-                    found_sym->is_prototype = 0;
+                    // Disallow other definitions
+                    found_sym->allow_redecl = 0;
+                    } else {
+                        // Definition doesn't agree with prototype signature
+                        error("Resolve error: definition doesn't match prototype: %s", d->name);
+                        resolve_error++;
+                    }
                 } else {
-                    // Definition doesn't agree with prototype signature
-                    error("Resolve error: definition doesn't match prototype: %s", d->name);
+                    // Multiple definitions of non-prototypes is not OK
+                    error("Resolve error: multiple definitions of %s", d->name);
                     resolve_error++;
                 }
             } else {
