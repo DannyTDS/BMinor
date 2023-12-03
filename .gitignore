@@ -8,3 +8,6 @@ include/token.h
 include/token.output
 .vscode
 *.out
+# Codegen assembly and executable
+test/codegen/*.s
+test/codegen/*.exe

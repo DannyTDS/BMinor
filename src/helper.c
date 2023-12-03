@@ -6,9 +6,9 @@ int typecheck_error = 0;
 int codegen() {
     /* codegen() will always return SUCCESS, indicating the assembly has been generated. 
     Any error in codegen process shall be catched midway and exit immediately.*/
-    // FIXME: temporary testing
     if (typecheck("simple") != SUCCESS) return FAILURE;
-    expr_codegen(root->value);
+    decl_codegen(root);
+    info("Codegen successful!");
     return SUCCESS;
 }
 

@@ -644,3 +644,281 @@ int expr_typecheck_constant( struct expr *e ) {
 	}
 	return TRUE;
 }
+
+
+void expr_codegen( struct expr *e ) {
+	if (!e || e->reg) return;
+
+	switch (e->kind) {
+		case EXPR_ADD:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			fprintf(output, "\tADDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
+			e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_SUB:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			fprintf(output, "\tSUBQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// SUBQ %rreg %lreg
+			e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_MUL:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+            fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
+            fprintf(output, "\tIMULQ %%%s\n", scratch_name(e->right->reg));			// Multiply
+            fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve result from %rax
+            e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_DIV:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+            fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
+			fprintf(output, "\tCQO\n");												// Sign extend
+            fprintf(output, "\tIDIVQ %%%s\n", scratch_name(e->right->reg));			// Divide
+            fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve quotient from %rax
+            e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_EXP: {
+			/* Call power function in library.c */
+			struct expr* fcall = expr_create(
+				EXPR_FCALL,
+				expr_create_name("integer_power", 9),
+				expr_create(
+					EXPR_TERM,
+					e->left,								// Base
+					expr_create(EXPR_TERM, e->right, 0, 8),	// Power
+					8
+				),
+				8
+			);
+			expr_codegen_fcall(fcall);
+			e->reg = fcall->reg;
+			break;
+		}
+		case EXPR_MOD:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+            fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
+			fprintf(output, "\tCQO\n");												// Sign extend
+            fprintf(output, "\tIDIVQ %%%s\n", scratch_name(e->right->reg));			// Divide
+            fprintf(output, "\tMOVQ %%rdx, %%%s\n", scratch_name(e->left->reg));	// Retrieve remainder from %rdx
+            e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_INT_LIT:
+			e->reg = scratch_alloc();
+			fprintf(output, "\tMOVQ $%ld, %%%s\n", e->int_literal, scratch_name(e->reg));
+			break;
+		case EXPR_FLOAT_LIT:
+			// TODO: Support floating point number codegen
+			error("Codegen error: Floating point numbers not implemented");
+			exit(FAILURE);
+		case EXPR_CHAR_LIT:
+			e->reg = scratch_alloc();
+			fprintf(output, "\tMOVQ $%ld, %%%s\n", e->int_literal, scratch_name(e->reg));
+			break;
+		case EXPR_STR_LIT: {
+			int label = label_create();
+			char es[BUFSIZ];
+			string_encode(e->string_literal, es);
+			// Copy the string in data section
+            fprintf(output, ".data\n%s:\t.string\t%s\n", label_name(label), es);
+            // Back into text (code)
+            fprintf(output, ".text\n");
+            // Register string address with label
+            e->reg = scratch_alloc();
+            fprintf(output, "\tLEAQ %s, %%%s\n", label_name(label), scratch_name(e->reg));
+            break;
+		}
+		/* TRUE evaluates to literal 1. FALSE evaluates to literal 0. */
+		case EXPR_TRUE:
+			e->reg = scratch_alloc();
+			fprintf(output, "\tMOVQ $1, %%%s\n", scratch_name(e->reg));
+			break;
+		case EXPR_FALSE:
+			e->reg = scratch_alloc();
+			fprintf(output, "\tMOVQ $0, %%%s\n", scratch_name(e->reg));
+			break;
+		case EXPR_NOT:
+			// TODO:
+			break;
+		case EXPR_AND:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			fprintf(output, "\tANDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));	// values can only be 0 or 1
+			e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_OR:
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			fprintf(output, "\tORQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));	// values can only be 0 or 1
+			e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_INCRE:
+			/* Destructive operation that directly operates on stored data */
+			if (e->left->kind == EXPR_IDENT) {
+				fprintf(output, "\tINCQ %s\n", symbol_codegen(e->left->symbol));
+			} else if (e->left->kind == EXPR_INDEX) {
+				expr_codegen(e->left);
+				expr_codegen(e->right);
+				fprintf(output, "\tINCQ (%%%s, %%%s, 8)\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+				scratch_free(e->left->reg);
+				scratch_free(e->right->reg);
+			}
+			e->reg = e->left->reg;
+			break;
+		case EXPR_DECRE:
+			if (e->left->kind == EXPR_IDENT) {
+				fprintf(output, "\tDECQ %s\n", symbol_codegen(e->left->symbol));
+			} else if (e->left->kind == EXPR_INDEX) {
+				expr_codegen(e->left);
+				expr_codegen(e->right);
+				fprintf(output, "\tDECQ (%%%s, %%%s, 8)\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+				scratch_free(e->left->reg);
+				scratch_free(e->right->reg);
+			}
+			e->reg = e->left->reg;
+			break;
+		case EXPR_LT:
+		case EXPR_LE:
+		case EXPR_GT:
+		case EXPR_GE:
+		case EXPR_EQ:
+		case EXPR_NE:
+			expr_codegen_cmp(e);
+			break;
+		case EXPR_ASSIGN:
+			expr_codegen(e->right);
+			/* Definition is stored in e->right->reg */
+			if (e->left->kind==EXPR_IDENT) {
+				fprintf(output, "\tMOVQ %%%s, %s\n", scratch_name(e->right->reg), symbol_codegen(e->left->symbol));
+			} else if (e->left->kind == EXPR_INDEX) {
+				/* Address to move into is manually computed */
+				expr_codegen(e->left->left);
+				expr_codegen(e->left->right);
+				fprintf(output, "\tMOVQ %%%s, (%%%s, %%%s, 8)\n", scratch_name(e->right->reg), scratch_name(e->left->left->reg), scratch_name(e->left->right->reg));
+				scratch_free(e->left->left->reg);
+				scratch_free(e->left->right->reg);
+			}
+			e->reg = e->right->reg;
+			break;
+		case EXPR_IDENT:
+			/* Allocate a new scratch reg for e */
+			e->reg = scratch_alloc();
+			if (e->symbol->kind == SYMBOL_GLOBAL) {
+				switch (e->symbol->type->kind) {
+					case TYPE_STR:
+					case TYPE_ARRAY:
+						/* For global strings and arrays, load their address */
+						fprintf(output, "\tLEAQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+						break;
+					default:
+						/* For other global variables, load their content */
+						fprintf(output, "\tMOVQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+						break;
+				}
+			} else {
+				/* For all other variables, load the content */
+				fprintf(output, "\tMOVQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+			}
+			break;
+		case EXPR_FCALL:
+			expr_codegen_fcall(e);
+			break;
+		case EXPR_INDEX:
+			/* Left: identifier, Right: expression */
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			fprintf(output, "\tMOVQ (%%%s, %%%s, 8), %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg), scratch_name(e->left->reg));
+			e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			break;
+		case EXPR_TERM:
+			expr_codegen(e->left);
+			e->reg = e->left->reg;
+			break;
+		case EXPR_BLOCK:
+		case EXPR_GROUP:
+			expr_codegen(e->left);
+			e->reg = e->left->reg;
+			break;
+	}
+}
+
+
+void expr_codegen_cmp(struct expr* e) {
+	if (!e) return;
+	expr_codegen(e->left);
+	expr_codegen(e->right);
+	int true_label = label_create();
+	int done_label = label_create();
+	fprintf(output, "\tCMPQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));
+	/* Jump on condition True */
+	switch (e->kind) {
+		case EXPR_LT:
+			fprintf(output, "\tJL %s\n", label_name(true_label));
+			break;
+		case EXPR_LE:
+			fprintf(output, "\tJLE %s\n", label_name(true_label));
+			break;
+		case EXPR_GT:
+			fprintf(output, "\tJG %s\n", label_name(true_label));
+			break;
+		case EXPR_GE:
+			fprintf(output, "\tJGE %s\n", label_name(true_label));
+			break;
+		case EXPR_EQ:
+			fprintf(output, "\tJE %s\n", label_name(true_label));
+			break;
+		case EXPR_NE:
+			fprintf(output, "\tJNE %s\n", label_name(true_label));
+			break;
+		default:
+			break;
+	}
+	/* Else, continue in condition False and jump to Done */
+	fprintf(output, "\tMOVQ $0, %%%s\n", scratch_name(e->left->reg));
+	fprintf(output, "\tJMP %s\n", label_name(done_label));
+	/* True label */
+	fprintf(output, "%s:\n", label_name(true_label));
+	fprintf(output, "\tMOVQ $1, %%%s\n", scratch_name(e->left->reg));
+	/* Done label */
+	fprintf(output, "%s:\n", label_name(done_label));
+
+	scratch_free(e->right->reg);
+	e->reg = e->left->reg;
+}
+
+
+void expr_codegen_fcall( struct expr* e ) {
+	/* Prepare the arguments */
+	int arg_cnt = 0;
+	for (struct expr* arg=e->right; arg; arg=arg->right) {
+		if (arg_cnt == MAX_NARG) {
+			error("Codegen error: only up to 6 arguments to a function is supported: %s", e->left->name);
+            exit(FAILURE);
+		}
+		expr_codegen(arg);
+		fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(arg->left->reg), argreg[arg_cnt]);
+		scratch_free(arg->left->reg);
+		arg_cnt++;
+	}
+	// TODO: Floating point arguments
+	fprintf(output, "\tMOVQ $0, %%rax\n");
+	/* Function call procedure */
+    fprintf(output, "\tPUSHQ %%r10\n");					// Push caller saved reg
+	fprintf(output, "\tPUSHQ %%r11\n");
+    fprintf(output, "\tCALL %s\n", e->left->name);
+    fprintf(output, "\tPOPQ %%r10\n");					// Pop caller saved reg
+	fprintf(output, "\tPOPQ %%r11\n");
+	/* Retrieve return value */
+	e->reg = scratch_alloc();
+	fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->reg));
+}

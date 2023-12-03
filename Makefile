@@ -55,6 +55,10 @@ clean:
 	rm -f src/parser.c $(TOKENLIB) src/parser.output $(TOKENLIB:.h=.output)
 # Remove test output files
 	rm -rf test/*/*.out
+# Remove codegen assembly files
+	rm -rf test/codegen/*.s
+# Remove codegen executables
+	rm -rf test/codegen/*.exe
 
 test: $(TARGET)
 	@echo Testing...

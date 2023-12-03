@@ -37,6 +37,10 @@ int scope_level() {
     return (stack) ? stack->level : -1;
 };
 
+int scope_size() {
+    return (stack) ? stack->size : 0;
+}
+
 void scope_bind( const char *name, struct symbol *sym ) {
     sym->which = stack->size;
     stack->size++;

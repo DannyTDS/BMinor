@@ -4,6 +4,7 @@
 #include "decl.h"
 #include "symbol.h"
 #include "scope.h"
+#include "scratch.h"
 #include <stdbool.h>
 
 typedef enum {
@@ -38,4 +39,5 @@ void stmt_typecheck( struct stmt *s, struct decl *func_decl );
 
 struct stmt * stmt_wrap( struct stmt * s );
 
+void stmt_codegen(struct stmt *s, const char* func_name);
 #endif

@@ -3,7 +3,11 @@
 
 #include "scope.h"
 #include "symbol.h"
+#include "scratch.h"
+#include "label.h"
+#include "helper.h"
 #include <stdint.h>
+#include <stdio.h>
 
 typedef enum {
 	EXPR_ADD,
@@ -64,6 +68,9 @@ struct expr {
 
 	/* used to determine grouping */
 	int precedence;
+
+	/* codegen */
+	int reg;
 };
 
 // TODO: add precedence
@@ -87,4 +94,11 @@ struct type* expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struc
 void expr_typecheck_boolean( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
 void expr_typecheck_error( struct expr *lexpr, struct expr *rexpr, struct type *ltype, struct type *rtype, char* desc );
 int expr_typecheck_constant( struct expr *e );
+
+extern FILE* output;
+extern int MAX_NARG;
+extern const char* argreg[];
+void expr_codegen( struct expr *e );
+void expr_codegen_cmp( struct expr *e );		// Comparison codegen
+void expr_codegen_fcall( struct expr *e );		// Function call codegen
 #endif

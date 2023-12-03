@@ -1,12 +1,14 @@
 #ifndef DECL_H
 #define DECL_H
 
+#include "encoder.h"
 #include "type.h"
 #include "stmt.h"
 #include "expr.h"
 #include "param_list.h"
 #include "symbol.h"
 #include "scope.h"
+#include "scratch.h"
 
 struct decl {
 	const char *name;
@@ -25,6 +27,8 @@ void decl_typecheck( struct decl *d );
 
 void indent_by( int amt );
 
+void decl_codegen( struct decl *d );
+extern int SCRATCH_NREG;
 #endif
 
 

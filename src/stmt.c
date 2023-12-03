@@ -253,3 +253,113 @@ void stmt_typecheck( struct stmt *s, struct decl *func_decl ) {
 
     stmt_typecheck(s->next, func_decl);
 }
+
+/**
+ * @param func_name: Name of the function this stmt resides in. Useful when returning from functions.
+ */
+void stmt_codegen(struct stmt *s, const char* func_name) {
+    if (!s) return;
+    switch (s->kind) {
+        case STMT_DECL:
+            decl_codegen(s->decl);
+            break;
+        case STMT_EXPR:
+            expr_codegen(s->expr);
+            scratch_free(s->expr->reg);
+            break;
+        case STMT_IF_ELSE: {
+            int false_label = label_create();
+            int done_label = label_create();
+            /* Evaluate expression */
+            expr_codegen(s->expr);
+            fprintf(output, "\tCMPQ $0, %%%s\n", scratch_name(s->expr->reg));
+            scratch_free(s->expr->reg);
+            /* Jump on equal (false) */
+            fprintf(output, "\tJE %s\n", label_name(false_label));
+            /* TRUE branch */
+            stmt_codegen(s->body, func_name);
+            fprintf(output, "\tJMP %s\n", label_name(done_label));
+            /* FALSE branch */
+            fprintf(output, "%s:\n", label_name(false_label));
+            stmt_codegen(s->else_body, func_name);
+            /* Done */
+            fprintf(output, "%s:\n", label_name(done_label));
+            break;
+        }
+        case STMT_FOR: {
+            int top_label = label_create();
+            int done_label = label_create();
+            /* Init */
+            if (s->init_expr) {
+                expr_codegen(s->init_expr);
+                scratch_free(s->init_expr->reg);
+            }
+            /* Loop body */
+            fprintf(output, "%s:\n", label_name(top_label));
+            /* Update control and jump on false */
+            if (s->expr) {
+                expr_codegen(s->expr);
+                fprintf(output, "\tCMPQ $0, %%%s\n", scratch_name(s->expr->reg));
+                scratch_free(s->expr->reg);
+                fprintf(output, "\tJE %s\n", label_name(done_label));
+            }
+            stmt_codegen(s->body, func_name);
+            /* Update expr and jump back */
+            if (s->next_expr) {
+                expr_codegen(s->next_expr);
+                scratch_free(s->next_expr->reg);
+            }
+            fprintf(output, "\tJMP %s\n", label_name(top_label));
+            /* Done */
+            fprintf(output, "%s:\n", label_name(done_label));
+            break;
+        }
+        case STMT_PRINT:
+            /* Use print functions in library.c */
+            for (struct expr* e=s->expr; e; e=e->right) {
+                struct type* t = expr_typecheck(e->left);
+                char fcall_name[BUFSIZ];
+                switch (t->kind) {
+                    case TYPE_INT:
+                        strcpy(fcall_name, "print_integer");
+                        break;
+                    case TYPE_FLOAT:
+                        // TODO:
+                        error("Codegen error: Floating point numbers not implemented");
+                        exit(FAILURE);
+                    case TYPE_CHAR:
+                        strcpy(fcall_name, "print_character");
+                        break;
+                    case TYPE_STR:
+                        strcpy(fcall_name, "print_string");
+                        break;
+                    case TYPE_BOOL:
+                        strcpy(fcall_name, "print_boolean");
+                        break;
+                    default:
+                        break;
+                }
+                struct expr* fcall = expr_create(
+                    EXPR_FCALL,
+                    expr_create_name(fcall_name, 9),
+                    expr_create(EXPR_TERM, e->left, 0, 8),
+                    8
+                );
+                expr_codegen_fcall(fcall);
+                scratch_free(fcall->reg);
+            }
+            break;
+        case STMT_RETURN:
+            if (s->expr) {
+                expr_codegen(s->expr);                                                  // Evaluate return value
+                fprintf(output, "\tMOVQ %%%s, %%rax\n",scratch_name(s->expr->reg));     // Save return value in reg
+                scratch_free(s->expr->reg);
+            }
+            fprintf(output, "\tJMP .%s_epilogue\n",func_name);                          // Jump to end of function
+            break;
+        case STMT_BLOCK:
+            stmt_codegen(s->body, func_name);
+            break;
+    }
+    stmt_codegen(s->next, func_name);
+}

@@ -48,3 +48,15 @@ void symbol_update( struct symbol* old, struct symbol* new) {
     old->is_prototype = new->is_prototype;
     old->allow_redecl = new->allow_redecl;
 }
+
+const char* symbol_codegen( struct symbol *s ) {
+    /* Global symbols: return name */
+    if (s->kind==SYMBOL_GLOBAL) {
+        return s->name;
+    } else {
+        /* Params and locals: return address on stack */
+        char addr[BUFSIZ];
+        sprintf(addr, "%d(%%rbp)", -8 * (s->which + 1));
+        return strdup(addr);
+    }
+}
