@@ -1,0 +1,7 @@
+/* Test array access */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function void () = {
+    print a[0], " ", a[1], " ", a[2], "\n";
+}

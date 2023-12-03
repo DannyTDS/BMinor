@@ -1,0 +1,17 @@
+a: integer=1;
+b: integer=2;
+compute: function integer(a: integer, b: integer);
+
+main: function integer() = 
+{
+    compute(a, b);
+    return 0;
+}
+
+compute: function integer
+( a: integer, b: integer ) =
+{
+    x:integer = a+b;
+    y:integer = x*5;
+    print x>y;
+}

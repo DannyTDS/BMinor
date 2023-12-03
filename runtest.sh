@@ -211,3 +211,23 @@ do
 	fi
 done
 echo "Total tests run: $total_tests Failures: $failures Successes: $successes"
+
+#####################
+#	Codegen tests	#
+#####################
+total_tests=0
+failures=0
+successes=0
+echo "Test codegen good..."
+for testfile in test/codegen/good*.bminor
+do
+	((total_tests++))
+	if ./bminor --codegen $testfile $testfile.s > $testfile.out 2>&1 && gcc -g $testfile.s src/library.c -o $testfile.exe
+	then
+		((successes++))
+	else
+		((failures++))
+		echo "$testfile failure (INCORRECT)"
+	fi
+done
+echo "Total tests run: $total_tests Failures: $failures Successes: $successes"

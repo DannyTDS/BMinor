@@ -1,0 +1,10 @@
+/* Test assign to array element */
+
+a: array [3] integer = {0, 0, 0};
+
+main: function void () = {
+    a[0] = 1;
+    a[1] = 2;
+    a[2] = 3;
+    print a[0], " ", a[1], " ", a[2], "\n";
+}
