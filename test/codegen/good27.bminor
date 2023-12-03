@@ -1,0 +1,22 @@
+/* Test logical and, or, not */
+
+main: function void () = {
+    x: integer = 1;
+    y: integer = 2;
+    z: integer = 3;
+    if ((x<y) && (y<z)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+    if ((x>y) || (z>y)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+    if (!(x>y)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+}

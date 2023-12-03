@@ -1,0 +1,7 @@
+/* Test operations on array elements */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function integer () = {
+    return a[0] + a[1] + a[2];
+}

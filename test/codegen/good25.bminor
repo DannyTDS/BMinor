@@ -7,7 +7,8 @@ main: function void () = {
     a[x+x] = 1;
     x++;
     a[x] = 2;
-    y: integer = 4;
-    a[y--] = 3;
+    y: integer = 3;
+    y--;
+    a[y] = 3;
     print a[0], " ", a[1], " ", a[2], "\n";
 }

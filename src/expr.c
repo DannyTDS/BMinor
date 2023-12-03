@@ -745,7 +745,9 @@ void expr_codegen( struct expr *e ) {
 			fprintf(output, "\tMOVQ $0, %%%s\n", scratch_name(e->reg));
 			break;
 		case EXPR_NOT:
-			// TODO:
+			expr_codegen(e->right);
+			fprintf(output, "\tNOTQ %%%s\n", scratch_name(e->right->reg));	// values can only be 0 or 1
+			e->reg = e->right->reg;
 			break;
 		case EXPR_AND:
 			expr_codegen(e->left);
