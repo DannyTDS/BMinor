@@ -46,19 +46,26 @@ $(TOKENLIB):	src/parser.c
 
 clean:
 # Executable
-	rm -f $(TARGET)
+	@echo Removing $(TARGET) executable...
+	@rm -f $(TARGET)
 # Object files
-	rm -f $(OBJECTS)
+	@echo Removing object files...
+	@rm -f $(OBJECTS)
 # Scanner - flex output
-	rm -f src/scanner.c
+	@echo Removing scanner compiled output...
+	@rm -f src/scanner.c
 # Parser - bison output
-	rm -f src/parser.c $(TOKENLIB) src/parser.output $(TOKENLIB:.h=.output)
+	@echo Removing parser compiled output...
+	@rm -f src/parser.c $(TOKENLIB) src/parser.output $(TOKENLIB:.h=.output)
 # Remove test output files
-	rm -rf test/*/*.out
+	@echo Removing test file outputs...
+	@rm -rf test/*/*.out
 # Remove codegen assembly files
-	rm -rf test/codegen/*.s
+	@echo Removing codegen assembly files...
+	@rm -rf test/codegen/*.s
 # Remove codegen executables
-	rm -rf test/codegen/*.exe
+	@echo Removing codegen executables...
+	@rm -rf test/codegen/*.exe
 
 test: $(TARGET)
 	@echo Testing...
