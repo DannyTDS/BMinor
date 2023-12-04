@@ -1,0 +1,8 @@
+/* Test incre and decre on array element */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function void () = {
+    a[1]--;
+    print a[0], " ", a[1], " ", a[2], "\n";
+}

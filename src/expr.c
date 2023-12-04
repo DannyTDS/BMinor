@@ -768,11 +768,12 @@ void expr_codegen( struct expr *e ) {
 			if (e->left->kind == EXPR_IDENT) {
 				fprintf(output, "\tINCQ %s\n", symbol_codegen(e->left->symbol));
 			} else if (e->left->kind == EXPR_INDEX) {
-				expr_codegen(e->left);
-				expr_codegen(e->right);
-				fprintf(output, "\tINCQ (%%%s, %%%s, 8)\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
-				scratch_free(e->left->reg);
-				scratch_free(e->right->reg);
+				/* Address to operate on is manually computed */
+				expr_codegen(e->left->left);
+				expr_codegen(e->left->right);
+				fprintf(output, "\tINCQ (%%%s, %%%s, 8)\n", scratch_name(e->left->left->reg), scratch_name(e->left->right->reg));
+				scratch_free(e->left->left->reg);
+				scratch_free(e->left->right->reg);
 			}
 			e->reg = e->left->reg;
 			break;
@@ -780,11 +781,12 @@ void expr_codegen( struct expr *e ) {
 			if (e->left->kind == EXPR_IDENT) {
 				fprintf(output, "\tDECQ %s\n", symbol_codegen(e->left->symbol));
 			} else if (e->left->kind == EXPR_INDEX) {
-				expr_codegen(e->left);
-				expr_codegen(e->right);
-				fprintf(output, "\tDECQ (%%%s, %%%s, 8)\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
-				scratch_free(e->left->reg);
-				scratch_free(e->right->reg);
+				/* Address to operate on is manually computed */
+				expr_codegen(e->left->left);
+				expr_codegen(e->left->right);
+				fprintf(output, "\tDECQ (%%%s, %%%s, 8)\n", scratch_name(e->left->left->reg), scratch_name(e->left->right->reg));
+				scratch_free(e->left->left->reg);
+				scratch_free(e->left->right->reg);
 			}
 			e->reg = e->left->reg;
 			break;
