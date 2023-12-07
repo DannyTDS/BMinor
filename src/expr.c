@@ -356,9 +356,17 @@ struct type* expr_typecheck( struct expr* e ) {
 			break;
 		case EXPR_INCRE:
 			/* Unary, value stored in left child. Always return TYPE_INT */
+			if (e->left->kind != EXPR_IDENT && e->left->kind != EXPR_INDEX) {
+				error("Type error: increment can only be applied to variable or array element");
+				typecheck_error++;
+			}
 			res = expr_typecheck_value(e->left, 0, ltype, 0, "increment");
 			break;
 		case EXPR_DECRE:
+			if (e->left->kind != EXPR_IDENT && e->left->kind != EXPR_INDEX) {
+				error("Type error: decrement can only be applied to variable or array element");
+				typecheck_error++;
+			}
 			res = expr_typecheck_value(e->left, 0, ltype, 0, "decrement");
 			break;
 		case EXPR_LT:
