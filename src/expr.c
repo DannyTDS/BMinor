@@ -591,6 +591,11 @@ struct type* expr_typecheck_value( struct expr *lexpr, struct expr *rexpr, struc
 				expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
 			}
 			return type_create(TYPE_INT);
+		} else if (streq(desc, "exponent") || streq(desc, "mod")) {
+			if (ltype->kind != TYPE_INT) {
+				expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
+			}
+			return type_create(TYPE_INT);
 		} else if (ltype->kind != TYPE_INT && ltype->kind != TYPE_FLOAT) {
 			/* Type error */
 			expr_typecheck_error(lexpr, rexpr, ltype, rtype, desc);
@@ -810,7 +815,14 @@ void expr_codegen( struct expr *e ) {
 			break;
 		case EXPR_INCRE:
 			/* Destructive operation that directly operates on stored data */
+			// FIXME: f: float = 1.0++;
 			if (e->left->kind == EXPR_IDENT) {
+				struct type* t = expr_typecheck(e);
+				if (t->kind == TYPE_FLOAT) {
+					error("Codegen error: increment floating point number not implemented: %s", e->left->name);
+					exit(FAILURE);
+				}
+				type_delete(t);
 				fprintf(output, "\tINCQ %s\n", symbol_codegen(e->left->symbol));
 			} else if (e->left->kind == EXPR_INDEX) {
 				/* Address to operate on is manually computed */
@@ -824,6 +836,12 @@ void expr_codegen( struct expr *e ) {
 			break;
 		case EXPR_DECRE:
 			if (e->left->kind == EXPR_IDENT) {
+				struct type* t = expr_typecheck(e);
+				if (t->kind == TYPE_FLOAT) {
+					error("Codegen error: decrement floating point number not implemented: %s", e->left->name);
+					exit(FAILURE);
+				}
+				type_delete(t);
 				fprintf(output, "\tDECQ %s\n", symbol_codegen(e->left->symbol));
 			} else if (e->left->kind == EXPR_INDEX) {
 				/* Address to operate on is manually computed */
@@ -840,9 +858,15 @@ void expr_codegen( struct expr *e ) {
 		case EXPR_GT:
 		case EXPR_GE:
 		case EXPR_EQ:
-		case EXPR_NE:
-			expr_codegen_cmp(e);
+		case EXPR_NE: {
+			struct type* t = expr_typecheck(e->left);
+			if (t->kind == TYPE_FLOAT) {
+				expr_codegen_cmp_xmm(e);
+			} else {
+				expr_codegen_cmp(e);
+			}
 			break;
+		}
 		case EXPR_ASSIGN:
 			expr_codegen(e->right);
 			/* Definition is stored in e->right->reg */
@@ -960,6 +984,42 @@ void expr_codegen_cmp(struct expr* e) {
 
 	scratch_free(e->right->reg);
 	e->reg = e->left->reg;
+}
+
+
+void expr_codegen_cmp_xmm( struct expr *e ) {
+	if (!e) return;
+	expr_codegen(e->left);
+	expr_codegen(e->right);
+	/* Jump on condition True */
+	switch (e->kind) {
+		case EXPR_LT:		// <
+			fprintf(output, "\tCMPLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		case EXPR_LE:		// <=
+			fprintf(output, "\tCMPLESD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		case EXPR_GT:		// >
+			fprintf(output, "\tCMPNLESD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		case EXPR_GE:		// >=
+			fprintf(output, "\tCMPNLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		case EXPR_EQ:
+			fprintf(output, "\tCMPEQSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		case EXPR_NE:
+			fprintf(output, "\tCMPNEQSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
+		default:
+			break;
+	}
+	/* Read comparison result from e->left->reg */
+	e->reg = scratch_alloc();
+	fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->reg));
+
+	scratch_free(e->left->reg);
+	scratch_free(e->right->reg);
 }
 
 
