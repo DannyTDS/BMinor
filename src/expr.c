@@ -636,6 +636,10 @@ int expr_typecheck_constant( struct expr *e ) {
 		case EXPR_TRUE:
 		case EXPR_FALSE:
 			return TRUE;
+		case EXPR_ADD:
+		case EXPR_SUB:
+			// Unary add / sub
+			return (e->left) ? FALSE : TRUE;
 		case EXPR_TERM:
 		case EXPR_BLOCK:
 			return expr_typecheck_constant(e->left) && expr_typecheck_constant(e->right);
@@ -653,16 +657,25 @@ void expr_codegen( struct expr *e ) {
 		case EXPR_ADD:
 			expr_codegen(e->left);
 			expr_codegen(e->right);
-			fprintf(output, "\tADDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
-			e->reg = e->left->reg;
-			scratch_free(e->right->reg);
+			if (!e->left) {
+				e->reg = e->right->reg;				// Unary sign
+			} else {
+				fprintf(output, "\tADDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
+				e->reg = e->left->reg;
+				scratch_free(e->right->reg);
+			}
 			break;
 		case EXPR_SUB:
 			expr_codegen(e->left);
 			expr_codegen(e->right);
-			fprintf(output, "\tSUBQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// SUBQ %rreg %lreg
-			e->reg = e->left->reg;
-			scratch_free(e->right->reg);
+			if (!e->left) {
+				fprintf(output, "\tNEG %%%s\n", scratch_name(e->right->reg));				// Unary sign
+				e->reg = e->right->reg;
+			} else {
+				fprintf(output, "\tSUBQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// SUBQ %rreg %lreg
+				e->reg = e->left->reg;
+				scratch_free(e->right->reg);
+			}
 			break;
 		case EXPR_MUL:
 			expr_codegen(e->left);
@@ -925,4 +938,23 @@ void expr_codegen_fcall( struct expr* e ) {
 	/* Retrieve return value */
 	e->reg = scratch_alloc();
 	fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->reg));
+}
+
+/**
+ * Evaluate the literal value of a char / float / int literal.
+ * If a char literal, will have no effect.
+ * If a float / int literal, evaluate it together with preceding unary signs, if any.
+*/
+int64_t expr_evaluate_literal( struct expr* e ) {
+	if (!e || !expr_typecheck_constant(e)) {
+		error("Evaluate error: not a constant expression");
+		exit(FAILURE);
+	}
+	if (e->kind == EXPR_SUB) {
+		return (-1) * e->right->int_literal;
+	} else if (e->kind == EXPR_ADD) {
+		return e->right->int_literal;
+	} else {
+		return e->int_literal;
+	}
 }

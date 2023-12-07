@@ -101,4 +101,6 @@ extern const char* argreg[];
 void expr_codegen( struct expr *e );
 void expr_codegen_cmp( struct expr *e );		// Comparison codegen
 void expr_codegen_fcall( struct expr *e );		// Function call codegen
+
+int64_t expr_evaluate_literal( struct expr* e );
 #endif

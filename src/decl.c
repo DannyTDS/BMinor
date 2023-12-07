@@ -306,7 +306,7 @@ void decl_codegen( struct decl *d ) {
             case TYPE_CHAR:
             case TYPE_INT: {
                 int64_t literal = 0;
-                if (d->value) literal = d->value->int_literal;
+                if (d->value) literal = expr_evaluate_literal(d->value);
                 fprintf(output, ".data\n%s:\t.quad\t%ld\n", d->name, literal);
                 break;
             }
