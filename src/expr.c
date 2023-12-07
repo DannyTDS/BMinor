@@ -42,6 +42,8 @@ struct expr * expr_create_integer_literal( int64_t d, int precedence )
 struct expr * expr_create_float_literal( double f, int precedence )
 {
 	struct expr *e = expr_create(EXPR_FLOAT_LIT, NULL, NULL, precedence);
+	long *p = (long*)&f;
+	e->int_literal = *p;
 	e->float_literal = f;
 	return e;
 }
@@ -654,48 +656,75 @@ void expr_codegen( struct expr *e ) {
 	if (!e || e->reg) return;
 
 	switch (e->kind) {
-		case EXPR_ADD:
+		case EXPR_ADD: {
 			expr_codegen(e->left);
 			expr_codegen(e->right);
+			struct type* t = expr_typecheck(e);
 			if (!e->left) {
 				e->reg = e->right->reg;				// Unary sign
 			} else {
-				fprintf(output, "\tADDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
+				if (t->kind == TYPE_INT) {
+					fprintf(output, "\tADDQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
+				} else if (t->kind == TYPE_FLOAT) {
+					fprintf(output, "\tADDSD %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));
+				}
 				e->reg = e->left->reg;
 				scratch_free(e->right->reg);
 			}
+			type_delete(t);
 			break;
-		case EXPR_SUB:
+		}
+		case EXPR_SUB: {
 			expr_codegen(e->left);
 			expr_codegen(e->right);
+			struct type* t = expr_typecheck(e);
 			if (!e->left) {
 				fprintf(output, "\tNEG %%%s\n", scratch_name(e->right->reg));				// Unary sign
 				e->reg = e->right->reg;
 			} else {
-				fprintf(output, "\tSUBQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// SUBQ %rreg %lreg
+				if (t->kind == TYPE_INT) {
+					fprintf(output, "\tSUBQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));		// ADDQ %rreg %lreg
+				} else if (t->kind == TYPE_FLOAT) {
+					fprintf(output, "\tSUBSD %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));
+				}
 				e->reg = e->left->reg;
 				scratch_free(e->right->reg);
 			}
+			type_delete(t);
 			break;
-		case EXPR_MUL:
+		}
+		case EXPR_MUL: {
 			expr_codegen(e->left);
 			expr_codegen(e->right);
-            fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
-            fprintf(output, "\tIMULQ %%%s\n", scratch_name(e->right->reg));			// Multiply
-            fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve result from %rax
+			struct type* t = expr_typecheck(e);
+			if (t->kind == TYPE_FLOAT) {
+				fprintf(output, "\tMULSD %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));
+			} else {
+				fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
+				fprintf(output, "\tIMULQ %%%s\n", scratch_name(e->right->reg));			// Multiply
+				fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve result from %rax
+			}
+            e->reg = e->left->reg;
+			scratch_free(e->right->reg);
+			type_delete(t);
+			break;
+		}
+		case EXPR_DIV: {
+			expr_codegen(e->left);
+			expr_codegen(e->right);
+			struct type* t = expr_typecheck(e);
+			if (t->kind == TYPE_FLOAT) {
+				fprintf(output, "\tDIVSD %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->left->reg));
+			} else {
+				fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
+				fprintf(output, "\tCQO\n");												// Sign extend
+				fprintf(output, "\tIDIVQ %%%s\n", scratch_name(e->right->reg));			// Divide
+				fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve quotient from %rax
+			}
             e->reg = e->left->reg;
 			scratch_free(e->right->reg);
 			break;
-		case EXPR_DIV:
-			expr_codegen(e->left);
-			expr_codegen(e->right);
-            fprintf(output, "\tMOVQ %%%s, %%rax\n", scratch_name(e->left->reg));	// Load lhs into %rax
-			fprintf(output, "\tCQO\n");												// Sign extend
-            fprintf(output, "\tIDIVQ %%%s\n", scratch_name(e->right->reg));			// Divide
-            fprintf(output, "\tMOVQ %%rax, %%%s\n", scratch_name(e->left->reg));	// Retrieve quotient from %rax
-            e->reg = e->left->reg;
-			scratch_free(e->right->reg);
-			break;
+		}
 		case EXPR_EXP: {
 			/* Call power function in library.c */
 			struct expr* fcall = expr_create(
@@ -728,9 +757,12 @@ void expr_codegen( struct expr *e ) {
 			fprintf(output, "\tMOVQ $%ld, %%%s\n", e->int_literal, scratch_name(e->reg));
 			break;
 		case EXPR_FLOAT_LIT:
-			// TODO: Support floating point number codegen
-			error("Codegen error: Floating point numbers not implemented");
-			exit(FAILURE);
+			e->reg = scratch_alloc_xmm();
+			int scratch = scratch_alloc();
+			fprintf(output, "\tMOV $%ld, %%%s\n", e->int_literal, scratch_name(scratch));
+			fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(scratch), scratch_name(e->reg));
+			scratch_free(scratch);
+			break;
 		case EXPR_CHAR_LIT:
 			e->reg = scratch_alloc();
 			fprintf(output, "\tMOVQ $%ld, %%%s\n", e->int_literal, scratch_name(e->reg));
@@ -815,7 +847,13 @@ void expr_codegen( struct expr *e ) {
 			expr_codegen(e->right);
 			/* Definition is stored in e->right->reg */
 			if (e->left->kind==EXPR_IDENT) {
-				fprintf(output, "\tMOVQ %%%s, %s\n", scratch_name(e->right->reg), symbol_codegen(e->left->symbol));
+				struct type* t = expr_typecheck(e->left);
+				if (t->kind == TYPE_FLOAT) {
+					fprintf(output, "\tMOVSD %%%s, %s\n", scratch_name(e->right->reg), symbol_codegen(e->left->symbol));
+				} else {
+					fprintf(output, "\tMOVQ %%%s, %s\n", scratch_name(e->right->reg), symbol_codegen(e->left->symbol));
+				}
+				type_delete(t);
 			} else if (e->left->kind == EXPR_INDEX) {
 				/* Address to move into is manually computed */
 				expr_codegen(e->left->left);
@@ -836,6 +874,11 @@ void expr_codegen( struct expr *e ) {
 						/* For global strings and arrays, load their address */
 						fprintf(output, "\tLEAQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
 						break;
+					case TYPE_FLOAT:
+						scratch_free(e->reg);
+						e->reg = scratch_alloc_xmm();
+						fprintf(output, "\tMOVSD %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+						break;
 					default:
 						/* For other global variables, load their content */
 						fprintf(output, "\tMOVQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
@@ -843,7 +886,13 @@ void expr_codegen( struct expr *e ) {
 				}
 			} else {
 				/* For all other variables, load the content */
-				fprintf(output, "\tMOVQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+				if (e->symbol->type->kind == TYPE_FLOAT) {
+					scratch_free(e->reg);
+					e->reg = scratch_alloc_xmm();
+					fprintf(output, "\tMOVSD %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+				} else {
+					fprintf(output, "\tMOVQ %s, %%%s\n", symbol_codegen(e->symbol), scratch_name(e->reg));
+				}
 			}
 			break;
 		case EXPR_FCALL:
@@ -916,19 +965,25 @@ void expr_codegen_cmp(struct expr* e) {
 
 void expr_codegen_fcall( struct expr* e ) {
 	/* Prepare the arguments */
-	int arg_cnt = 0;
+	int arg_cnt = 0;				// All other arguments
+	int float_cnt = 0;				// Float arguments
 	for (struct expr* arg=e->right; arg; arg=arg->right) {
-		if (arg_cnt == MAX_NARG) {
+		if (arg_cnt + float_cnt == MAX_NARG) {
 			error("Codegen error: only up to 6 arguments to a function is supported: %s", e->left->name);
             exit(FAILURE);
 		}
 		expr_codegen(arg);
-		fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(arg->left->reg), argreg[arg_cnt]);
-		scratch_free(arg->left->reg);
-		arg_cnt++;
+		struct type* t = expr_typecheck(arg);
+		if (t->kind == TYPE_FLOAT) {
+			float_cnt++;
+		} else {
+			fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(arg->left->reg), argreg[arg_cnt]);
+			scratch_free(arg->left->reg);
+			arg_cnt++;
+		}
+		type_delete(t);
 	}
-	// TODO: Floating point arguments
-	fprintf(output, "\tMOVQ $0, %%rax\n");
+	fprintf(output, "\tMOVQ $%d, %%rax\n", float_cnt);
 	/* Function call procedure */
     fprintf(output, "\tPUSHQ %%r10\n");					// Push caller saved reg
 	fprintf(output, "\tPUSHQ %%r11\n");

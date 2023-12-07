@@ -324,9 +324,8 @@ void stmt_codegen(struct stmt *s, const char* func_name) {
                         strcpy(fcall_name, "print_integer");
                         break;
                     case TYPE_FLOAT:
-                        // TODO:
-                        error("Codegen error: Floating point numbers not implemented");
-                        exit(FAILURE);
+                        strcpy(fcall_name, "print_float");
+                        break;
                     case TYPE_CHAR:
                         strcpy(fcall_name, "print_character");
                         break;

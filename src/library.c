@@ -32,6 +32,11 @@ void print_integer( long x )
 	printf("%ld",x);
 }
 
+void print_float( double y )
+{
+	printf("%lf",y);
+}
+
 void print_string( const char *s )
 {
 	printf("%s",s);

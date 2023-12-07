@@ -304,16 +304,13 @@ void decl_codegen( struct decl *d ) {
         switch (d->type->kind) {
             /* Global variables. All unintialized values default to 0. */
             case TYPE_CHAR:
+            case TYPE_FLOAT:
             case TYPE_INT: {
                 int64_t literal = 0;
                 if (d->value) literal = expr_evaluate_literal(d->value);
                 fprintf(output, ".data\n%s:\t.quad\t%ld\n", d->name, literal);
                 break;
             }
-            case TYPE_FLOAT:
-                // TODO: Support floating point
-                error("Codegen error: Floating point numbers not implemented");
-			    exit(FAILURE);
             case TYPE_STR: {
                 char es[BUFSIZ] = "";
 			    if (d->value) string_encode(d->value->string_literal, es);
@@ -388,7 +385,6 @@ void decl_codegen( struct decl *d ) {
         switch (d->type->kind) {
             case TYPE_CHAR:
             case TYPE_INT:
-            case TYPE_FLOAT:
             case TYPE_STR:
             case TYPE_BOOL:
                 if (!d->value) break;       // Only operate if a value is given.
@@ -396,6 +392,14 @@ void decl_codegen( struct decl *d ) {
                 expr_codegen(d->value);
                 /* symbol_codegen returns the variable's address on stack */
                 fprintf(output, "\tMOVQ %%%s, %s\n", scratch_name(d->value->reg), symbol_codegen(d->symbol));
+                scratch_free(d->value->reg);
+                break;
+            case TYPE_FLOAT:
+                if (!d->value) break;       // Only operate if a value is given.
+                /* Definition stored on rhs */
+                expr_codegen(d->value);
+                /* symbol_codegen returns the variable's address on stack */
+                fprintf(output, "\tMOVSD %%%s, %s\n", scratch_name(d->value->reg), symbol_codegen(d->symbol));
                 scratch_free(d->value->reg);
                 break;
             case TYPE_ARRAY:

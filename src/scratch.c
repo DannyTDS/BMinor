@@ -2,7 +2,8 @@
 #include "utils.h"
 
 int SCRATCH_NREG = 7;
-int reglist[7] = {0};        // 0: not used. 1: used.
+int XMM_NREG = 8;
+int reglist[15] = {0};        // 0: not used. 1: used.
 
 int scratch_alloc() {
     for (int reg=0; reg<SCRATCH_NREG; reg++) {
@@ -15,8 +16,19 @@ int scratch_alloc() {
     exit(FAILURE);
 }
 
+int scratch_alloc_xmm() {
+    for (int reg=SCRATCH_NREG; reg<SCRATCH_NREG + XMM_NREG; reg++) {
+        if (reglist[reg]==0) {
+            reglist[reg] = 1;
+            return reg;
+        }
+    }
+    error("Codegen error: no free XMM scratch register available");
+    exit(FAILURE);
+}
+
 void scratch_free(int reg) {
-    if (reg < 0 || reg >= SCRATCH_NREG) {
+    if (reg < 0 || reg >= SCRATCH_NREG + XMM_NREG) {
         error("Codegen error: attempt to free unknown register %d", reg);
         exit(FAILURE);
     }
@@ -24,15 +36,19 @@ void scratch_free(int reg) {
 }
 
 const char* scratch_name(int reg) {
-    /* rbx, r10-r15 */
-    if (reg < 0 || reg >= SCRATCH_NREG) {
+    /* rbx, r10-r15, xmm0 - xmm7 */
+    if (reg < 0 || reg >= SCRATCH_NREG + XMM_NREG) {
         error("Codegen error: undefined name for unknown register %d", reg);
         exit(FAILURE);
     } else if (reg == 0) {
         return "rbx";
-    } else {
+    } else if (reg < SCRATCH_NREG) {
         char name[4];
         sprintf(name, "r%d", reg+9);
+        return strdup(name);
+    } else {
+        char name[5];
+        sprintf(name, "xmm%d", reg - SCRATCH_NREG);
         return strdup(name);
     }
 }
