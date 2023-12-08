@@ -1001,17 +1001,18 @@ void expr_codegen_cmp_xmm( struct expr *e ) {
 	expr_codegen(e->right);
 	/* Jump on condition True */
 	switch (e->kind) {
+		/* The operands are somehow twisted. It appears CMPLTSD %a %b == %b < %a. */
 		case EXPR_LT:		// <
-			fprintf(output, "\tCMPLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			fprintf(output, "\tCMPNLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
 			break;
 		case EXPR_LE:		// <=
-			fprintf(output, "\tCMPLESD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
-			break;
-		case EXPR_GT:		// >
 			fprintf(output, "\tCMPNLESD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
 			break;
+		case EXPR_GT:		// >
+			fprintf(output, "\tCMPLESD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			break;
 		case EXPR_GE:		// >=
-			fprintf(output, "\tCMPNLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
+			fprintf(output, "\tCMPLTSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
 			break;
 		case EXPR_EQ:
 			fprintf(output, "\tCMPEQSD %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->right->reg));
@@ -1022,9 +1023,9 @@ void expr_codegen_cmp_xmm( struct expr *e ) {
 		default:
 			break;
 	}
-	/* Read comparison result from e->left->reg */
+	/* Read comparison result from e->right->reg */
 	e->reg = scratch_alloc();
-	fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(e->left->reg), scratch_name(e->reg));
+	fprintf(output, "\tMOVQ %%%s, %%%s\n", scratch_name(e->right->reg), scratch_name(e->reg));
 
 	scratch_free(e->left->reg);
 	scratch_free(e->right->reg);
