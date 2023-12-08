@@ -303,11 +303,40 @@ void decl_codegen( struct decl *d ) {
     if (d->symbol->kind==SYMBOL_GLOBAL) {
         switch (d->type->kind) {
             /* Global variables. All unintialized values default to 0. */
-            case TYPE_CHAR:
-            case TYPE_FLOAT:
+            case TYPE_CHAR: {
+                int64_t literal = 0;
+                if (d->value) literal = d->value->int_literal;
+                fprintf(output, ".data\n%s:\t.quad\t%ld\n", d->name, literal);
+                break;
+            }
+            case TYPE_FLOAT: {
+                int64_t literal = 0;
+                if (d->value) {
+                    if (d->value->kind == EXPR_SUB) {
+                        double float_literal = (-1.0) * d->value->right->float_literal;
+                        long *p = (long*)&float_literal;
+                        printf("%ld\n", *p);
+                        literal = *p;
+                    } else if (d->value->kind == EXPR_ADD) {
+                        literal = d->value->right->int_literal;
+                    } else {
+                        literal = d->value->int_literal;
+                    }
+                }
+                fprintf(output, ".data\n%s:\t.quad\t%ld\n", d->name, literal);
+                break;
+            }
             case TYPE_INT: {
                 int64_t literal = 0;
-                if (d->value) literal = expr_evaluate_literal(d->value);
+                if (d->value) {
+                    if (d->value->kind == EXPR_SUB) {
+                        literal = (-1) * d->value->right->int_literal;
+                    } else if (d->value->kind == EXPR_ADD) {
+                        literal = d->value->right->int_literal;
+                    } else {
+                        literal = d->value->int_literal;
+                    }
+                }
                 fprintf(output, ".data\n%s:\t.quad\t%ld\n", d->name, literal);
                 break;
             }
