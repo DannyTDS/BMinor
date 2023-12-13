@@ -1,0 +1,6369 @@
+=====STUDENT TESTS=====
+====Good Tests====
+===[STUDENT TESTS/good1.bminor Input]===
+a: integer=1;
+b: integer=2;
+compute: function integer(a: integer, b: integer);
+
+main: function integer() = 
+{
+    compute(a, b);
+    return 0;
+}
+
+compute: function integer
+( a: integer, b: integer ) =
+{
+    x:integer = a+b;
+    y:integer = x*5;
+    print x>y;
+}
+===[STUDENT TESTS/good1.bminor Status]===
+return code: 0
+===[good1.bminor Assembly Output]===
+.data
+a:	.quad	1
+.data
+b:	.quad	2
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ a, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ b, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL compute
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global compute
+compute:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $16, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ -24(%rbp), %rbx
+	MOVQ $5, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ -24(%rbp), %rbx
+	MOVQ -32(%rbp), %r10
+	CMPQ %r10, %rbx
+	JG .L0
+	MOVQ $0, %rbx
+	JMP .L1
+.L0:
+	MOVQ $1, %rbx
+.L1:
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_boolean
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.compute_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good1.bminor Output]===
+compute resolves to global prototype compute
+a resolves to global a
+b resolves to global b
+compute defines global prototype compute
+a resolves to param 0
+b resolves to param 1
+x resolves to local 2
+x resolves to local 2
+y resolves to local 3
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good10.bminor Input]===
+// tests infinite for loops
+x:integer = 1;
+main: function integer () =
+{
+	for(;;)
+	{
+		if(x<10)
+		{
+			print x, "\n";
+			x++;
+		}
+		else
+		{
+			return  10;
+		}
+	}	
+}
+===[STUDENT TESTS/good10.bminor Status]===
+return code: 0
+===[good10.bminor Assembly Output]===
+.data
+x:	.quad	1
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.L0:
+	MOVQ x, %rbx
+	MOVQ $10, %r10
+	CMPQ %r10, %rbx
+	JL .L4
+	MOVQ $0, %rbx
+	JMP .L5
+.L4:
+	MOVQ $1, %rbx
+.L5:
+	CMPQ $0, %rbx
+	JE .L2
+	MOVQ x, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L6:	.string	"\n"
+.text
+	LEAQ .L6, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ x
+	JMP .L3
+.L2:
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.L3:
+	JMP .L0
+.L1:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good10.bminor Output]===
+x resolves to global x
+x resolves to global x
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good11.bminor Input]===
+// tests strings/string assignments and printing 
+str:string = "hello";
+main:function integer () =
+{
+	print str;
+	str2:string = " world";
+	print str2;
+}
+===[STUDENT TESTS/good11.bminor Status]===
+return code: 0
+===[good11.bminor Assembly Output]===
+.data
+str:	.string	"hello"
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ str, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" world"
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good11.bminor Output]===
+str resolves to global str
+str2 resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good12.bminor Input]===
+// tests strings and string comparisions
+// and use of strings as local variables
+
+str:string = "hello";
+str2:string = " world";
+
+main:function integer () =
+{
+	str3:string = str;
+	if(str == str3)
+	{
+		print str;
+	}
+	else
+	{
+		print "shouldn't be printed";
+	}
+	if(str != str2)
+	{
+		print str2;
+	}
+	else
+	{
+		print "shouldn't be printed";
+	}
+}
+===[STUDENT TESTS/good12.bminor Status]===
+return code: 0
+===[good12.bminor Assembly Output]===
+.data
+str:	.string	"hello"
+.data
+str2:	.string	" world"
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ str, %rbx
+	MOVQ %rbx, -8(%rbp)
+	LEAQ str, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L0
+	LEAQ str, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.data
+.L4:	.string	"shouldn\'t be printed"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L1:
+	LEAQ str, %rbx
+	LEAQ str2, %r10
+	CMPQ %r10, %rbx
+	JNE .L7
+	MOVQ $0, %rbx
+	JMP .L8
+.L7:
+	MOVQ $1, %rbx
+.L8:
+	CMPQ $0, %rbx
+	JE .L5
+	LEAQ str2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L6
+.L5:
+.data
+.L9:	.string	"shouldn\'t be printed"
+.text
+	LEAQ .L9, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L6:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good12.bminor Output]===
+str resolves to global str
+str resolves to global str
+str3 resolves to local 0
+str resolves to global str
+str resolves to global str
+str2 resolves to global str2
+str2 resolves to global str2
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good13.bminor Input]===
+/*
+This test program prints out a maze generated
+by alternating slash and backslash randomly.
+It relies on the rand, srand, and time functions
+found in the C standard library.
+*/
+
+rand: function integer ();
+srand: function void ( seed: integer );
+time: function integer ( zero: integer );
+
+main: function void () =
+{
+	xsize: integer = 20;
+	ysize: integer = 20;
+
+	srand(time(0));
+
+	i: integer;
+	j: integer;
+	
+	for(j=0;j<ysize;j++) {
+		for(i=0;i<xsize;i++) {
+			if(rand()%2==1) {
+				print '/';
+			} else {
+				print '\\';
+			}
+		}
+		print "\n";
+	}
+}
+===[STUDENT TESTS/good13.bminor Status]===
+return code: 0
+===[good13.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $32, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $20, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $20, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL time
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL srand
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, -32(%rbp)
+.L0:
+	MOVQ -32(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JL .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	MOVQ $0, %rbx
+	MOVQ %rbx, -24(%rbp)
+.L4:
+	MOVQ -24(%rbp), %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JL .L6
+	MOVQ $0, %rbx
+	JMP .L7
+.L6:
+	MOVQ $1, %rbx
+.L7:
+	CMPQ $0, %rbx
+	JE .L5
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL rand
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rdx, %rbx
+	MOVQ $1, %r10
+	CMPQ %r10, %rbx
+	JE .L10
+	MOVQ $0, %rbx
+	JMP .L11
+.L10:
+	MOVQ $1, %rbx
+.L11:
+	CMPQ $0, %rbx
+	JE .L8
+	MOVQ $47, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L9
+.L8:
+	MOVQ $92, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L9:
+	INCQ -24(%rbp)
+	JMP .L4
+.L5:
+.data
+.L12:	.string	"\n"
+.text
+	LEAQ .L12, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ -32(%rbp)
+	JMP .L0
+.L1:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good13.bminor Output]===
+srand resolves to global prototype srand
+time resolves to global prototype time
+j resolves to local 3
+j resolves to local 3
+ysize resolves to local 1
+j resolves to local 3
+i resolves to local 2
+i resolves to local 2
+xsize resolves to local 0
+i resolves to local 2
+rand resolves to global prototype rand
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good14.bminor Input]===
+/*
+Display fibonnaci numbers from 0 to 45.
+This test exercises the ability of your
+compiler to call recursive functions.
+*/
+
+fib: function integer ( x: integer ) =
+{
+	if( x<1 ) {
+		return 0;
+	} else {
+		if(x<2) {
+			return 1;
+		} else {
+			return fib(x-1) + fib(x-2);
+		}
+	}
+}
+
+main: function integer ( argc: integer, argv: array [] string ) =
+{
+	i: integer;
+
+	print "Table of Fibonnacci Numbers\n";
+
+	for(i=0;i<30;i=i+1) {
+		print i, " ", fib(i), "\n";
+	}
+
+	return 0;
+}
+===[STUDENT TESTS/good14.bminor Status]===
+return code: 0
+===[good14.bminor Assembly Output]===
+.text
+.global fib
+fib:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ $1, %r10
+	CMPQ %r10, %rbx
+	JL .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L0
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .fib_epilogue
+	JMP .L1
+.L0:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $2, %r10
+	CMPQ %r10, %rbx
+	JL .L6
+	MOVQ $0, %rbx
+	JMP .L7
+.L6:
+	MOVQ $1, %rbx
+.L7:
+	CMPQ $0, %rbx
+	JE .L4
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rax
+	JMP .fib_epilogue
+	JMP .L5
+.L4:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $1, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL fib
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ $2, %r11
+	SUBQ %r11, %r10
+	MOVQ %r10, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL fib
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .fib_epilogue
+.L5:
+.L1:
+.fib_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L8:	.string	"Table of Fibonnacci Numbers\n"
+.text
+	LEAQ .L8, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, -24(%rbp)
+.L9:
+	MOVQ -24(%rbp), %rbx
+	MOVQ $30, %r10
+	CMPQ %r10, %rbx
+	JL .L11
+	MOVQ $0, %rbx
+	JMP .L12
+.L11:
+	MOVQ $1, %rbx
+.L12:
+	CMPQ $0, %rbx
+	JE .L10
+	MOVQ -24(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L13:	.string	" "
+.text
+	LEAQ .L13, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -24(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL fib
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L14:	.string	"\n"
+.text
+	LEAQ .L14, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -24(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -24(%rbp)
+	JMP .L9
+.L10:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good14.bminor Output]===
+x resolves to param 0
+x resolves to param 0
+fib resolves to global fib
+x resolves to param 0
+fib resolves to global fib
+x resolves to param 0
+i resolves to local 2
+i resolves to local 2
+i resolves to local 2
+i resolves to local 2
+i resolves to local 2
+fib resolves to global fib
+i resolves to local 2
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good15.bminor Input]===
+// tests addition
+main:function integer ()=
+{
+	return 8 + 2;
+}
+===[STUDENT TESTS/good15.bminor Status]===
+return code: 0
+===[good15.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $8, %rbx
+	MOVQ $2, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good15.bminor Output]===
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good16.bminor Input]===
+// tests multiplication
+main:function integer ()=
+{
+	return 5 * 2;
+}
+===[STUDENT TESTS/good16.bminor Status]===
+return code: 0
+===[good16.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $5, %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good16.bminor Output]===
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good17.bminor Input]===
+// tests division
+main:function integer ()=
+{
+	return 20 / 2;
+}
+===[STUDENT TESTS/good17.bminor Status]===
+return code: 0
+===[good17.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $20, %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good17.bminor Output]===
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good18.bminor Input]===
+// Adds a global variable
+x:integer=5;
+main:function integer ()=
+{
+	return x + x;
+}
+===[STUDENT TESTS/good18.bminor Status]===
+return code: 0
+===[good18.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ x, %rbx
+	MOVQ x, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good18.bminor Output]===
+x resolves to global x
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good19.bminor Input]===
+// Adds a local variable
+x:integer=5;
+main:function integer ()=
+{
+y:integer = 2;
+	return x * y;
+}
+===[STUDENT TESTS/good19.bminor Status]===
+return code: 0
+===[good19.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $2, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ x, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good19.bminor Output]===
+x resolves to global x
+y resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good2.bminor Input]===
+main: function integer () = {
+    a : integer = 1;
+    if (a > 0) print "a is greater than 0\n";
+    else print "a is NOT greater than 0\n";
+    return 0;
+}
+===[STUDENT TESTS/good2.bminor Status]===
+return code: 0
+===[good2.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $1, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JG .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L0
+.data
+.L4:	.string	"a is greater than 0\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.data
+.L5:	.string	"a is NOT greater than 0\n"
+.text
+	LEAQ .L5, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L1:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good2.bminor Output]===
+a resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good20.bminor Input]===
+// Uses a complex expression
+x:integer=5;
+main:function integer () =
+{
+	y:integer = 2;
+	return (x + 10) * y - x*4;
+}
+===[STUDENT TESTS/good20.bminor Status]===
+return code: 0
+===[good20.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $2, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ x, %rbx
+	MOVQ $10, %r10
+	ADDQ %r10, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ x, %r10
+	MOVQ $4, %r11
+	MOVQ %r10, %rax
+	IMULQ %r11
+	MOVQ %rax, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good20.bminor Output]===
+x resolves to global x
+y resolves to local 0
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good21.bminor Input]===
+// Uses a complex expression, with a function call
+x:integer=5;
+fxnCall:function integer() =
+{
+	return x*4;
+}
+main:function integer () =
+{
+	y:integer = 2;
+	return (x + 10) * y - fxnCall();
+}
+===[STUDENT TESTS/good21.bminor Status]===
+return code: 0
+===[good21.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global fxnCall
+fxnCall:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ x, %rbx
+	MOVQ $4, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .fxnCall_epilogue
+.fxnCall_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $2, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ x, %rbx
+	MOVQ $10, %r10
+	ADDQ %r10, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL fxnCall
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good21.bminor Output]===
+x resolves to global x
+x resolves to global x
+y resolves to local 0
+fxnCall resolves to global fxnCall
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good22.bminor Input]===
+// tests if statements 
+x:integer = 5;
+main:function integer () =
+{
+	if(false)
+		x=15;
+	else
+		x=10;
+
+
+	if(true)
+	{
+		return x;
+	}
+	else
+	{
+		return 1;
+	}	
+	
+}
+===[STUDENT TESTS/good22.bminor Status]===
+return code: 0
+===[good22.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	CMPQ $0, %rbx
+	JE .L0
+	MOVQ $15, %rbx
+	MOVQ %rbx, x
+	JMP .L1
+.L0:
+	MOVQ $10, %rbx
+	MOVQ %rbx, x
+.L1:
+	MOVQ $1, %rbx
+	CMPQ $0, %rbx
+	JE .L2
+	MOVQ x, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.L3:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good22.bminor Output]===
+x resolves to global x
+x resolves to global x
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good23.bminor Input]===
+/* Test array access */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function void () = {
+    print a[0], " ", a[1], " ", a[2], "\n";
+}
+===[STUDENT TESTS/good23.bminor Status]===
+return code: 0
+===[good23.bminor Assembly Output]===
+.data
+a:	.quad	1, 2, 3
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ a, %rbx
+	MOVQ $0, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" "
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $1, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	" "
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $2, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L2:	.string	"\n"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good23.bminor Output]===
+a resolves to global a
+a resolves to global a
+a resolves to global a
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good24.bminor Input]===
+/* Test assign to array element */
+
+a: array [3] integer = {0, 0, 0};
+
+main: function void () = {
+    a[0] = 1;
+    a[1] = 2;
+    a[2] = 3;
+    print a[0], " ", a[1], " ", a[2], "\n";
+}
+===[STUDENT TESTS/good24.bminor Status]===
+return code: 0
+===[good24.bminor Assembly Output]===
+.data
+a:	.quad	0, 0, 0
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $1, %rbx
+	LEAQ a, %r10
+	MOVQ $0, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	MOVQ $2, %rbx
+	LEAQ a, %r10
+	MOVQ $1, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	MOVQ $3, %rbx
+	LEAQ a, %r10
+	MOVQ $2, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	LEAQ a, %rbx
+	MOVQ $0, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" "
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $1, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	" "
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $2, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L2:	.string	"\n"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good24.bminor Output]===
+a resolves to global a
+a resolves to global a
+a resolves to global a
+a resolves to global a
+a resolves to global a
+a resolves to global a
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good25.bminor Input]===
+/* Combine array access with complex operations */
+
+a: array [3] integer = {0, 0, 0};
+
+main: function void () = {
+    x: integer = 0;
+    a[x+x] = 1;
+    x++;
+    a[x] = 2;
+    y: integer = 3;
+    y--;
+    a[y] = 3;
+    print a[0], " ", a[1], " ", a[2], "\n";
+}
+===[STUDENT TESTS/good25.bminor Status]===
+return code: 0
+===[good25.bminor Assembly Output]===
+.data
+a:	.quad	0, 0, 0
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $16, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $1, %rbx
+	LEAQ a, %r10
+	MOVQ -8(%rbp), %r11
+	MOVQ -8(%rbp), %r12
+	ADDQ %r12, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	INCQ -8(%rbp)
+	MOVQ $2, %rbx
+	LEAQ a, %r10
+	MOVQ -8(%rbp), %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	MOVQ $3, %rbx
+	MOVQ %rbx, -16(%rbp)
+	DECQ -16(%rbp)
+	MOVQ $3, %rbx
+	LEAQ a, %r10
+	MOVQ -16(%rbp), %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	LEAQ a, %rbx
+	MOVQ $0, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" "
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $1, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	" "
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $2, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L2:	.string	"\n"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good25.bminor Output]===
+a resolves to global a
+x resolves to local 0
+x resolves to local 0
+x resolves to local 0
+a resolves to global a
+x resolves to local 0
+y resolves to local 1
+a resolves to global a
+y resolves to local 1
+a resolves to global a
+a resolves to global a
+a resolves to global a
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good26.bminor Input]===
+/* Test operations on array elements */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function integer () = {
+    return a[0] + a[1] + a[2];
+}
+===[STUDENT TESTS/good26.bminor Status]===
+return code: 0
+===[good26.bminor Assembly Output]===
+.data
+a:	.quad	1, 2, 3
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ a, %rbx
+	MOVQ $0, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	LEAQ a, %r10
+	MOVQ $1, %r11
+	MOVQ (%r10, %r11, 8), %r10
+	ADDQ %r10, %rbx
+	LEAQ a, %r10
+	MOVQ $2, %r11
+	MOVQ (%r10, %r11, 8), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good26.bminor Output]===
+a resolves to global a
+a resolves to global a
+a resolves to global a
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good27.bminor Input]===
+/* Test logical and, or, not */
+
+main: function void () = {
+    x: integer = 1;
+    y: integer = 2;
+    z: integer = 3;
+    if ((x<y) && (y<z)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+    if ((x>y) || (z>y)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+    if (!(x>y)) {
+        print "Should be printed\n";
+    } else {
+        print "Shouldn't be printed\n";
+    }
+}
+===[STUDENT TESTS/good27.bminor Status]===
+return code: 0
+===[good27.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $24, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $1, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $2, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $3, %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JL .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	MOVQ -16(%rbp), %r10
+	MOVQ -24(%rbp), %r11
+	CMPQ %r11, %r10
+	JL .L4
+	MOVQ $0, %r10
+	JMP .L5
+.L4:
+	MOVQ $1, %r10
+.L5:
+	ANDQ %r10, %rbx
+	CMPQ $0, %rbx
+	JE .L0
+.data
+.L6:	.string	"Should be printed\n"
+.text
+	LEAQ .L6, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.data
+.L7:	.string	"Shouldn\'t be printed\n"
+.text
+	LEAQ .L7, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L1:
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JG .L10
+	MOVQ $0, %rbx
+	JMP .L11
+.L10:
+	MOVQ $1, %rbx
+.L11:
+	MOVQ -24(%rbp), %r10
+	MOVQ -16(%rbp), %r11
+	CMPQ %r11, %r10
+	JG .L12
+	MOVQ $0, %r10
+	JMP .L13
+.L12:
+	MOVQ $1, %r10
+.L13:
+	ORQ %r10, %rbx
+	CMPQ $0, %rbx
+	JE .L8
+.data
+.L14:	.string	"Should be printed\n"
+.text
+	LEAQ .L14, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L9
+.L8:
+.data
+.L15:	.string	"Shouldn\'t be printed\n"
+.text
+	LEAQ .L15, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L9:
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JG .L18
+	MOVQ $0, %rbx
+	JMP .L19
+.L18:
+	MOVQ $1, %rbx
+.L19:
+	NOTQ %rbx
+	CMPQ $0, %rbx
+	JE .L16
+.data
+.L20:	.string	"Should be printed\n"
+.text
+	LEAQ .L20, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L17
+.L16:
+.data
+.L21:	.string	"Shouldn\'t be printed\n"
+.text
+	LEAQ .L21, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L17:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good27.bminor Output]===
+x resolves to local 0
+y resolves to local 1
+y resolves to local 1
+z resolves to local 2
+x resolves to local 0
+y resolves to local 1
+z resolves to local 2
+y resolves to local 1
+x resolves to local 0
+y resolves to local 1
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good28.bminor Input]===
+/* Test incre and decre on array element */
+
+a: array [3] integer = {1, 2, 3};
+
+main: function void () = {
+    a[1]--;
+    print a[0], " ", a[1], " ", a[2], "\n";
+}
+===[STUDENT TESTS/good28.bminor Status]===
+return code: 0
+===[good28.bminor Assembly Output]===
+.data
+a:	.quad	1, 2, 3
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ a, %rbx
+	MOVQ $1, %r10
+	DECQ (%rbx, %r10, 8)
+	LEAQ a, %rbx
+	MOVQ $0, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" "
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $1, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	" "
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ a, %rbx
+	MOVQ $2, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L2:	.string	"\n"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good28.bminor Output]===
+a resolves to global a
+a resolves to global a
+a resolves to global a
+a resolves to global a
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good3.bminor Input]===
+main: function integer () = {
+    i: integer;
+    for (i=0; i<10; i++) {
+        print i, "\n";
+    }
+    return 0;
+}
+===[STUDENT TESTS/good3.bminor Status]===
+return code: 0
+===[good3.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L0:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $10, %r10
+	CMPQ %r10, %rbx
+	JL .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L4:	.string	"\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ -8(%rbp)
+	JMP .L0
+.L1:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good3.bminor Output]===
+i resolves to local 0
+i resolves to local 0
+i resolves to local 0
+i resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good4.bminor Input]===
+main:function integer ()=
+{
+	return 10;
+}
+===[STUDENT TESTS/good4.bminor Status]===
+return code: 0
+===[good4.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good4.bminor Output]===
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good5.bminor Input]===
+// tests print statements 
+x:integer=10;
+main:function integer () =
+{
+	print x;	
+	
+}
+===[STUDENT TESTS/good5.bminor Status]===
+return code: 0
+===[good5.bminor Assembly Output]===
+.data
+x:	.quad	10
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ x, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good5.bminor Output]===
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good6.bminor Input]===
+// tests character printing
+i:char= 'i';
+main:function integer () =
+{
+	n:char ='n';
+	print 'h', i,' ', n, 'd'; 
+}
+===[STUDENT TESTS/good6.bminor Status]===
+return code: 0
+===[good6.bminor Assembly Output]===
+.data
+i:	.quad	105
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $110, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $104, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ i, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $32, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $100, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good6.bminor Output]===
+i resolves to global i
+n resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good7.bminor Input]===
+// tests comparisions/if statements
+x:integer = 5;
+main: function integer () =
+{
+	y:integer = 10;
+	z:integer = 5;
+	if(x >= z)
+		print "should be printed\n";
+	else
+	{
+		print "shouldn't be printed\n";
+	}
+
+	if(y > x )
+	{
+		print "should be printed\n";
+	}
+	else
+	{
+		print "shouldn't be printed\n";
+	}
+	if(z == x )
+	{
+		print "should be printed\n";
+	}
+	else
+		print "shouldn't be printed\n";
+	
+	if(x <= y )
+	{
+		print "should be printed\n";
+	}
+	else
+	{
+		print "shouldn't be printed\n";
+	}
+	if(x != y )
+	{
+		print "should be printed\n";
+	}
+	else
+	{
+		print "shouldn't be printed\n";
+	}
+
+
+	//switched now (statement should be false)
+	if(z < x )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+
+	if(y < x )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+	if(z != x )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+	
+	if(y <= x )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+	if(y == x )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+}
+===[STUDENT TESTS/good7.bminor Status]===
+return code: 0
+===[good7.bminor Assembly Output]===
+.data
+x:	.quad	5
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $16, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $10, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $5, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ x, %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JGE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L0
+.data
+.L4:	.string	"should be printed\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.data
+.L5:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L5, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L1:
+	MOVQ -8(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JG .L8
+	MOVQ $0, %rbx
+	JMP .L9
+.L8:
+	MOVQ $1, %rbx
+.L9:
+	CMPQ $0, %rbx
+	JE .L6
+.data
+.L10:	.string	"should be printed\n"
+.text
+	LEAQ .L10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L7
+.L6:
+.data
+.L11:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L11, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L7:
+	MOVQ -16(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JE .L14
+	MOVQ $0, %rbx
+	JMP .L15
+.L14:
+	MOVQ $1, %rbx
+.L15:
+	CMPQ $0, %rbx
+	JE .L12
+.data
+.L16:	.string	"should be printed\n"
+.text
+	LEAQ .L16, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L13
+.L12:
+.data
+.L17:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L17, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L13:
+	MOVQ x, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JLE .L20
+	MOVQ $0, %rbx
+	JMP .L21
+.L20:
+	MOVQ $1, %rbx
+.L21:
+	CMPQ $0, %rbx
+	JE .L18
+.data
+.L22:	.string	"should be printed\n"
+.text
+	LEAQ .L22, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L19
+.L18:
+.data
+.L23:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L23, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L19:
+	MOVQ x, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JNE .L26
+	MOVQ $0, %rbx
+	JMP .L27
+.L26:
+	MOVQ $1, %rbx
+.L27:
+	CMPQ $0, %rbx
+	JE .L24
+.data
+.L28:	.string	"should be printed\n"
+.text
+	LEAQ .L28, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L25
+.L24:
+.data
+.L29:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L29, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L25:
+	MOVQ -16(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JL .L32
+	MOVQ $0, %rbx
+	JMP .L33
+.L32:
+	MOVQ $1, %rbx
+.L33:
+	CMPQ $0, %rbx
+	JE .L30
+.data
+.L34:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L34, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L31
+.L30:
+.data
+.L35:	.string	"should be printed\n"
+.text
+	LEAQ .L35, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L31:
+	MOVQ -8(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JL .L38
+	MOVQ $0, %rbx
+	JMP .L39
+.L38:
+	MOVQ $1, %rbx
+.L39:
+	CMPQ $0, %rbx
+	JE .L36
+.data
+.L40:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L40, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L37
+.L36:
+.data
+.L41:	.string	"should be printed\n"
+.text
+	LEAQ .L41, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L37:
+	MOVQ -16(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JNE .L44
+	MOVQ $0, %rbx
+	JMP .L45
+.L44:
+	MOVQ $1, %rbx
+.L45:
+	CMPQ $0, %rbx
+	JE .L42
+.data
+.L46:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L46, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L43
+.L42:
+.data
+.L47:	.string	"should be printed\n"
+.text
+	LEAQ .L47, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L43:
+	MOVQ -8(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JLE .L50
+	MOVQ $0, %rbx
+	JMP .L51
+.L50:
+	MOVQ $1, %rbx
+.L51:
+	CMPQ $0, %rbx
+	JE .L48
+.data
+.L52:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L52, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L49
+.L48:
+.data
+.L53:	.string	"should be printed\n"
+.text
+	LEAQ .L53, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L49:
+	MOVQ -8(%rbp), %rbx
+	MOVQ x, %r10
+	CMPQ %r10, %rbx
+	JE .L56
+	MOVQ $0, %rbx
+	JMP .L57
+.L56:
+	MOVQ $1, %rbx
+.L57:
+	CMPQ $0, %rbx
+	JE .L54
+.data
+.L58:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L58, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L55
+.L54:
+.data
+.L59:	.string	"should be printed\n"
+.text
+	LEAQ .L59, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L55:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good7.bminor Output]===
+x resolves to global x
+z resolves to local 1
+y resolves to local 0
+x resolves to global x
+z resolves to local 1
+x resolves to global x
+x resolves to global x
+y resolves to local 0
+x resolves to global x
+y resolves to local 0
+z resolves to local 1
+x resolves to global x
+y resolves to local 0
+x resolves to global x
+z resolves to local 1
+x resolves to global x
+y resolves to local 0
+x resolves to global x
+y resolves to local 0
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good8.bminor Input]===
+// tests comparisions/if statements with chars
+c:char = 'c';
+main: function integer () =
+{
+	a:char = 'a';
+	cdup:char = 'c';
+	
+	if(c == cdup )
+	{
+		print "should be printed\n";
+	}
+	else
+		print "shouldn't be printed\n";
+	
+	if(c != a )
+	{
+		print "should be printed\n";
+	}
+	else
+	{
+		print "shouldn't be printed\n";
+	}
+
+
+	//switched now (statement should be false)
+	if(c != cdup )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+	
+	if(c == a )
+	{
+		print "shouldn't be printed\n";
+	}
+	else
+	{
+		print "should be printed\n";
+	}
+}
+===[STUDENT TESTS/good8.bminor Status]===
+return code: 0
+===[good8.bminor Assembly Output]===
+.data
+c:	.quad	99
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $16, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $97, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $99, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ c, %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L0
+.data
+.L4:	.string	"should be printed\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.data
+.L5:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L5, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L1:
+	MOVQ c, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JNE .L8
+	MOVQ $0, %rbx
+	JMP .L9
+.L8:
+	MOVQ $1, %rbx
+.L9:
+	CMPQ $0, %rbx
+	JE .L6
+.data
+.L10:	.string	"should be printed\n"
+.text
+	LEAQ .L10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L7
+.L6:
+.data
+.L11:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L11, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L7:
+	MOVQ c, %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JNE .L14
+	MOVQ $0, %rbx
+	JMP .L15
+.L14:
+	MOVQ $1, %rbx
+.L15:
+	CMPQ $0, %rbx
+	JE .L12
+.data
+.L16:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L16, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L13
+.L12:
+.data
+.L17:	.string	"should be printed\n"
+.text
+	LEAQ .L17, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L13:
+	MOVQ c, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JE .L20
+	MOVQ $0, %rbx
+	JMP .L21
+.L20:
+	MOVQ $1, %rbx
+.L21:
+	CMPQ $0, %rbx
+	JE .L18
+.data
+.L22:	.string	"shouldn\'t be printed\n"
+.text
+	LEAQ .L22, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L19
+.L18:
+.data
+.L23:	.string	"should be printed\n"
+.text
+	LEAQ .L23, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.L19:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good8.bminor Output]===
+c resolves to global c
+cdup resolves to local 1
+c resolves to global c
+a resolves to local 0
+c resolves to global c
+cdup resolves to local 1
+c resolves to global c
+a resolves to local 0
+[INFO]     Codegen successful!
+
+
+
+
+===[STUDENT TESTS/good9.bminor Input]===
+// tests for loops
+x:integer = 1;
+main: function integer () =
+{
+	for(x = 0; x<10; x++)
+	{
+		print x, "\n";
+	}
+	y:integer = 0;
+	for(; y<10; y++)
+	{
+		print y, "\n";
+	}
+	x=0;
+}
+===[STUDENT TESTS/good9.bminor Status]===
+return code: 0
+===[good9.bminor Assembly Output]===
+.data
+x:	.quad	1
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, x
+.L0:
+	MOVQ x, %rbx
+	MOVQ $10, %r10
+	CMPQ %r10, %rbx
+	JL .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	MOVQ x, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L4:	.string	"\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ x
+	JMP .L0
+.L1:
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L5:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $10, %r10
+	CMPQ %r10, %rbx
+	JL .L7
+	MOVQ $0, %rbx
+	JMP .L8
+.L7:
+	MOVQ $1, %rbx
+.L8:
+	CMPQ $0, %rbx
+	JE .L6
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L9:	.string	"\n"
+.text
+	LEAQ .L9, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ -8(%rbp)
+	JMP .L5
+.L6:
+	MOVQ $0, %rbx
+	MOVQ %rbx, x
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+Test passed successfully!
+
+===[STUDENT TESTS/good9.bminor Output]===
+x resolves to global x
+x resolves to global x
+x resolves to global x
+x resolves to global x
+y resolves to local 0
+y resolves to local 0
+y resolves to local 0
+x resolves to global x
+[INFO]     Codegen successful!
+
+
+
+
+=====HIDDEN TESTS=====
+====Good Tests====
+===[good1.bminor Input]===
+strlen: function integer(s: string);
+f: function integer(i: integer);
+
+main: function integer () = {
+	if (f(strlen("hi")) > strlen("there")) {print "no\n";}
+	if (f(f(strlen("hi"))) > strlen("there")) print "ok\n";
+
+	return 0;
+}
+
+f: function integer(i: integer) = {
+	return i*2;
+}
+
+===[good1.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L2:	.string	"hi"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL strlen
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L3:	.string	"there"
+.text
+	LEAQ .L3, %r10
+	MOVQ %r10, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL strlen
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %r10
+	CMPQ %r10, %rbx
+	JG .L4
+	MOVQ $0, %rbx
+	JMP .L5
+.L4:
+	MOVQ $1, %rbx
+.L5:
+	CMPQ $0, %rbx
+	JE .L0
+.data
+.L6:	.string	"no\n"
+.text
+	LEAQ .L6, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L1
+.L0:
+.L1:
+.data
+.L9:	.string	"hi"
+.text
+	LEAQ .L9, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL strlen
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L10:	.string	"there"
+.text
+	LEAQ .L10, %r10
+	MOVQ %r10, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL strlen
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %r10
+	CMPQ %r10, %rbx
+	JG .L11
+	MOVQ $0, %rbx
+	JMP .L12
+.L11:
+	MOVQ $1, %rbx
+.L12:
+	CMPQ $0, %rbx
+	JE .L7
+.data
+.L13:	.string	"ok\n"
+.text
+	LEAQ .L13, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L8
+.L7:
+.L8:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global f
+f:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .f_epilogue
+.f_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+ok
+
+===[good1.bminor Output]===
+ok
+
+
+return code: 0
+
+
+===[good10.bminor Input]===
+w: string = "no";
+
+f: function void (s: string) = {
+	{
+		w: string = "ok";
+		print w, "\n";
+		w = "bad!\n";
+	}
+	print s, ' ', w;
+	print " ";
+	s = "changed\n";
+	print s;
+}
+
+main:function integer ()= {
+	s: string = "good";
+	f(s);
+	print s;
+
+	return 0;
+}
+
+===[good10.bminor Assembly Output]===
+.data
+w:	.string	"no"
+.text
+.global f
+f:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L0:	.string	"ok"
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	"\n"
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L2:	.string	"bad!\n"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $32, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ w, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L3:	.string	" "
+.text
+	LEAQ .L3, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L4:	.string	"changed\n"
+.text
+	LEAQ .L4, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.f_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L5:	.string	"good"
+.text
+	LEAQ .L5, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+ok
+good no changed
+good
+===[good10.bminor Output]===
+ok
+good no changed
+good
+
+return code: 0
+
+
+===[good11.bminor Input]===
+main: function integer () = {
+	x: integer = 20;
+	y: integer = x;
+	{
+		x: integer = 10;
+		y = y + x;
+	}
+
+	{
+		{
+			y = y + x;
+			x: integer = 2;
+			y = y + x;
+		}
+		y = y + x;
+		x: integer = 3;
+		y = y + x;
+	}
+	return y + x;
+}
+
+===[good11.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $40, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $20, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $10, %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -24(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -8(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $2, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -32(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -8(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $3, %rbx
+	MOVQ %rbx, -40(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -40(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -8(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good11.bminor Output]===
+
+
+return code: 95
+
+
+===[good12.bminor Input]===
+main: function integer () = {
+	return 4 + 9 / (-2 - (-5)) + (((2 + 1) * 4) - 1) % 3 * 7 - 8;
+}
+
+===[good12.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $4, %rbx
+	MOVQ $9, %r10
+	MOVQ $2, %r11
+	NEG %r11
+	MOVQ $5, %r12
+	NEG %r12
+	SUBQ %r12, %r11
+	MOVQ %r10, %rax
+	CQO
+	IDIVQ %r11
+	MOVQ %rax, %r10
+	ADDQ %r10, %rbx
+	MOVQ $2, %r10
+	MOVQ $1, %r11
+	ADDQ %r11, %r10
+	MOVQ $4, %r11
+	MOVQ %r10, %rax
+	IMULQ %r11
+	MOVQ %rax, %r10
+	MOVQ $1, %r11
+	SUBQ %r11, %r10
+	MOVQ $3, %r11
+	MOVQ %r10, %rax
+	CQO
+	IDIVQ %r11
+	MOVQ %rdx, %r10
+	MOVQ $7, %r11
+	MOVQ %r10, %rax
+	IMULQ %r11
+	MOVQ %rax, %r10
+	ADDQ %r10, %rbx
+	MOVQ $8, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good12.bminor Output]===
+
+
+return code: 13
+
+
+===[good13.bminor Input]===
+foo_epilogue: function integer () = {
+	return 2;
+}
+
+foo: function integer ();
+
+main: function integer () = {
+	return foo() * 11;
+}
+
+main_epilogue: function integer () = {
+	return foo_epilogue() + 3;
+}
+
+foo: function integer () = {
+	return main_epilogue() - 1;
+}
+
+===[good13.bminor Assembly Output]===
+.text
+.global foo_epilogue
+foo_epilogue:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $2, %rbx
+	MOVQ %rbx, %rax
+	JMP .foo_epilogue_epilogue
+.foo_epilogue_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL foo
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $11, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main_epilogue
+main_epilogue:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL foo_epilogue
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $3, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue_epilogue
+.main_epilogue_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global foo
+foo:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL main_epilogue
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $1, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .foo_epilogue
+.foo_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good13.bminor Output]===
+
+
+return code: 44
+
+
+===[good15.bminor Input]===
+// https://piazza.com/class/jziupd2lzpm7cy?cid=179
+
+strdup: function string (s: string);
+
+main: function integer () = {
+	a: string = "sssss";
+	b: string = strdup(a);
+	if (a==b) return 22; else return 11;
+}
+
+===[good15.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $16, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L0:	.string	"sssss"
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL strdup
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JE .L3
+	MOVQ $0, %rbx
+	JMP .L4
+.L3:
+	MOVQ $1, %rbx
+.L4:
+	CMPQ $0, %rbx
+	JE .L1
+	MOVQ $22, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L2
+.L1:
+	MOVQ $11, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.L2:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good15.bminor Output]===
+
+
+return code: 11
+
+
+===[good16.bminor Input]===
+// https://piazza.com/class/jziupd2lzpm7cy?cid=176
+
+main: function integer() = {
+	print "Testing printing literals", '\n', 123, "abc", true, false, 5;
+	return 0;
+}
+
+
+===[good16.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+.data
+.L0:	.string	"Testing printing literals"
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $123, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	"abc"
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_boolean
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_boolean
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $5, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+Testing printing literals
+123abctruefalse5
+===[good16.bminor Output]===
+Testing printing literals
+123abctruefalse5
+
+return code: 0
+
+
+===[good17.bminor Input]===
+a1: integer;
+a2: integer = 111;
+a3: boolean = false;
+
+A: function integer() = {
+	if (a3) return a1 * a2;
+	a2: integer = 3;
+	if (!!!a3) return a1 + a2;
+	return 0;
+}
+
+main: function integer() = { return A(); }
+
+===Compiler returned nonzero return code===
+[ERROR]    Parse error: syntax error, unexpected TOKEN_NOT
+[INFO]     Parse failed.
+
+
+===[good17.bminor Assembly Output]===
+
+TEST NOT PASSED - COMPILE ERROR
+
+===[good17.bminor Output]===
+
+/usr/lib/gcc/x86_64-redhat-linux/8/../../../../lib64/crt1.o: In function `_start':
+(.text+0x24): undefined reference to `main'
+collect2: error: ld returned 1 exit status
+
+return code: 1
+
+
+===[good18.bminor Input]===
+b1: integer = 3;
+b2: integer = 6;
+b3: integer = 9;
+
+B: function integer(b3: integer, b4: integer) = {
+	print b1 * b2 + b3 % b4;
+	print '\n';
+	b3 = 37;
+	return b3;
+}
+
+main: function integer () = {
+	print B(5, 3);
+	return b3;
+}
+
+===[good18.bminor Assembly Output]===
+.data
+b1:	.quad	3
+.data
+b2:	.quad	6
+.data
+b3:	.quad	9
+.text
+.global B
+B:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ b1, %rbx
+	MOVQ b2, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ -16(%rbp), %r11
+	MOVQ %r10, %rax
+	CQO
+	IDIVQ %r11
+	MOVQ %rdx, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $37, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rax
+	JMP .B_epilogue
+.B_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $5, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $3, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL B
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ b3, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+20
+37
+===[good18.bminor Output]===
+20
+37
+
+return code: 9
+
+
+===[good19.bminor Input]===
+c1: integer = -1;
+c3: integer = 100;
+
+d1: integer = 1;
+d2: integer = 2;
+
+C: function integer(c1: integer, c2: integer) = {
+	c3: integer = 11;
+	c4: integer = 12;
+	c5: integer = 13;
+	return c1 + c2 + c3 + c4;
+}
+
+D: function integer(d1: integer, d2: integer) = {
+	d3: integer = -3;
+	d4: integer = 4;
+	d5: integer = 5;
+	return d1 + d2 + d3 - d4;
+}
+
+main: function integer() = {
+	f: integer = D(6, 7);
+	return C(1, 2);
+}
+
+===[good19.bminor Assembly Output]===
+.data
+c1:	.quad	-1
+.data
+c3:	.quad	100
+.data
+d1:	.quad	1
+.data
+d2:	.quad	2
+.text
+.global C
+C:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $24, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $11, %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ $12, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ $13, %rbx
+	MOVQ %rbx, -40(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ -24(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ -32(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .C_epilogue
+.C_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global D
+D:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $24, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $3, %rbx
+	NEG %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ $4, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ $5, %rbx
+	MOVQ %rbx, -40(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ -24(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ -32(%rbp), %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .D_epilogue
+.D_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $6, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $7, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL D
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $2, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL C
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good19.bminor Output]===
+
+
+return code: 26
+
+
+===[good20.bminor Input]===
+D: function integer() = {
+	d1: integer = 5;
+	d2: integer = d1 + 1; //6
+	{
+		d3: integer = 9;
+		d2: integer = d3 + d1 - 3; //11
+		d4: integer = -1;
+		d2 = d2 + d3; //20
+		print d2 - d4, "\n";
+	}
+	d4: integer = 16;
+	print d2 - d4, '\n';
+	{
+		d4: integer = -2;
+		d3: integer = 1000;
+		print d3 + 10;
+		print "\n";
+		print d4;
+		print '\n';
+	}
+	print d4;
+	return 3;
+}
+
+main: function integer () = {
+	return D();
+}
+
+===[good20.bminor Assembly Output]===
+.text
+.global D
+D:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $64, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $5, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	MOVQ $9, %rbx
+	MOVQ %rbx, -24(%rbp)
+	MOVQ -24(%rbp), %rbx
+	MOVQ -8(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ $3, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ $1, %rbx
+	NEG %rbx
+	MOVQ %rbx, -40(%rbp)
+	MOVQ -32(%rbp), %rbx
+	MOVQ -24(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -32(%rbp)
+	MOVQ -32(%rbp), %rbx
+	MOVQ -40(%rbp), %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	"\n"
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $16, %rbx
+	MOVQ %rbx, -48(%rbp)
+	MOVQ -16(%rbp), %rbx
+	MOVQ -48(%rbp), %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $2, %rbx
+	NEG %rbx
+	MOVQ %rbx, -56(%rbp)
+	MOVQ $1000, %rbx
+	MOVQ %rbx, -64(%rbp)
+	MOVQ -64(%rbp), %rbx
+	MOVQ $10, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	"\n"
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -56(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -48(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $3, %rbx
+	MOVQ %rbx, %rax
+	JMP .D_epilogue
+.D_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL D
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+21
+-10
+1010
+-2
+16
+===[good20.bminor Output]===
+21
+-10
+1010
+-2
+16
+
+return code: 3
+
+
+===[good3.bminor Input]===
+T: array [8] integer = {2, 1, 1, 2, 1, 2, 0, 3};
+
+main:function integer ()=
+{
+	i: integer = 0;
+        for (;;) {
+		if (T[i] == 0) return T[5] + 10;
+		else if (T[i] == 1) i++;
+		else if (T[i] == 2) T[i++]--;
+		else return 1;
+	}
+
+	return 0;
+}
+
+===[good3.bminor Assembly Output]===
+.data
+T:	.quad	2, 1, 1, 2, 1, 2, 0, 3
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L0:
+	LEAQ T, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JE .L4
+	MOVQ $0, %rbx
+	JMP .L5
+.L4:
+	MOVQ $1, %rbx
+.L5:
+	CMPQ $0, %rbx
+	JE .L2
+	LEAQ T, %rbx
+	MOVQ $5, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $10, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L3
+.L2:
+	LEAQ T, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $1, %r10
+	CMPQ %r10, %rbx
+	JE .L8
+	MOVQ $0, %rbx
+	JMP .L9
+.L8:
+	MOVQ $1, %rbx
+.L9:
+	CMPQ $0, %rbx
+	JE .L6
+	INCQ -8(%rbp)
+	JMP .L7
+.L6:
+	LEAQ T, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $2, %r10
+	CMPQ %r10, %rbx
+	JE .L12
+	MOVQ $0, %rbx
+	JMP .L13
+.L12:
+	MOVQ $1, %rbx
+.L13:
+	CMPQ $0, %rbx
+	JE .L10
+	LEAQ T, %rbx
+	INCQ -8(%rbp)
+	DECQ (%rbx, %rbx, 8)
+	JMP .L11
+.L10:
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.L11:
+.L7:
+.L3:
+	JMP .L0
+.L1:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+TEST NOT PASSED - RUNTIME ERROR
+
+===[good3.bminor Output]===
+
+
+return code: -11
+
+
+===[good2.bminor Input]===
+
+
+X: array [4] integer = {11, 30, 22, 0};
+
+main: function integer () = {
+	i: integer;
+	for (i = 0; X[i] != 0; i++)
+		print X[i], ' ', X[i] % 3, '\n';
+
+	return 0;
+}
+
+===[good2.bminor Assembly Output]===
+.data
+X:	.quad	11, 30, 22, 0
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L0:
+	LEAQ X, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JNE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	LEAQ X, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $32, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ X, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ $3, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rdx, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	INCQ -8(%rbp)
+	JMP .L0
+.L1:
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+11 2
+30 0
+22 1
+
+===[good2.bminor Output]===
+11 2
+30 0
+22 1
+
+
+return code: 0
+
+
+===[good5.bminor Input]===
+A: function boolean(x: integer, y: integer);
+B: function integer(x: char);
+C: function char(a: string);
+
+main: function integer() = {
+	if (A(B('d') - 1, 10)) {
+		x: integer = 3;
+		return 2 * B('!') + x;
+	}
+	return B(C("hello")) % 3;
+}
+
+A: function boolean(x: integer, y: integer) = {
+	return x == y;
+}
+
+B: function integer(c: char) = {
+	if (c == '!')
+		return 10;
+	else {return 11;}
+}
+
+C: function char(a: string) = {
+	return '!';
+}
+
+===[good5.bminor Assembly Output]===
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $100, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL B
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $1, %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL A
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	CMPQ $0, %rbx
+	JE .L0
+	MOVQ $3, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $2, %rbx
+	MOVQ $33, %r10
+	MOVQ %r10, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL B
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L1
+.L0:
+.L1:
+.data
+.L2:	.string	"hello"
+.text
+	LEAQ .L2, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL C
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL B
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $3, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rdx, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global A
+A:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ -16(%rbp), %r10
+	CMPQ %r10, %rbx
+	JE .L3
+	MOVQ $0, %rbx
+	JMP .L4
+.L3:
+	MOVQ $1, %rbx
+.L4:
+	MOVQ %rbx, %rax
+	JMP .A_epilogue
+.A_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global B
+B:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ $33, %r10
+	CMPQ %r10, %rbx
+	JE .L7
+	MOVQ $0, %rbx
+	JMP .L8
+.L7:
+	MOVQ $1, %rbx
+.L8:
+	CMPQ $0, %rbx
+	JE .L5
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rax
+	JMP .B_epilogue
+	JMP .L6
+.L5:
+	MOVQ $11, %rbx
+	MOVQ %rbx, %rax
+	JMP .B_epilogue
+.L6:
+.B_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global C
+C:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $33, %rbx
+	MOVQ %rbx, %rax
+	JMP .C_epilogue
+.C_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good5.bminor Output]===
+
+
+return code: 23
+
+
+===[good6.bminor Input]===
+f: function boolean(b: boolean) = {
+	return !b;
+}
+
+x: integer = -4;
+
+main:function integer ()=
+{
+	y: integer = 10;
+	if (f(f(f(f(f(x <= y)))))) return 1;
+	else if (x < y - x*y) {
+		return 4;
+	} else return 2;
+}
+
+===[good6.bminor Assembly Output]===
+.text
+.global f
+f:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	NOTQ %rbx
+	MOVQ %rbx, %rax
+	JMP .f_epilogue
+.f_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.data
+x:	.quad	-4
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $10, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ x, %rbx
+	MOVQ -8(%rbp), %r10
+	CMPQ %r10, %rbx
+	JLE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	CMPQ $0, %rbx
+	JE .L0
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L1
+.L0:
+	MOVQ x, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ x, %r11
+	MOVQ -8(%rbp), %r12
+	MOVQ %r11, %rax
+	IMULQ %r12
+	MOVQ %rax, %r11
+	SUBQ %r11, %r10
+	CMPQ %r10, %rbx
+	JL .L6
+	MOVQ $0, %rbx
+	JMP .L7
+.L6:
+	MOVQ $1, %rbx
+.L7:
+	CMPQ $0, %rbx
+	JE .L4
+	MOVQ $4, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L5
+.L4:
+	MOVQ $2, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.L5:
+.L1:
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good6.bminor Output]===
+
+
+return code: 1
+
+
+===[good7.bminor Input]===
+f: function void (i: integer) = {
+	N: integer;
+	for (N = 0; i > 0; i--) {
+		print N;
+		N = N + 1;
+	}
+}
+
+main:function integer () = {
+	N: integer = 6;
+	for (;;N--) {
+		f(N);
+		print '\n';
+		if (N == 0) return 0;
+	}
+
+	return 1;
+}
+
+===[good7.bminor Assembly Output]===
+.text
+.global f
+f:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rbx
+	MOVQ %rbx, -16(%rbp)
+.L0:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JG .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	MOVQ -16(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -16(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -16(%rbp)
+	DECQ -8(%rbp)
+	JMP .L0
+.L1:
+.f_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $6, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L4:
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JE .L8
+	MOVQ $0, %rbx
+	JMP .L9
+.L8:
+	MOVQ $1, %rbx
+.L9:
+	CMPQ $0, %rbx
+	JE .L6
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+	JMP .L7
+.L6:
+.L7:
+	DECQ -8(%rbp)
+	JMP .L4
+.L5:
+	MOVQ $1, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+012345
+01234
+0123
+012
+01
+0
+
+
+===[good7.bminor Output]===
+012345
+01234
+0123
+012
+01
+0
+
+
+
+return code: 0
+
+
+===[good8.bminor Input]===
+abs: function integer(n: integer);
+
+digits: array [6] integer = {
+	14,
+	8,
+	6168,
+	42,
+	0,
+	74546
+};
+
+main:function integer () = {
+	digits[4] = -468;
+	i: integer = 0;
+	for (; abs(digits[i]) == digits[i];) {
+		print digits[i];
+		i = i + 1;
+		print ' ';
+	}
+	print '\n';
+
+	return 0;
+}
+
+===[good8.bminor Assembly Output]===
+.data
+digits:	.quad	14, 8, 6168, 42, 0, 74546
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $468, %rbx
+	NEG %rbx
+	LEAQ digits, %r10
+	MOVQ $4, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	MOVQ $0, %rbx
+	MOVQ %rbx, -8(%rbp)
+.L0:
+	LEAQ digits, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL abs
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	LEAQ digits, %r10
+	MOVQ -8(%rbp), %r11
+	MOVQ (%r10, %r11, 8), %r10
+	CMPQ %r10, %rbx
+	JE .L2
+	MOVQ $0, %rbx
+	JMP .L3
+.L2:
+	MOVQ $1, %rbx
+.L3:
+	CMPQ $0, %rbx
+	JE .L1
+	LEAQ digits, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ $32, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	JMP .L0
+.L1:
+	MOVQ $10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_character
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+14 8 6168 42 
+
+===[good8.bminor Output]===
+14 8 6168 42 
+
+
+return code: 0
+
+
+===[good9.bminor Input]===
+a: array[4] integer;
+main: function integer() = {
+	a[2] = 60;
+	return a[2] + a[2] / 20 * 3 - a[1];
+}
+
+===[good9.bminor Assembly Output]===
+.data
+a:	.quad	0
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $60, %rbx
+	LEAQ a, %r10
+	MOVQ $2, %r11
+	MOVQ %rbx, (%r10, %r11, 8)
+	LEAQ a, %rbx
+	MOVQ $2, %r10
+	MOVQ (%rbx, %r10, 8), %rbx
+	LEAQ a, %r10
+	MOVQ $2, %r11
+	MOVQ (%r10, %r11, 8), %r10
+	MOVQ $20, %r11
+	MOVQ %r10, %rax
+	CQO
+	IDIVQ %r11
+	MOVQ %rax, %r10
+	MOVQ $3, %r11
+	MOVQ %r10, %rax
+	IMULQ %r11
+	MOVQ %rax, %r10
+	ADDQ %r10, %rbx
+	LEAQ a, %r10
+	MOVQ $1, %r11
+	MOVQ (%r10, %r11, 8), %r10
+	SUBQ %r10, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+
+===[good9.bminor Output]===
+
+
+return code: 69
+
+
+===[good14.bminor Input]===
+/*
+Return pointer to (constant) global
+string which is valid to display.
+*/
+
+s: string = "ok\n";
+
+f: function string() = {
+	t: string = s;
+	return t;
+}
+
+main: function integer () = {
+	print f();
+	return 0;
+}
+
+===[good14.bminor Assembly Output]===
+.data
+s:	.string	"ok\n"
+.text
+.global f
+f:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $8, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	LEAQ s, %rbx
+	MOVQ %rbx, -8(%rbp)
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rax
+	JMP .f_epilogue
+.f_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL f
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+ok
+
+===[good14.bminor Output]===
+ok
+
+
+return code: 0
+
+
+===[good4.bminor Input]===
+collatz: function integer(n: integer, acc: integer) = {
+	print n, " ", acc, "\n";
+	if (n == 1) return acc;
+
+	if (n % 2 == 0) return collatz(n/2, acc + 1);
+	else return collatz(3*n + 1, acc + 1);
+}
+
+main:function integer ()=
+{
+	return collatz(27, 0);
+}
+
+===[good4.bminor Assembly Output]===
+.text
+.global collatz
+collatz:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	PUSHQ %rdi
+	PUSHQ %rsi
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ -8(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L0:	.string	" "
+.text
+	LEAQ .L0, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -16(%rbp), %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_integer
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+.data
+.L1:	.string	"\n"
+.text
+	LEAQ .L1, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL print_string
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ -8(%rbp), %rbx
+	MOVQ $1, %r10
+	CMPQ %r10, %rbx
+	JE .L4
+	MOVQ $0, %rbx
+	JMP .L5
+.L4:
+	MOVQ $1, %rbx
+.L5:
+	CMPQ $0, %rbx
+	JE .L2
+	MOVQ -16(%rbp), %rbx
+	MOVQ %rbx, %rax
+	JMP .collatz_epilogue
+	JMP .L3
+.L2:
+.L3:
+	MOVQ -8(%rbp), %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rdx, %rbx
+	MOVQ $0, %r10
+	CMPQ %r10, %rbx
+	JE .L8
+	MOVQ $0, %rbx
+	JMP .L9
+.L8:
+	MOVQ $1, %rbx
+.L9:
+	CMPQ $0, %rbx
+	JE .L6
+	MOVQ -8(%rbp), %rbx
+	MOVQ $2, %r10
+	MOVQ %rbx, %rax
+	CQO
+	IDIVQ %r10
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ -16(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL collatz
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .collatz_epilogue
+	JMP .L7
+.L6:
+	MOVQ $3, %rbx
+	MOVQ -8(%rbp), %r10
+	MOVQ %rbx, %rax
+	IMULQ %r10
+	MOVQ %rax, %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ -16(%rbp), %rbx
+	MOVQ $1, %r10
+	ADDQ %r10, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL collatz
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .collatz_epilogue
+.L7:
+.collatz_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+.text
+.global main
+main:
+	PUSHQ %rbp
+	MOVQ %rsp, %rbp
+	SUBQ $0, %rsp
+	PUSHQ %rbx
+	PUSHQ %r12
+	PUSHQ %r13
+	PUSHQ %r14
+	PUSHQ %r15
+	MOVQ $27, %rbx
+	MOVQ %rbx, %rdi
+	MOVQ $0, %rbx
+	MOVQ %rbx, %rsi
+	MOVQ $0, %rax
+	PUSHQ %r10
+	PUSHQ %r11
+	CALL collatz
+	POPQ %r10
+	POPQ %r11
+	MOVQ %rax, %rbx
+	MOVQ %rbx, %rax
+	JMP .main_epilogue
+.main_epilogue:
+	POPQ %r15
+	POPQ %r14
+	POPQ %r13
+	POPQ %r12
+	POPQ %rbx
+	MOVQ %rbp, %rsp
+	POPQ %rbp
+	RET
+
+============= Your Output ===========
+
+27 0
+82 1
+41 2
+124 3
+62 4
+31 5
+94 6
+47 7
+142 8
+71 9
+214 10
+107 11
+322 12
+161 13
+484 14
+242 15
+121 16
+364 17
+182 18
+91 19
+274 20
+137 21
+412 22
+206 23
+103 24
+310 25
+155 26
+466 27
+233 28
+700 29
+350 30
+175 31
+526 32
+263 33
+790 34
+395 35
+1186 36
+593 37
+1780 38
+890 39
+445 40
+1336 41
+668 42
+334 43
+167 44
+502 45
+251 46
+754 47
+377 48
+1132 49
+566 50
+283 51
+850 52
+425 53
+1276 54
+638 55
+319 56
+958 57
+479 58
+1438 59
+719 60
+2158 61
+1079 62
+3238 63
+1619 64
+4858 65
+2429 66
+7288 67
+3644 68
+1822 69
+911 70
+2734 71
+1367 72
+4102 73
+2051 74
+6154 75
+3077 76
+9232 77
+4616 78
+2308 79
+1154 80
+577 81
+1732 82
+866 83
+433 84
+1300 85
+650 86
+325 87
+976 88
+488 89
+244 90
+122 91
+61 92
+184 93
+92 94
+46 95
+23 96
+70 97
+35 98
+106 99
+53 100
+160 101
+80 102
+40 103
+20 104
+10 105
+5 106
+16 107
+8 108
+4 109
+2 110
+1 111
+
+===[good4.bminor Output]===
+27 0
+82 1
+41 2
+124 3
+62 4
+31 5
+94 6
+47 7
+142 8
+71 9
+214 10
+107 11
+322 12
+161 13
+484 14
+242 15
+121 16
+364 17
+182 18
+91 19
+274 20
+137 21
+412 22
+206 23
+103 24
+310 25
+155 26
+466 27
+233 28
+700 29
+350 30
+175 31
+526 32
+263 33
+790 34
+395 35
+1186 36
+593 37
+1780 38
+890 39
+445 40
+1336 41
+668 42
+334 43
+167 44
+502 45
+251 46
+754 47
+377 48
+1132 49
+566 50
+283 51
+850 52
+425 53
+1276 54
+638 55
+319 56
+958 57
+479 58
+1438 59
+719 60
+2158 61
+1079 62
+3238 63
+1619 64
+4858 65
+2429 66
+7288 67
+3644 68
+1822 69
+911 70
+2734 71
+1367 72
+4102 73
+2051 74
+6154 75
+3077 76
+9232 77
+4616 78
+2308 79
+1154 80
+577 81
+1732 82
+866 83
+433 84
+1300 85
+650 86
+325 87
+976 88
+488 89
+244 90
+122 91
+61 92
+184 93
+92 94
+46 95
+23 96
+70 97
+35 98
+106 99
+53 100
+160 101
+80 102
+40 103
+20 104
+10 105
+5 106
+16 107
+8 108
+4 109
+2 110
+1 111
+
+
+return code: 111
+
+
+===== SUMMARIZED CODEGEN RESULTS =====
+{
+  "student_tests": {
+    "Good": {
+      "correct": 28,
+      "incorrect": 0
+    }
+  },
+  "hidden_tests": {
+    "Good": {
+      "correct": 18,
+      "incorrect": 2
+    }
+  }
+}
+
+Codegen Project
+--------------------
+
+General Structure (25/25 points)
+----------------------------------------------
+General structure looks good
+
+Codegen - Functionality (15/15 points)
+----------------------------------------------
+
+Generated code:
+	- Generated assembly compiles and runs on student machines without added effort (+5)
+	- Runs with expected output, exit code, etc (+5)
+	- Function calls and stack management working properly (+5)
+	
+
+Codegen - Assembly Structure (10/10 points)
+----------------------------------------------
+
+Generated code:
+	- A file containing at least mostly complete assembly was generated (+5)
+	- Loops and conditionals are implemented with jumps and labels (+5)
+
+Student Tests (20/20 points)
+------------------------------------------
+Well done student test cases!
+
+Hidden Tests (18/20 points)
+------------------------------------------
+Looks like one test case failed because of a parse error and another failed because of a small error in the compiler
+
+Coding Style (10/10 points)
+------------------------------------------
+Nice coding style
+
+Extra Credit (10/10 points)
+------------------------------------------
+Floating points seem to be implemented in a usable manner that generates working code.
